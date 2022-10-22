@@ -6,19 +6,21 @@ TYPE:=RUN
 
 # files
 
-HSUFFIX:=hxx
-ISUFFIX:=cxx
-OSUFFIX:=obj
+HDREXT:=hxx
+SRCEXT:=cxx
+OBJEXT:=obj
+BINEXT:=bin
+MANEXT:=man
 
 ## source
 
 SROOT:=.
 
-SLHDR:=$(wildcard $(SROOT)/*.$(HSUFFIX))
-SLSRC:=$(patsubst %.$(HSUFFIX),%.$(ISUFFIX),$(SLHDR))
-SLOBJ:=$(patsubst %.$(ISUFFIX),%.$(OSUFFIX),$(SLSRC))
-SLBIN:=$(SROOT)/$(NAME).bin
-SLMAN:=$(SROOT)/$(NAME).man
+SLHDR:=$(wildcard $(SROOT)/*.$(HDREXT))
+SLSRC:=$(patsubst %.$(HDREXT),%.$(SRCEXT),$(SLHDR))
+SLOBJ:=$(patsubst %.$(SRCEXT),%.$(OBJEXT),$(SLSRC))
+SLBIN:=$(SROOT)/$(NAME).$(BINEXT)
+SLMAN:=$(SROOT)/$(NAME).$(MANEXT)
 
 ## target
 
@@ -27,7 +29,7 @@ TROOT?=$(HOME)/.local/bin
 TDBIN:=$(TROOT)/bin
 TDMAN:=$(TROOT)/share/man/man1
 
-TLBIN:=$(patsubst $(SROOT)/%.bin,$(TDBIN)/%,$(SLBIN))
+TLBIN:=$(patsubst $(SROOT)/%.$(BINEXT),$(TDBIN)/%,$(SLBIN))
 TLMAN:=$(patsubst $(SROOT)/%,$(TDMAN)/%,$(SLMAN))
 
 # build
@@ -155,33 +157,33 @@ print-head:
 
 ## source
 
-#%.$(HSUFFIX):
-#	$(info "[header]=$@")
+%.$(HDREXT):
+	$(info "[header]=$@")
 
-%.$(ISUFFIX): #%.$(HSUFFIX)
+%.$(SRCEXT): %.$(HDREXT)
 	$(info "[source]=$@")
 	touch $@
 
-%.$(OSUFFIX): %.$(ISUFFIX)
+%.$(OBJEXT): %.$(SRCEXT)
 	$(info "[object]=$@")
 	$(CMAKER) $@ $^ $(CFLAGS)
 
-%.bin: $(SLOBJ)
+%.$(BINEXT): $(SLOBJ)
 	$(info "[source-binary]=$@")
 	$(LMAKER) $@ $^ $(LFLAGS)
 
-%.man:
+%.$(MANEXT):
 	$(info "[source-manual]=$@")
 
 ## target
 
-$(TDBIN)/%: %.bin
+$(TDBIN)/%: %.$(BINEXT)
 	$(info "[target-binary]=$@")
 	$(SHCP) $< $@
 	$(SHCO) $@
 	$(SHCM) 744 $@
 
-$(TDMAN)/%: %.man
+$(TDMAN)/%.$(MANEXT): %.$(MANEXT)
 	$(info "[target-manual]=$@")
 	$(SHCP) $< $@
 	$(SHCM) 644 $@
