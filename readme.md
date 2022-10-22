@@ -21,13 +21,10 @@
 ## build and usage
 
 - this library can be...
+> - included into soruce code as a single-header library
 > - compiled as an application for testing
 > - compiled as a library for linkage
 - gnu/make is the main build system
-- "libasist.cxx" is needed to build an executable or a library
-> by some reason clang is not gonna link an object file
-> compiled from a file with header extension
-> even though it is just a file name ending
 
 ### header
 
@@ -49,7 +46,7 @@
 
 ### library
 
-- it can be built as a...
+- it can be built as...
 > - static library
 > > make build TYPE=SLL
 > - dynamic library
