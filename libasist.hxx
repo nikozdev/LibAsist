@@ -547,15 +547,14 @@ inline const std::string& get_nodefault_string( args_t&& ... args )
 int main( int argc, const char* argv[] )
 {
     cli.args = std::vector< const std::string_view >( argv, argv + argc );
+    std::clog << std::endl;
     {
-        std::clog << std::endl;
         std::clog << "(" << "[" << _NAME_STR << "]" << "[args]" << std::endl;
         std::copy( argv, argv + argc, std::ostream_iterator< const char* >( std::clog, "\n" ) );
         std::clog << "[" << _NAME_STR << "]" << "[args]" << ")" << std::endl;
         std::clog << std::endl;
     }
     {
-        std::clog << std::endl;
         v2s_t v2s1 = { 0, 1 };
         v2s_t v2s2 = v2s1 + 1;
         v2s_t v2s3 = v2s1 + v2s2;
@@ -568,6 +567,12 @@ int main( int argc, const char* argv[] )
         std::clog << "vet --test = " << vet_opt( "--test" ) << std::endl;
         std::clog << "get --arg = " << get_opt( "--arg" ) << std::endl;
         std::clog << "vet --arg = " << vet_opt( "--arg" ) << std::endl;
+        std::clog << std::endl;
+    }
+    {
+        std::clog << "the value is ";
+        std::clog << get_nodefault_string( get_opt( "-c" ), get_opt( "--config" ), get_env( "config" ), std::string( "not found" ) ) << std::endl;
+        std::clog << std::endl;
     }
     return error_none;
 }
