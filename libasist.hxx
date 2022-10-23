@@ -464,47 +464,54 @@ inline std::string get_opt( const std::string_view& opt )
     {
         return "";
     }
+    const auto head = cli.args.begin() + 1;
+    const auto tail = cli.args.end() - 1;
+    const auto last = cli.args.end();
     if ( opt[ 0 ] == '-' )
     {
         if ( opt[ 1 ] == '-' )
         {
-            for ( auto iter = cli.args.begin() + 1; iter != ( cli.args.end() - 1 ); iter++ )
+            for ( auto iter = head; iter != last; iter++ )
             {
-                if ( *iter == opt )
+                auto offset = (*iter).find( '=' );
+                if ( offset == -1 )
                 {
-                    auto offset = (*iter).find( '=' );
-                    if ( offset == -1 )
+                    if ( *iter == opt )
                     {
-                        return "";
+                        if ( iter == tail )
+                        {
+                            help( error_argv );
+                            return "";
+                        }
+                        return std::string( *( ++iter ) );
                     }
-                    std::string value( (*iter).substr( offset ) );
-                    return value;
+                }
+                else if ( ( *iter ).find( opt ) != -1 )
+                {
+                    return std::string( *iter ).substr( offset + 1 );
                 }
             }
         }
         else
         {
-            for ( auto iter = cli.args.begin() + 1; iter != ( cli.args.end() - 1 ); iter++ )
+            for ( auto iter = head; iter < last; iter++ )
             {
                 if ( *iter == opt )
                 {
-                    std::string value( *(++iter) );
-                    return value;
+                    return std::string( *( ++iter ) );
                 }
             }
         }
-    }
-    else
-    {
-        return "";
     }
     return "";
 }
 inline bool vet_opt( const std::string_view& opt )
 {
-    for ( auto iter = cli.args.begin() + 1; iter != ( cli.args.end() - 1 ); iter++ )
+    const auto head = cli.args.begin() + 1;
+    const auto last = cli.args.end();
+    for ( auto iter = head; iter < last; iter++ )
     {
-        if ( *iter == opt )
+        if ( ( *iter ).find( opt ) != -1 )
         {
             return TRUTH;
         }
@@ -548,10 +555,19 @@ int main( int argc, const char* argv[] )
         std::clog << std::endl;
     }
     {
+        std::clog << std::endl;
         v2s_t v2s1 = { 0, 1 };
         v2s_t v2s2 = v2s1 + 1;
         v2s_t v2s3 = v2s1 + v2s2;
         std::clog << v2s1 << v2s2 << v2s3 << std::endl;
+        std::clog << std::endl;
+    }
+    {
+        std::clog << "get -t = " << get_opt( "-t" ) << std::endl;
+        std::clog << "get --test = " << get_opt( "--test" ) << std::endl;
+        std::clog << "vet --test = " << vet_opt( "--test" ) << std::endl;
+        std::clog << "get --arg = " << get_opt( "--arg" ) << std::endl;
+        std::clog << "vet --arg = " << vet_opt( "--arg" ) << std::endl;
     }
     return error_none;
 }
