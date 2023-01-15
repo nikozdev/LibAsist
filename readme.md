@@ -3,39 +3,31 @@
 - lib-asist
 > - library assistant
 - utilities, functions, types, etc for programming
-- initially created by nikodiho to...
+- initially created by nikozdev to...
 > - avoid writting the same code for different projects
 > - avoid external dependencies ( yes, i have "dependophobia" )
-> - make own standards, framework
-- source code is written in c/c++ programming language
-- build scripts are written in the makefile for...
+> - make own standards, frameworks
+- the majority of the source code is written in c/c++ programming language
+- the only build script is "makefile" for...
 > - building
 > - cleaning
 > - installation
 > - uninstallation
 > - debugging
-> - running
+> - execution
 > just run "make *command*"
-> - appending "VARIABLE=VALUE" does make sense
+> - appending "VARIABLE=VALUE" may affect the process
 
 ## build and usage
 
 - this library can be...
-> - included into soruce code as a single-header library
+> - included with some headers into source code
 > - compiled as an application for testing
 > - compiled as a library for linkage
 - gnu/make is the main build system
 
-### header
+### link as an executable
 
-- everything is contained inside of a single header file libasist.hxx
-> - \#include "path/to/libasist.hxx"
-> > into any file on a project
-- all symbols can be found inside of a single namespace
-
-### executable
-
-- header file has all of the "inline" source code
 - build and start
 > - make start
 > > compile and link and run in the shell
@@ -44,43 +36,34 @@
 > - make debug
 > > recompile and relink and run in a debugger
 
-### library
+### link as a library
 
-- it can be built as...
-> - static library
+- this can be built as...
+> - statically linked library
 > > make build TYPE=SLL
-> - dynamic library
+> - dynamically linked library
 > > make build TYPE=DLL
-- usage depends on...
+- library usage depends on...
 > - operating system
 > - compiler
 
 ## design
 
-- minimal
-> - having less - doing more
-> - the least amount of essential files
-> > - this readme
-> > - gitignore
-> > - gitattributes
-> > - makefile build script
-> > - header
-> > - source
-> - everything in a single namespace
-> - license is written at the bottom of the header file
 - generic
-> - compile-time and run-time variables instead of magical values
-> - makefile is outlined as a general purpose file for scalable projects
-> > no need to extend it here, but it can be used elsewhere
-> > - some adjustments are needed of course
+> - compile-time and run-time variables instead of magical or constant values
+> - makefile is made as a general purpose file for scalable projects
+> - templates and abstractions where it is appropriate
+> - prioritising interface
 - embeddable
-> - once built - only 2 files to care about: header and library
-> - name collisions are prevented by "namespace" and "undef"
+> - include headers by requirement
+> - name collisions are prevented by "namespace" and "#undef"
 - configurable
 > - by makefile
 > - by source code of a user
 > - by aliases of primitive and generic types
-> - even the project name used in the source code can be changed
-> > instead of the concrette name there is only "_NAME" compile-time variable
+> > for example: setting the integer type as "using v1s\_t = short;"
+> - even the project name used in the code can be changed
+> > instead of the name there is only "_NAME" compile-time variable
 - independent
 > - only requires things that are already present in most cases
+> > standard libraries, system api, popular generic api...
