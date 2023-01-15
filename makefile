@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VERS:=0a0a0
+VERS:=a0a0a0
 TYPE:=RUN
 
 # files
@@ -16,21 +16,36 @@ MANEXT:=man
 
 SROOT:=.
 
-SLHDR:=$(wildcard $(SROOT)/*.$(HDREXT))
-SLSRC:=$(patsubst %.$(HDREXT),%.$(SRCEXT),$(SLHDR))
-SLOBJ:=$(patsubst %.$(SRCEXT),%.$(OBJEXT),$(SLSRC))
-SLBIN:=$(SROOT)/$(NAME).$(BINEXT)
-SLMAN:=$(SROOT)/$(NAME).$(MANEXT)
+### fdirs
+
+SDHDR:=$(SROOT)/src
+SDSRC:=$(SROOT)/src
+SDOBJ:=$(SROOT)/obj
+SDBIN:=$(SROOT)/bin
+SDRSC:=$(SROOT)/rsc
+SDMAN:=$(SROOT)/man
+
+### lists
+
+SLHDR:=$(wildcard $(SDHDR)/*.$(HDREXT))
+SLSRC:=$(patsubst $(SDHDR)/%.$(HDREXT),$(SDSRC)/%.$(SRCEXT),$(SLHDR))
+SLOBJ:=$(patsubst $(SDSRC)/%.$(SRCEXT),$(SDOBJ)/%.$(OBJEXT),$(SLSRC))
+SLBIN:=$(SDBIN)/$(NAME).$(BINEXT)
+SLMAN:=$(wildcard $(SDMAN)/*.$(MANEXT))
 
 ## target
 
 TROOT?=$(HOME)/.local/bin
 
+### fdirs
+
 TDBIN:=$(TROOT)/bin
 TDMAN:=$(TROOT)/share/man/man1
 
-TLBIN:=$(patsubst $(SROOT)/%.$(BINEXT),$(TDBIN)/%,$(SLBIN))
-TLMAN:=$(patsubst $(SROOT)/%,$(TDMAN)/%,$(SLMAN))
+### lists
+
+TLBIN:=$(patsubst $(SDBIN)/%.$(BINEXT),$(TDBIN)/%,$(SLBIN))
+TLMAN:=$(patsubst $(SDMAN)/%,$(TDMAN)/%,$(SLMAN))
 
 # build
 
@@ -91,43 +106,54 @@ again-head:
 	$(info "--[=[again]=]--")
 
 start: start-head build
-	$(SLBIN)
+	for b in ${SLBIN}; do $$b; done
 start-head:
 	$(info "--[=[start]=]--")
 
-rerun: rerun-head again
-	$(SLBIN)
+rerun: rerun-head again start
 rerun-head:
 	$(info "--[==[rerun]==]--")
 
 debug: debug-head again
-	$(SHDB) $(SLBIN)
+	for bin in ${SLBIN}; do $(SHDB) $$b; done
 debug-head:
 	$(info "--[==[debug]==]--")
 
 print: print-head
-	$(info --[=[basic]=]--)
+	$(info --[[basic]]--)
 	$(info [NAME]=$(NAME))
 	$(info [VERS]=$(VERS))
-	$(info --[=[files]=]--)
-	$(info --[[source]]--)
+	$(info --[[files]]--)
+	$(info --[=[source]=]--)
+	$(info [SROOT]=$(SROOT))
+	$(info --[==[fdirs]==]--)
+	$(info [SDSRC]=$(SDSRC))
+	$(info [SDOBJ]=$(SDOBJ))
+	$(info [SDBIN]=$(SDBIN))
+	$(info [SDRSC]=$(SDRSC))
+	$(info [SDMAN]=$(SDMAN))
+	$(info --[==[lists]==]--)
 	$(info [SLSRC]=$(SLSRC))
 	$(info [SLOBJ]=$(SLOBJ))
 	$(info [SLBIN]=$(SLBIN))
-	$(info --[[target]]--)
+	$(info [SLRSC]=$(SLRSC))
+	$(info [SLMAN]=$(SLMAN))
+	$(info --[=[target]=]--)
 	$(info [TROOT]=$(TROOT))
+	$(info --[==[fdirs]==]--)
 	$(info [TDBIN]=$(TDBIN))
 	$(info [TDMAN]=$(TDMAN))
+	$(info --[==[lists]==]--)
 	$(info [TLBIN]=$(TLBIN))
 	$(info [TLMAN]=$(TLMAN))
-	$(info --[=[build]=]--)
-	$(info --[[compiler]]--)
+	$(info --[[build]]--)
+	$(info --[=[compiler]=]--)
 	$(info [CMAKER]=$(CMAKER))
 	$(info [CFLAGS]=$(CFLAGS))
-	$(info --[[linker]]--)
+	$(info --[=[linker]=]--)
 	$(info [LMAKER]=$(LMAKER))
 	$(info [LFLAGS]=$(LFLAGS))
-	$(info --[=[shell]=]--)
+	$(info --[[shell]]--)
 	$(info [SHSU]=$(SHSU))
 	$(info [SHCO]=$(SHCO))
 	$(info [SHCM]=$(SHCM))
@@ -136,43 +162,43 @@ print: print-head
 	$(info [SHMV]=$(SHMV))
 	$(info [SHMD]=$(SHMD))
 	$(info [SHDB]=$(SHDB))
-	$(info --[=[rules]=]--)
-	$(info --[build]--)
+	$(info --[[rules]]--)
+	$(info --[=[build]=]--)
 	$(info link binary file from object code compiled from source code)
-	$(info --[clean]--)
+	$(info --[=[clean]=]--)
 	$(info remove compiled object code and linked binary file)
-	$(info --[setup]--)
+	$(info --[=[setup]=]--)
 	$(info copy binary and manual files into the system)
-	$(info --[reset]--) $(info remove binary and manual files from the system)
-	$(info --[again]--)
+	$(info --[=[reset]=]--) $(info remove binary and manual files from the system)
+	$(info --[=[again]=]--)
 	$(info clean and rebuild the project again)
-	$(info --[start]--)
+	$(info --[=[start]=]--)
 	$(info build and run the binary file)
-	$(info --[rerun]--)
+	$(info --[=[rerun]=]--)
 	$(info clean, rebuild and run the binary file with the shell)
-	$(info --[debug]--)
+	$(info --[=[debug]=]--)
 	$(info clean, rebuild and run the binary file with the debugger)
 print-head:
-	$(info --[==[print]==]--)
+	$(info --[print]--)
 
 ## source
 
-%.$(HDREXT):
+$(SDHDR)/%.$(HDREXT):
 	$(info "[header]=$@")
 
-%.$(SRCEXT): %.$(HDREXT)
+$(SDSRC)/%.$(SRCEXT): $(SDHDR)/%.$(HDREXT)
 	$(info "[source]=$@")
 	touch $@
 
-%.$(OBJEXT): %.$(SRCEXT)
+$(SDOBJ)/%.$(OBJEXT): $(SDSRC)/%.$(SRCEXT)
 	$(info "[object]=$@")
 	$(CMAKER) $@ $^ $(CFLAGS)
 
-%.$(BINEXT): $(SLOBJ)
+$(SDBIN)/%.$(BINEXT): $(SLOBJ)
 	$(info "[source-binary]=$@")
 	$(LMAKER) $@ $^ $(LFLAGS)
 
-%.$(MANEXT):
+$(SDMAN)/%.$(MANEXT):
 	$(info "[source-manual]=$@")
 
 ## target

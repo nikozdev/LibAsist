@@ -30,8 +30,8 @@
 #    define _NAME_STR   "nameless"
 #endif /* _NAME */
 #ifndef _VERS
-#    define _VERS       0a0a0
-#    define _VERS_STR   "0a0a0"
+#    define _VERS       a0a0a0
+#    define _VERS_STR   "a0a0a0"
 #endif /* _VERS */
 
 #define _TO_STR( text ) ( #text )
