@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VERS:=a0a0a0
+VNUM:=a0a0a0
 TYPE:=RUN
 
 # files
@@ -55,7 +55,7 @@ CMAKER?= $(shell which clang++) -c -o
 CFLAGS+= -std=c++20 -stdlib=libc++
 CFLAGS+= -O0 -g
 CFLAGS+= -D_NAME=$(NAME) -D_NAME_STR=\"$(NAME)\"
-CLFAGS+= -D_VERS=$(VERS) -D_VERS_STR=\"$(VERS)\"
+CLFAGS+= -D_VNUM=$(VNUM) -D_VNUM_STR=\"$(VNUM)\"
 CFLAGS+= -D_TYPE_$(TYPE) -D_TYPE_STR=\"$(TYPE)\"
 CFLAGS+= $(addprefix -include ,$(SLHDR))
 
@@ -81,79 +81,79 @@ SHDB:= $(shell which lldb)
 build: build-head $(SLOBJ) $(SLBIN)
 	$(SHRM) $(SLSRC)
 build-head:
-	$(info "--[[build]]--")
+	$(info "[[build]]")
 
 clean: clean-head
 	$(SHRM) $(SLOBJ) $(SLBIN)
 clean-head:
-	$(info "--[[clean]]--")
+	$(info "[[clean]]")
 
 ## external
 
 setup: setup-head $(TLBIN) $(TLMAN)
 setup-head:
-	$(info "--[=[setup]=]--")
+	$(info "[[setup]]")
 
 reset: reset-head
 	$(SHRM) $(TLBIN) $(TLMAN)
 reset-head:
-	$(info "--[=[reset]=]--")
+	$(info "[[reset]]")
 
 ## addition
 
 again: again-head clean build
 again-head:
-	$(info "--[=[again]=]--")
+	$(info "[[again]]")
 
 start: start-head build
-	for b in ${SLBIN}; do $$b; done
+	for bin in ${SLBIN}; do $$bin; done
 start-head:
-	$(info "--[=[start]=]--")
+	$(info "[[start]]")
 
 rerun: rerun-head again start
 rerun-head:
-	$(info "--[==[rerun]==]--")
+	$(info "[[rerun]]")
 
 debug: debug-head again
-	for bin in ${SLBIN}; do $(SHDB) $$b; done
+	for bin in ${SLBIN}; do $(SHDB) $$bin; done
 debug-head:
-	$(info "--[==[debug]==]--")
+	$(info "[[debug]]")
 
 print: print-head
-	$(info --[[basic]]--)
+	$(info [=[basic]=])
 	$(info [NAME]=$(NAME))
-	$(info [VERS]=$(VERS))
-	$(info --[[files]]--)
-	$(info --[=[source]=]--)
+	$(info [VNUM]=$(VNUM))
+	$(info [=[files]=])
+	$(info [==[source]==])
 	$(info [SROOT]=$(SROOT))
-	$(info --[==[fdirs]==]--)
+	$(info [===[fdirs]===])
 	$(info [SDSRC]=$(SDSRC))
 	$(info [SDOBJ]=$(SDOBJ))
 	$(info [SDBIN]=$(SDBIN))
 	$(info [SDRSC]=$(SDRSC))
 	$(info [SDMAN]=$(SDMAN))
-	$(info --[==[lists]==]--)
+	$(info [===[lists]===])
 	$(info [SLSRC]=$(SLSRC))
 	$(info [SLOBJ]=$(SLOBJ))
 	$(info [SLBIN]=$(SLBIN))
 	$(info [SLRSC]=$(SLRSC))
 	$(info [SLMAN]=$(SLMAN))
-	$(info --[=[target]=]--)
+	$(info [==[target]==])
 	$(info [TROOT]=$(TROOT))
-	$(info --[==[fdirs]==]--)
+	$(info [===[fdirs]===])
 	$(info [TDBIN]=$(TDBIN))
 	$(info [TDMAN]=$(TDMAN))
-	$(info --[==[lists]==]--)
+	$(info [===[lists]===])
 	$(info [TLBIN]=$(TLBIN))
 	$(info [TLMAN]=$(TLMAN))
-	$(info --[[build]]--)
-	$(info --[=[compiler]=]--)
+	$(info [=[build]=])
+	$(info [==[compiler]==])
 	$(info [CMAKER]=$(CMAKER))
 	$(info [CFLAGS]=$(CFLAGS))
-	$(info --[=[linker]=]--)
+	$(info [==[linker]==])
 	$(info [LMAKER]=$(LMAKER))
 	$(info [LFLAGS]=$(LFLAGS))
-	$(info --[[shell]]--)
+	$(info [=[shell]=])
 	$(info [SHSU]=$(SHSU))
 	$(info [SHCO]=$(SHCO))
 	$(info [SHCM]=$(SHCM))
@@ -162,24 +162,17 @@ print: print-head
 	$(info [SHMV]=$(SHMV))
 	$(info [SHMD]=$(SHMD))
 	$(info [SHDB]=$(SHDB))
-	$(info --[[rules]]--)
-	$(info --[=[build]=]--)
-	$(info link binary file from object code compiled from source code)
-	$(info --[=[clean]=]--)
-	$(info remove compiled object code and linked binary file)
-	$(info --[=[setup]=]--)
-	$(info copy binary and manual files into the system)
-	$(info --[=[reset]=]--) $(info remove binary and manual files from the system)
-	$(info --[=[again]=]--)
-	$(info clean and rebuild the project again)
-	$(info --[=[start]=]--)
-	$(info build and run the binary file)
-	$(info --[=[rerun]=]--)
-	$(info clean, rebuild and run the binary file with the shell)
-	$(info --[=[debug]=]--)
-	$(info clean, rebuild and run the binary file with the debugger)
+	$(info [=[rules]=])
+	$(info [build]=link binary file from object code compiled from source code)
+	$(info [clean]=remove compiled object code and linked binary file)
+	$(info [setup]=copy binary and manual files into the system)
+	$(info [reset]=remove binary and manual files from the system)
+	$(info [again]=clean and rebuild the project again)
+	$(info [start]=build and run the binary file)
+	$(info [rerun]=clean, rebuild and run the binary file with the shell)
+	$(info [debug]=clean, rebuild and run the binary file with the debugger)
 print-head:
-	$(info --[print]--)
+	$(info [[print]])
 
 ## source
 

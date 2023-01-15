@@ -5,6 +5,7 @@
 /* headers */
 
 #include <ctime>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -27,12 +28,17 @@
 
 #ifndef _NAME
 #    define _NAME       nameless
-#    define _NAME_STR   "nameless"
 #endif /* _NAME */
-#ifndef _VERS
-#    define _VERS       a0a0a0
-#    define _VERS_STR   "a0a0a0"
-#endif /* _VERS */
+#ifndef _NAME_STR
+#    define _NAME_STR   "nameless"
+#endif /* _NAME_STR */
+
+#ifndef _VNUM
+#    define _VNUM       0xa0a0a0
+#endif /* _VNUM */
+#ifndef _VNUM_STR
+#    define _VNUM_STR   #_VNUM
+#endif /* _VNUM_STR */
 
 #define _TO_STR( text ) ( #text )
 
@@ -230,8 +236,8 @@ _ENUM_DEF( filef, _ENUM_FOR_FILEF )
 _ENUM_DEF( ascii, _ENUM_FOR_ASCII )
 
 using v1c_t = char;
-using v1s_t = int;
-using v1u_t = unsigned int;
+using v1s_t = long;
+using v1u_t = unsigned long;
 
 using msize_t = size_t;
 using count_t = v1u_t;
@@ -427,6 +433,33 @@ _PRIM_FOR( _PRIM_DEF_ACT )
 using coord_t = v2s_t;
 using sizes_t = v2u_t;
 
+struct version_t
+{
+    union
+    {
+        const index_t parts[ 3 ];
+        struct
+        {
+            const index_t major;
+            const index_t minor;
+            const index_t micro;
+        };
+    };
+    const index_t whole;
+};
+template< typename stream_t = std::ostream >
+stream_t& operator<<( stream_t& stream, const version_t& version )
+{
+    auto flags = stream.flags();
+    stream << "[major]=" << version.major << ";";
+    stream << "[minor]=" << version.minor << ";";
+    stream << "[micro]=" << version.micro << ";";
+    stream << std::hex;
+    stream << "[whole]=" << version.whole << ";";
+    stream.flags( flags );
+    return stream;
+}
+
 /* variables */
 
 struct
@@ -544,16 +577,93 @@ inline const std::string& get_nodefault_string( args_t&& ... args )
     return get_nodefault( def, std::forward< args_t >( args )... );
 }
 
+    template < typename num_t >
+inline count_t get_digit_count( num_t numval, count_t numsys )
+{
+    count_t count = ZERO;
+    if ( numsys < 2 )
+    {
+        return -1;
+    }
+    while( numval > 0 )
+    {
+        numval /= numsys;
+        count += 1;
+    }
+    return count;
+}
+    template < typename num_t >
+num_t get_digit_l( num_t numval, index_t digpos, index_t numsys = 10 )
+{
+    return numval % std::pow( numsys, digpos + 1 ) / std::pow( numsys, digpos - 1 );
+}
+    template < typename num_t >
+num_t get_digit_r( num_t numval, index_t digpos, index_t numsys = 10 )
+{
+    return numval / std::pow( numsys, digpos - 1 ) % numsys;
+}
+
+    template < typename num_t >
+num_t get_reversed( num_t numval, count_t numsys = 10 )
+{
+    auto numrev = numval - numval;
+    while( numval > 0 )
+    {
+        numrev += numval % numsys;
+        numrev *= numsys;
+        numval /= numsys;
+    }
+    return numrev;
+}
+
+inline
+version_t get_version( index_t whole = _VNUM )
+{
+    index_t scale = UNIT;
+    index_t part_index = ZERO;
+    index_t part_list[ 3 ] = { ZERO, ZERO, ZERO };
+    index_t part = ZERO;
+    index_t temp = whole;
+    while( temp > ZERO )
+    {
+        auto digit = temp % 16;
+        if ( digit == 0xa )
+        {
+            part_list[ part_index ] = part;
+            part_index += UNIT;
+            if ( part_index >= 3 )
+            {
+                /* error */
+                break;
+            }
+            part = ZERO;
+            scale = UNIT;
+        }
+        else
+        {
+            part += scale * digit;
+            scale *= 10;
+        }
+        temp = temp / 16;
+    }
+    return {
+        .parts = { part_list[ 2 ], part_list[ 1 ], part_list[ 0 ] },
+        .whole = whole
+    };
+}
+
 int main( int argc, const char* argv[] )
 {
     cli.args = std::vector< const std::string_view >( argv, argv + argc );
     std::clog << std::endl;
+    if ( TRUTH )
     {
         std::clog << "(" << "[" << _NAME_STR << "]" << "[args]" << std::endl;
         std::copy( argv, argv + argc, std::ostream_iterator< const char* >( std::clog, "\n" ) );
         std::clog << "[" << _NAME_STR << "]" << "[args]" << ")" << std::endl;
         std::clog << std::endl;
     }
+    if ( FALSE )
     {
         v2s_t v2s1 = { 0, 1 };
         v2s_t v2s2 = v2s1 + 1;
@@ -561,6 +671,7 @@ int main( int argc, const char* argv[] )
         std::clog << v2s1 << v2s2 << v2s3 << std::endl;
         std::clog << std::endl;
     }
+    if ( FALSE )
     {
         std::clog << "get -t = " << get_opt( "-t" ) << std::endl;
         std::clog << "get --test = " << get_opt( "--test" ) << std::endl;
@@ -569,6 +680,7 @@ int main( int argc, const char* argv[] )
         std::clog << "vet --arg = " << vet_opt( "--arg" ) << std::endl;
         std::clog << std::endl;
     }
+    if ( FALSE )
     {
         std::clog << "the value is ";
         std::clog << get_nodefault_string(
@@ -579,10 +691,25 @@ int main( int argc, const char* argv[] )
             ) << std::endl;
         std::clog << std::endl;
     }
+    if ( FALSE )
     {
 #define _ENUM_ACT_PRINT( key, num, str ) \
         std::clog << _TO_STR( key ) << " = " << num << std::endl;
         _ENUM_FOR_ASCII( _ENUM_ACT_PRINT )
+        std::clog << std::endl;
+    }
+    if ( TRUTH )
+    {
+        std::clog << "version parsing" << std::endl;
+        std::clog << get_version( _VNUM ) << std::endl;
+        std::clog << get_version( 0xa0a0a0 ) << std::endl;
+        std::clog << get_version( 0xa0a0a1 ) << std::endl;
+        std::clog << get_version( 0xa1a0a1 ) << std::endl;
+        std::clog << get_version( 0xa1a2a1 ) << std::endl;
+        std::clog << get_version( 0xa0a0a10 ) << std::endl;
+        std::clog << get_version( 0xa1a0a10 ) << std::endl;
+        std::clog << get_version( 0xa87a5a10 ) << std::endl;
+        std::clog << get_version( 0xa987a654a321 ) << std::endl;
         std::clog << std::endl;
     }
     return error_none;
