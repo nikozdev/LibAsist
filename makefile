@@ -6,11 +6,11 @@ TYPE:=RUN
 
 # files
 
-HDREXT:=hxx
-SRCEXT:=cxx
-OBJEXT:=obj
-BINEXT:=bin
-MANEXT:=man
+SRCSUF:=cxx
+HDRSUF:=hxx
+OBJSUF:=obj
+BINSUF:=bin
+MANSUF:=man
 
 ## source
 
@@ -18,8 +18,8 @@ SROOT:=.
 
 ### fdirs
 
-SDHDR:=$(SROOT)/src
 SDSRC:=$(SROOT)/src
+SDHDR:=$(SROOT)/src
 SDOBJ:=$(SROOT)/obj
 SDBIN:=$(SROOT)/bin
 SDRSC:=$(SROOT)/rsc
@@ -27,11 +27,11 @@ SDMAN:=$(SROOT)/man
 
 ### lists
 
-SLHDR:=$(wildcard $(SDHDR)/*.$(HDREXT))
-SLSRC:=$(patsubst $(SDHDR)/%.$(HDREXT),$(SDSRC)/%.$(SRCEXT),$(SLHDR))
-SLOBJ:=$(patsubst $(SDSRC)/%.$(SRCEXT),$(SDOBJ)/%.$(OBJEXT),$(SLSRC))
-SLBIN:=$(SDBIN)/$(NAME).$(BINEXT)
-SLMAN:=$(wildcard $(SDMAN)/*.$(MANEXT))
+SLSRC:=$(wildcard $(SDSRC)/*.$(SRCSUF))
+SLHDR:=$(wildcard $(SDSRC)/%.$(SRCSUF),$(SDHDR)/%.$(HDRSUF),$(SLSRC))
+SLOBJ:=$(patsubst $(SDSRC)/%.$(SRCSUF),$(SDOBJ)/%.$(OBJSUF),$(SLSRC))
+SLBIN:=$(SDBIN)/$(NAME).$(BINSUF)
+SLMAN:=$(wildcard $(SDMAN)/*.$(MANSUF))
 
 ## target
 
@@ -44,7 +44,7 @@ TDMAN:=$(TROOT)/share/man/man1
 
 ### lists
 
-TLBIN:=$(patsubst $(SDBIN)/%.$(BINEXT),$(TDBIN)/%,$(SLBIN))
+TLBIN:=$(patsubst $(SDBIN)/%.$(BINSUF),$(TDBIN)/%,$(SLBIN))
 TLMAN:=$(patsubst $(SDMAN)/%,$(TDMAN)/%,$(SLMAN))
 
 # build
@@ -57,7 +57,6 @@ CFLAGS+= -O0 -g
 CFLAGS+= -D_NAME=$(NAME) -D_NAME_STR=\"$(NAME)\"
 CLFAGS+= -D_VNUM=$(VNUM) -D_VNUM_STR=\"$(VNUM)\"
 CFLAGS+= -D_TYPE_$(TYPE) -D_TYPE_STR=\"$(TYPE)\"
-CFLAGS+= $(addprefix -include ,$(SLHDR))
 
 ## linker
 
@@ -128,12 +127,14 @@ print: print-head
 	$(info [SROOT]=$(SROOT))
 	$(info [===[fdirs]===])
 	$(info [SDSRC]=$(SDSRC))
+	$(info [SDHDR]=$(SDHDR))
 	$(info [SDOBJ]=$(SDOBJ))
 	$(info [SDBIN]=$(SDBIN))
 	$(info [SDRSC]=$(SDRSC))
 	$(info [SDMAN]=$(SDMAN))
 	$(info [===[lists]===])
 	$(info [SLSRC]=$(SLSRC))
+	$(info [SLHDR]=$(SLHDR))
 	$(info [SLOBJ]=$(SLOBJ))
 	$(info [SLBIN]=$(SLBIN))
 	$(info [SLRSC]=$(SLRSC))
@@ -176,33 +177,32 @@ print-head:
 
 ## source
 
-$(SDHDR)/%.$(HDREXT):
+$(SDSRC)/%.$(SRCSUF):
+	$(info "[source]=$@")
+
+$(SDHDR)/%.$(HDRSUF): $(SDSRC)/%.$(SRCSUF)
 	$(info "[header]=$@")
 
-$(SDSRC)/%.$(SRCEXT): $(SDHDR)/%.$(HDREXT)
-	$(info "[source]=$@")
-	touch $@
-
-$(SDOBJ)/%.$(OBJEXT): $(SDSRC)/%.$(SRCEXT)
+$(SDOBJ)/%.$(OBJSUF): $(SDSRC)/%.$(SRCSUF)
 	$(info "[object]=$@")
 	$(CMAKER) $@ $^ $(CFLAGS)
 
-$(SDBIN)/%.$(BINEXT): $(SLOBJ)
+$(SDBIN)/%.$(BINSUF): $(SLOBJ)
 	$(info "[source-binary]=$@")
 	$(LMAKER) $@ $^ $(LFLAGS)
 
-$(SDMAN)/%.$(MANEXT):
+$(SDMAN)/%.$(MANSUF):
 	$(info "[source-manual]=$@")
 
 ## target
 
-$(TDBIN)/%: %.$(BINEXT)
+$(TDBIN)/%: %.$(BINSUF)
 	$(info "[target-binary]=$@")
 	$(SHCP) $< $@
 	$(SHCO) $@
 	$(SHCM) 744 $@
 
-$(TDMAN)/%.$(MANEXT): %.$(MANEXT)
+$(TDMAN)/%.$(MANSUF): %.$(MANSUF)
 	$(info "[target-manual]=$@")
 	$(SHCP) $< $@
 	$(SHCM) 644 $@
