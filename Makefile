@@ -54,6 +54,7 @@ TLMAN:=$(patsubst $(SDMAN)/%,$(TDMAN)/%,$(SLMAN))
 CMAKER?= $(shell which clang++) -c -o
 CFLAGS+= -std=c++20 -stdlib=libc++
 CFLAGS+= -O0 -g
+CFLAGS+= -Wno-initializer-overrides
 CFLAGS+= -D_NAME=$(NAME) -D_NAME_STR=\"$(NAME)\"
 CLFAGS+= -D_VNUM=$(VNUM) -D_VNUM_STR=\"$(VNUM)\"
 CFLAGS+= -D_TYPE_$(TYPE) -D_TYPE_STR=\"$(TYPE)\"
@@ -180,7 +181,7 @@ print-head:
 $(SDSRC)/%.$(SRCSUF):
 	$(info "[source]=$@")
 
-$(SDHDR)/%.$(HDRSUF): $(SDSRC)/%.$(SRCSUF)
+$(SDHDR)/%.$(HDRSUF):
 	$(info "[header]=$@")
 
 $(SDOBJ)/%.$(OBJSUF): $(SDSRC)/%.$(SRCSUF)
