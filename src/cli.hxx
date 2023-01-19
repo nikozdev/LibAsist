@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./enum.hxx"
-#include "./const.hxx"
+#include "./logic.hxx"
 #include "./string.hxx"
 #include "./number.hxx"
 

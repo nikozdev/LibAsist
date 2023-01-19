@@ -1,8 +1,10 @@
 #pragma once
 
-#include "./prefix.hxx"
-
 #include "./enum.hxx"
+
+#include "./number.hxx"
+
+#include "./prefix.hxx"
 
 template < typename value_t, count_t count >
 class vector_t_t

@@ -2,6 +2,17 @@
 
 #include "./prefix.hxx"
 
+constexpr auto ZERO = 0;
+constexpr auto UNIT = 1;
+
+using v1c_t = char;
+using v1s_t = long;
+using v1u_t = unsigned long;
+
+using msize_t = size_t;
+using count_t = v1u_t;
+using index_t = v1u_t;
+
 template < typename num_t > inline count_t get_digit_count
 ( num_t numval, count_t numsys )
 {

@@ -1,31 +1,10 @@
 #pragma once
 
-#include <ctime>
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-
-#include <algorithm>
-#include <vector>
-
-#include <string>
-#include <string_view>
-#include <sstream>
-
-#include <iostream>
-#include <iomanip>
-#include <filesystem>
-#include <fstream>
-
-#include <unistd.h>
-
-#define _NAMESPACE_ENTER namespace _NAME {
-#define _NAMESPACE_LEAVE }
-
-_NAMESPACE_ENTER
+#include "./stdlib.hxx"
 
 #include "./enum.hxx"
+
+#include "./string.hxx"
 
 #include "./number.hxx"
 #include "./vector.hxx"
@@ -33,6 +12,8 @@ _NAMESPACE_ENTER
 #include "./version.hxx"
 
 #include "./cli.hxx"
+
+#include "./prefix.hxx"
 
 int main( int argc, const char* argv[] )
 {
@@ -99,5 +80,3 @@ int main( int argc, const char* argv[] )
 }
 
 #include "./suffix.hxx"
-
-_NAMESPACE_LEAVE

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "./enum.hxx"
+#include "./string.hxx"
+#include "./number.hxx"
+
 #include "./prefix.hxx"
 
 struct version_t
