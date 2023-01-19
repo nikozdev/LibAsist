@@ -6,16 +6,9 @@
 #include <cstring>
 #include <cstdlib>
 
-#include <algorithm>
-#include <vector>
-
-#include <string>
-#include <string_view>
-#include <sstream>
-
-#include <iostream>
-#include <iomanip>
-#include <filesystem>
-#include <fstream>
-
 #include <unistd.h>
+
+#include <algorithm>
+
+#include "prefix.hxx"
+#include "suffix.hxx"

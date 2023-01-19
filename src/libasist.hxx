@@ -9,6 +9,10 @@
 #include "./number.hxx"
 #include "./vector.hxx"
 
+#include "./array.hxx"
+#include "./list2.hxx"
+#include "./table.hxx"
+
 #include "./version.hxx"
 
 #include "./cli.hxx"

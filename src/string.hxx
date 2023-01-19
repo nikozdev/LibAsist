@@ -1,6 +1,9 @@
 #pragma once
 
 #define _TO_STR( text ) ( #text )
+#include <string>
+#include <string_view>
+#include <sstream>
 
 #include "./prefix.hxx"
 
