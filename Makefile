@@ -6,6 +6,8 @@ TYPE:=RUN
 
 # files
 
+## suf-fix
+
 SRCSUF:=cxx
 HDRSUF:=hxx
 OBJSUF:=obj
@@ -14,38 +16,45 @@ MANSUF:=man
 
 ## source
 
-SROOT:=.
+### directories
 
-### fdirs
+FSDLOC:=.
 
-SDSRC:=$(SROOT)/src
-SDHDR:=$(SROOT)/src
-SDOBJ:=$(SROOT)/obj
-SDBIN:=$(SROOT)/bin
-SDRSC:=$(SROOT)/rsc
-SDMAN:=$(SROOT)/man
+SRCFSD:=$(FSDLOC)/src
+HDRFSD:=$(FSDLOC)/src
+OBJFSD:=$(FSDLOC)/obj
+
+BINFSD:=$(FSDLOC)/bin
+MANFSD:=$(FSDLOC)/man
+
+RSCFSD:=$(FSDLOC)/rsc
 
 ### lists
 
-SLSRC:=$(wildcard $(SDSRC)/*.$(SRCSUF))
-SLHDR:=$(wildcard $(SDSRC)/%.$(SRCSUF),$(SDHDR)/%.$(HDRSUF),$(SLSRC))
-SLOBJ:=$(patsubst $(SDSRC)/%.$(SRCSUF),$(SDOBJ)/%.$(OBJSUF),$(SLSRC))
-SLBIN:=$(SDBIN)/$(NAME).$(BINSUF)
-SLMAN:=$(wildcard $(SDMAN)/*.$(MANSUF))
+SRCFSL:=$(wildcard $(SRCFSD)/*.$(SRCSUF))
+HDRFSL:=$(wildcard $(HDRFSD)/*.$(HDRSUF))
+OBJFSL:=$(patsubst $(SRCFSD)/%.$(SRCSUF),$(OBJFSD)/%.$(OBJSUF),$(SRCFSL))
+
+BINFSL:=$(BINFSD)/$(NAME).$(BINSUF)
+MANFSL:=$(wildcard $(MANFSD)/*.$(MANSUF))
+
+RSCFSL:= $(wildcard $(RSCFSD)/*.*) $(wildcard $(RSCFSD)/*/*.*)
 
 ## target
 
-TROOT?=$(HOME)/.local/bin
+### locations
 
-### fdirs
+FTDLOC?=$(HOME)/.local
 
-TDBIN:=$(TROOT)/bin
-TDMAN:=$(TROOT)/share/man/man1
+### directories
+
+BINFTD:=$(FTDLOC)/bin
+MANFTD:=$(FTDLOC)/share/man/man1
 
 ### lists
 
-TLBIN:=$(patsubst $(SDBIN)/%.$(BINSUF),$(TDBIN)/%,$(SLBIN))
-TLMAN:=$(patsubst $(SDMAN)/%,$(TDMAN)/%,$(SLMAN))
+BINFTL:=$(patsubst $(BINFSD)/%.$(BINSUF),$(BINFTD)/%,$(BINFSL))
+MANFTL:=$(patsubst $(MANFSD)/%,$(MANFTD)/%,$(MANFSL))
 
 # build
 
@@ -56,98 +65,120 @@ CFLAGS+= -std=c++20 -stdlib=libc++
 CFLAGS+= -O0 -g
 CFLAGS+= -Wno-initializer-overrides
 CFLAGS+= -D_NAME=$(NAME) -D_NAME_STR=\"$(NAME)\"
-CLFAGS+= -D_VNUM=$(VNUM) -D_VNUM_STR=\"$(VNUM)\"
+CFLAGS+= -D_VNUM=$(VNUM) -D_VNUM_STR=\"$(VNUM)\"
 CFLAGS+= -D_TYPE_$(TYPE) -D_TYPE_STR=\"$(TYPE)\"
 
 ## linker
 
 LMAKER?= $(shell which clang++) -o
+LFLAGS+= #
 
-# shell
+## libraries
 
-SHSU:= $(shell which sudo)
-SHCO:= $(shell which chown) -R $(USER):$(USER)
-SHCM:= $(shell which chmod) -R
-SHCP:= $(shell which cp) -riv
-SHRM:= $(shell which rm) -rfv
-SHMV:= $(shell which mv) -iv
-SHMD:= $(shell which mkdir) -p
-SHDB:= $(shell which lldb)
+LIBDIR:=$(FSDLOC)/lib
+LIBSET:=$(patsubst $(LIBDIR)/%,%,$(wildcard $(LIBDIR)/*))
+
+# terminal
+
+TERMSU:= $(shell which sudo)
+TERMCO:= $(shell which chown) -R $(USER):$(USER)
+TERMCM:= $(shell which chmod) -R
+TERMCP:= $(shell which cp) -riv
+TERMRM:= $(shell which rm) -rfv
+TERMMV:= $(shell which mv) -iv
+TERMMD:= $(shell which mkdir) -p
+TERMDB:= $(shell which lldb)
 
 # rules
 
 ## internal
 
-build: build-head $(SLOBJ) $(SLBIN)
-	$(SHRM) $(SLSRC)
+build: build-head $(OBJFSL) $(BINFSL)
+	$(TERMRM) $(SRCFSL)
 build-head:
 	$(info "[[build]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib build; done
 
 clean: clean-head
-	$(SHRM) $(SLOBJ) $(SLBIN)
+	$(TERMRM) $(OBJFSL) $(BINFSL)
 clean-head:
 	$(info "[[clean]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib clean; done
 
 ## external
 
-setup: setup-head $(TLBIN) $(TLMAN)
+setup: setup-head $(BINFTL) $(MANFTL)
 setup-head:
 	$(info "[[setup]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib setup; done
 
 reset: reset-head
-	$(SHRM) $(TLBIN) $(TLMAN)
+	$(TERMRM) $(BINFTL) $(MANFTL)
 reset-head:
 	$(info "[[reset]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib reset; done
 
 ## addition
 
 again: again-head clean build
 again-head:
 	$(info "[[again]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib again; done
 
 start: start-head build
-	for bin in ${SLBIN}; do $$bin; done
+	@for bin in ${BINFSL}; do $$bin; done
 start-head:
 	$(info "[[start]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib start; done
 
 rerun: rerun-head again start
 rerun-head:
 	$(info "[[rerun]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib rerun; done
 
 debug: debug-head again
-	for bin in ${SLBIN}; do $(SHDB) $$bin; done
+	@for bin in ${BINFSL}; do $(TERMDB) $$bin; done
 debug-head:
 	$(info "[[debug]]")
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib debug; done
 
 print: print-head
 	$(info [=[basic]=])
 	$(info [NAME]=$(NAME))
 	$(info [VNUM]=$(VNUM))
+	$(info [TYPE]=$(TYPE))
 	$(info [=[files]=])
+	$(info [==[suffix]==])
+	$(info [SRCSUF]=$(SRCSUF))
+	$(info [HDRSUF]=$(HDRSUF))
+	$(info [OBJSUF]=$(OBJSUF))
+	$(info [BINSUF]=$(BINSUF))
+	$(info [MANSUF]=$(MANSUF))
 	$(info [==[source]==])
-	$(info [SROOT]=$(SROOT))
-	$(info [===[fdirs]===])
-	$(info [SDSRC]=$(SDSRC))
-	$(info [SDHDR]=$(SDHDR))
-	$(info [SDOBJ]=$(SDOBJ))
-	$(info [SDBIN]=$(SDBIN))
-	$(info [SDRSC]=$(SDRSC))
-	$(info [SDMAN]=$(SDMAN))
+	$(info [===[directories]===])
+	$(info [FSDLOC]=$(FSDLOC))
+	$(info [SRCFSD]=$(SRCFSD))
+	$(info [HDRFSD]=$(HDRFSD))
+	$(info [OBJFSD]=$(OBJFSD))
+	$(info [BINFSD]=$(BINFSD))
+	$(info [MANFSD]=$(MANFSD))
+	$(info [RSCFSD]=$(RSCFSD))
 	$(info [===[lists]===])
-	$(info [SLSRC]=$(SLSRC))
-	$(info [SLHDR]=$(SLHDR))
-	$(info [SLOBJ]=$(SLOBJ))
-	$(info [SLBIN]=$(SLBIN))
-	$(info [SLRSC]=$(SLRSC))
-	$(info [SLMAN]=$(SLMAN))
+	$(info [SRCFSL]=$(SRCFSL))
+	$(info [HDRFSL]=$(HDRFSL))
+	$(info [OBJFSL]=$(OBJFSL))
+	$(info [BINFSL]=$(BINFSL))
+	$(info [MANFSL]=$(MANFSL))
+	$(info [RSCFSL]=$(RSCFSL))
 	$(info [==[target]==])
-	$(info [TROOT]=$(TROOT))
-	$(info [===[fdirs]===])
-	$(info [TDBIN]=$(TDBIN))
-	$(info [TDMAN]=$(TDMAN))
+	$(info [===[locations]===])
+	$(info [FTDLOC]=$(FTDLOC))
+	$(info [===[directories]===])
+	$(info [BINFTD]=$(BINFTD))
+	$(info [MANFTD]=$(MANFTD))
 	$(info [===[lists]===])
-	$(info [TLBIN]=$(TLBIN))
-	$(info [TLMAN]=$(TLMAN))
+	$(info [BINFTL]=$(BINFTL))
+	$(info [MANFTL]=$(MANFTL))
 	$(info [=[build]=])
 	$(info [==[compiler]==])
 	$(info [CMAKER]=$(CMAKER))
@@ -155,15 +186,18 @@ print: print-head
 	$(info [==[linker]==])
 	$(info [LMAKER]=$(LMAKER))
 	$(info [LFLAGS]=$(LFLAGS))
-	$(info [=[shell]=])
-	$(info [SHSU]=$(SHSU))
-	$(info [SHCO]=$(SHCO))
-	$(info [SHCM]=$(SHCM))
-	$(info [SHCP]=$(SHCP))
-	$(info [SHRM]=$(SHRM))
-	$(info [SHMV]=$(SHMV))
-	$(info [SHMD]=$(SHMD))
-	$(info [SHDB]=$(SHDB))
+	$(info [=[terminal]=])
+	$(info [TERMSU]=$(TERMSU))
+	$(info [TERMCO]=$(TERMCO))
+	$(info [TERMCM]=$(TERMCM))
+	$(info [TERMCP]=$(TERMCP))
+	$(info [TERMRM]=$(TERMRM))
+	$(info [TERMMV]=$(TERMMV))
+	$(info [TERMMD]=$(TERMMD))
+	$(info [TERMDB]=$(TERMDB))
+	$(info [=[libraries]=])
+	$(info [LIBDIR]=$(LIBDIR))
+	$(info [LIBSET]=$(LIBSET))
 	$(info [=[rules]=])
 	$(info [build]=link binary file from object code compiled from source code)
 	$(info [clean]=remove compiled object code and linked binary file)
@@ -173,39 +207,41 @@ print: print-head
 	$(info [start]=build and run the binary file)
 	$(info [rerun]=clean, rebuild and run the binary file with the shell)
 	$(info [debug]=clean, rebuild and run the binary file with the debugger)
+	$(info [print]=write this whole text)
 print-head:
 	$(info [[print]])
+	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib print; done
 
 ## source
 
-$(SDSRC)/%.$(SRCSUF):
+$(SRCFSD)/%.$(SRCSUF):
 	$(info "[source]=$@")
 
-$(SDHDR)/%.$(HDRSUF):
+$(HDRFSD)/%.$(HDRSUF):
 	$(info "[header]=$@")
 
-$(SDOBJ)/%.$(OBJSUF): $(SDSRC)/%.$(SRCSUF)
+$(OBJFSD)/%.$(OBJSUF): $(SRCFSD)/%.$(SRCSUF)
 	$(info "[object]=$@")
 	$(CMAKER) $@ $^ $(CFLAGS)
 
-$(SDBIN)/%.$(BINSUF): $(SLOBJ)
+$(BINFSD)/%.$(BINSUF): $(OBJFSL)
 	$(info "[source-binary]=$@")
 	$(LMAKER) $@ $^ $(LFLAGS)
 
-$(SDMAN)/%.$(MANSUF):
+$(MANFSD)/%.$(MANSUF):
 	$(info "[source-manual]=$@")
 
 ## target
 
-$(TDBIN)/%: %.$(BINSUF)
+$(BINFTD)/%: %.$(BINSUF)
 	$(info "[target-binary]=$@")
-	$(SHCP) $< $@
-	$(SHCO) $@
-	$(SHCM) 744 $@
+	$(TERMCP) $< $@
+	$(TERMCO) $@
+	$(TERMCM) 744 $@
 
-$(TDMAN)/%.$(MANSUF): %.$(MANSUF)
+$(MANFTD)/%.$(MANSUF): %.$(MANSUF)
 	$(info "[target-manual]=$@")
-	$(SHCP) $< $@
-	$(SHCM) 644 $@
+	$(TERMCP) $< $@
+	$(TERMCM) 644 $@
 
 # endof
