@@ -17,6 +17,7 @@ namespace libasist
             {
                 const index_t major;
                 const index_t minor;
+                const index_t micro;
             };
         };
         const index_t whole;
@@ -28,6 +29,7 @@ namespace libasist
         auto flags = stream.flags();
         stream << "[major]=" << ver.major << ";";
         stream << "[minor]=" << ver.minor << ";";
+        stream << "[micro]=" << ver.micro << ";";
         stream << std::hex;
         stream << "[whole]=" << ver.whole << ";";
         stream.flags( flags );
