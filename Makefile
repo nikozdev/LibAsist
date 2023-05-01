@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VNUM:=a0a0a0
+VNUM:=0xa0a0
 TYPE:=RUN
 
 # files
