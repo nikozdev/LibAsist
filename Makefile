@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VNUM:=0xa0a0
+VNUM:=0xa1a0
 TYPE:=RUN
 
 # files
@@ -94,7 +94,6 @@ TERMDB:= $(shell which lldb)
 ## internal
 
 build: build-head $(OBJFSL) $(BINFSL)
-	$(TERMRM) $(SRCFSL)
 build-head:
 	$(info "[[build]]")
 	@for lib in ${LIBSET}; do ${MAKE} -C $(LIBDIR)/$$lib build; done
