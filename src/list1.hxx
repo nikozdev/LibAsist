@@ -1,22 +1,19 @@
 #pragma once
 
-#include <vector>
+#include <list>
 
 namespace libasist {
 
     template< typename value_t >
-    using array_t = std::vector< value_t >;
-#if 0
-    template< typename value_t >
-    class array_t
+    class list1_t
     {
         public: /* typedef */
-        using this_t = array_t< value_t >;
+        using this_t = list1_t< value_t >;
         public: /* codetor */
-        array_t()
+        list1_t()
         {
         }
-        ~array_t()
+        ~list1_t()
         {
         }
         public: /* opertor */
@@ -25,5 +22,5 @@ namespace libasist {
         public: /* setters */
         public: /* actions */
     };
-#endif
+
 }

@@ -4,3 +4,7 @@
 #include <iomanip>
 #include <filesystem>
 #include <fstream>
+
+namespace libasist
+{
+}

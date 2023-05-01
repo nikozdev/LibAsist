@@ -9,6 +9,3 @@
 #include <unistd.h>
 
 #include <algorithm>
-
-#include "prefix.hxx"
-#include "suffix.hxx"

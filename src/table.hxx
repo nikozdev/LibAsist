@@ -2,9 +2,28 @@
 
 #include <unordered_map>
 
-#include "prefix.hxx"
-
-template< typename value_t >
-using table_t = unordered_map< value_t >;
-
-#include "suffix.hxx"
+namespace libasist
+{
+    template< typename index_t, typename value_t >
+    using table_t = std::unordered_map< index_t, value_t >;
+#if 0
+    template< typename index_t, typename value_t >
+    class table_t
+    {
+        public: /* typedef */
+        using this_t = table_t< index_t, value_t >;
+        public: /* codetor */
+        table_t()
+        {
+        }
+        ~table_t()
+        {
+        }
+        public: /* opertor */
+        public: /* getters */
+        public: /* vetters */
+        public: /* setters */
+        public: /* actions */
+    };
+#endif
+}

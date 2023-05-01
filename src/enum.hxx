@@ -1,6 +1,7 @@
 #pragma once
 
-#include "./prefix.hxx"
+namespace libasist
+{
 
 #define _ENUM_ACT_NUM( key, num, str ) key = num,
 #define _ENUM_ACT_STR( key, num, str ) [ key ] = str,
@@ -178,4 +179,4 @@ _ENUM_DEF( filef, _ENUM_FOR_FILEF )
 /* _ENUM_FOR_ASCII */
 _ENUM_DEF( ascii, _ENUM_FOR_ASCII )
 
-#include "./suffix.hxx"
+}
