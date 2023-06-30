@@ -6,5 +6,5 @@
 
 /* content */
 
-namespace libasist { namespace ipop { /* typedef */
+namespace libasist { namespace guis { /* typedef */
 } } /* typedef */
