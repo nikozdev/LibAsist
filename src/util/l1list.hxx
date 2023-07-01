@@ -2,28 +2,28 @@
 
 /* headers */
 
-#include "head.hxx"
+#include "../head.hxx"
 
 /* content */
 
 namespace libasist { namespace work { /* typedef */
 /* 1-linked list template type */
 template<typename data_t>
-class l1list_t_t
+class l1list_t
 {
 public:     /* typedef */
-    using this_t = l1list_t_t< data_t >;
+    using this_t = l1list_t< data_t >;
     typedef struct iter_t
     {
         data_t* data;
         iter_t* next;
     } iter_t;
 public:     /* codetor */
-    l1list_t_t():
+    l1list_t():
         head{ nullptr, nullptr }
     {
     }
-    ~l1list_t_t()
+    ~l1list_t()
     {
         this->remove( this->get_head() );
     }

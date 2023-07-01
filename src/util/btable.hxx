@@ -2,7 +2,7 @@
 
 /* headers */
 
-#include "head.hxx"
+#include "../head.hxx"
 
 /* content */
 
@@ -10,15 +10,15 @@ namespace libasist { namespace work { /* typedef */
 
 /* binary table template type */
 template<typename index_t, typename value_t>
-class btable_t_t
+class btable_t
 {
 public: /* typedef */
-    using this_t = btable_t_t<index_t, value_t>;
+    using this_t = btable_t<index_t, value_t>;
 public: /* codetor */
-    btable_t_t()
+    btable_t()
     {
     }
-    ~btable_t_t()
+    ~btable_t()
     {
     }
 public: /* opertor */

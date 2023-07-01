@@ -3,12 +3,7 @@
 /* headers */
 
 #include "head.hxx"
-
-#include "darray.hxx"
-#include "l1list.hxx"
-#include "l2list.hxx"
-#include "btable.hxx"
-#include "htable.hxx"
+#include "util.hxx"
 
 #include "nums.hxx"
 #include "meta.hxx"

@@ -1,25 +1,27 @@
 #pragma once
 
-#include "head.hxx"
+#include "../head.hxx"
 
 /* headers */
-
-#include "term/args.hxx"
-#include "term/opts.hxx"
-#include "term/envi.hxx"
-#include "term/help.hxx"
-#include "term/main.hxx"
 
 /* content */
 
 namespace libasist { namespace term { /* datadef */
+
+extern darray_t<svstr_t> args;
+
 } } /* datadef */
 
-namespace libasist { namespace term { /* getters */
-} } /* getters */
-
 namespace libasist { namespace term { /* vetters */
+
+bool_t vet_opt(const svstr_t& opt);
+
 } } /* vetters */
 
 namespace libasist { namespace term { /* actions */
+
+int main(count_t argc, scstr_t argv[]);
+
+error_enum help(error_enum error);
+
 } } /* actions */

@@ -2,20 +2,20 @@
 
 /* headers */
 
-#include "head.hxx"
+#include "../head.hxx"
 
 /* content */
 
 namespace libasist { namespace work { /* typedef */
 
-/* darray_t_t
+/* darray_t
  * dynamic array templated class
  */
 template<typename vdata_t>
-class darray_t_t
+class darray_t
 {
 public:     /* typedef */
-    using this_t = darray_t_t< vdata_t >;
+    using this_t = darray_t< vdata_t >;
     using mdata_t = vdata_t*;
     /* iter_t
      * iterator
@@ -42,13 +42,13 @@ public:     /* typedef */
         mdata_t mdata;
     };
 public:     /* codetor */
-    darray_t_t()
+    darray_t()
     {
     }
-    darray_t_t(count_t count)
+    darray_t(count_t count)
     {
     }
-    ~darray_t_t()
+    ~darray_t()
     {
     }
 public:     /* opertor */
@@ -58,6 +58,6 @@ public:     /* setters */
 public:     /* actions */
 private:    /* content */
     iter_t head;
-};
+}; /* darray_t */
 
 } } /* typedef */

@@ -2,29 +2,29 @@
 
 /* headers */
 
-#include "head.hxx"
+#include "../head.hxx"
 
 /* content */
 
 namespace libasist { namespace work { /* typedef */
-/* hash table templated type */
-template<typename index_t, typename value_t>
-class htable_t_t
+/* 2-linked list templated type */
+template< typename value_t >
+class l2list_t
 {
 public: /* typedef */
-    using this_t = htable_t_t< index_t, value_t >;
+    using this_t = l2list_t< value_t >;
 public: /* codetor */
-    htable_t_t()
+    l2list_t()
     {
     }
-    ~htable_t_t()
+    ~l2list_t()
     {
     }
-public: /* operats */
+public: /* opertor */
 public: /* getters */
 public: /* vetters */
 public: /* setters */
 public: /* actions */
-}; /* hash table template type */
+}; /* 2-linked list template type */
 
 } } /* typedef */

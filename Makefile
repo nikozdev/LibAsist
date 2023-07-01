@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VNUM:=0xa0a1a0
+VNUM:=0xa0a2a0
 TYPE:=RUN
 CONF:=WORK
 
@@ -42,7 +42,7 @@ RSCFSD:=$(FSDLOC)/rsc
 
 HDRFSL:=$(wildcard $(HDRFSD)/*.$(HDRSUF))
 PCHFSL:=$(PCHFSD)/head.$(HDRSUF).$(PCHSUF)
-SRCFSL:=$(wildcard $(SRCFSD)/*.$(SRCSUF))
+SRCFSL:=$(wildcard $(SRCFSD)/*.$(SRCSUF) $(SRCFSD)/**/*.$(SRCSUF))
 OBJFSL:=$(patsubst $(SRCFSD)/%.$(SRCSUF),$(OBJFSD)/%.$(OBJSUF),$(SRCFSL))
 
 BINFSL:=$(BINFSD)/$(NAME).$(BINSUF)
@@ -93,7 +93,7 @@ CFLAGS+= -D_NAME=$(NAME) -D_NAME_STR=\"$(NAME)\"
 CFLAGS+= -D_VNUM=$(VNUM) -D_VNUM_STR=\"$(VNUM)\"
 CFLAGS+= -D_TYPE_$(TYPE) -D_TYPE_STR=\"$(TYPE)\"
 CFLAGS+= -D_CONF_$(CONF) -D_CONF_STR=\"$(CONF)\"
-CFLAGS+= $(shell pkg-config --cflags) # external deps here
+#CFLAGS+= $(shell pkg-config --cflags) # external deps here
 CFLAGS+= $(patsubst %,-I$(LIBDIR)/%/src,$(LIBUSE))
 
 ## linker
@@ -103,7 +103,7 @@ ifeq ($(TYPE),LIB)
 else
 	LMAKER:= $(shell which g++) -o
 endif
-LFLAGS+= $(shell pkg-config --libs) # external deps here
+#LFLAGS+= $(shell pkg-config --libs) # external deps here
 LFLAGS+= $(patsubst %,-L$(LIBDIR)/%/bin,$(LIBUSE))
 LFLAGS+= $(patsubst %,-l:%.$(BINSUF_LIB),$(LIBUSE))
 

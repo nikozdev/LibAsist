@@ -10,12 +10,24 @@
 #include "defn.hxx"
 #include "type.hxx"
 #include "meta.hxx"
-#include "nums.hxx"
 
 /** standard **/
 
 #include <new>
 #include <memory>
+
+/* defines */
+
+#if defined(_CONF_WORK) || 1
+/* 5-10% performance difference for me */
+#   define LIBASIST_MEMO_MSIZE_SET
+/* 10-20% performance difference for me */
+#   define LIBASIST_MEMO_MSIZE_VET
+#   define LIBASIST_MEMO_MDATA_VET
+/* most of the times this is gonna break memory allocations */
+#   define LIBASIST_MEMO_NEWDELDEF
+#   define LIBASIST_MEMO_NEWDELDEF_ELOG
+#endif/*ifd(_CONF_WORK)*/
 
 /* content */
 

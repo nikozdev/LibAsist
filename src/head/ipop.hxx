@@ -43,13 +43,15 @@
         "[file]%s" \
         "[func]%s" \
         "[line]%d" \
-        "[mesg]%c%d%c", \
+        "[mesg]%c" mesg "%c", \
         \
         "olog", \
         _FILE_NAME, \
         _FUNC_NAME, \
         _FILE_LINE, \
-        text::endl, mesg, ##args, text::endl ) \
+        static_cast<schar_t>(text::endl), \
+        ##args, \
+        static_cast<schar_t>(text::endl)) \
 }
 #endif/*_OLOG*/
 
@@ -63,13 +65,15 @@
         "[file]%s" \
         "[func]%s" \
         "[line]%d" \
-        "[mesg]%c%d%c", \
+        "[mesg]%c" mesg "%c", \
         \
         "elog", \
         _FILE_NAME, \
         _FUNC_NAME, \
         _FILE_LINE, \
-        text::endl, mesg, ##args, text::endl ) \
+        static_cast<schar_t>(text::endl), \
+        ##args, \
+        static_cast<schar_t>(text::endl)) \
 }
 #endif/*_ELOG*/
 

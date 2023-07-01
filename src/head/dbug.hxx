@@ -35,19 +35,19 @@
 /** actions **/
 
 #ifndef _ERROR
-#define _ERROR( code, actn, ... ) ({ \
-    _ELOG( __VA_ARGS__ ); \
-    ::libasist::dbug::breakpoint(); \
+#define _ERROR( code, actn, args... ) ({ \
+    _ELOG( args ); \
+    ::libasist::breakpoint(); \
     bugecode = code; \
     actn; \
 })
 #endif/*_ERROR - raise an error signal */
 
 #ifndef _EFNOT
-#define _EFNOT( expr, actn, ... ) ({ \
-    if ( (expr) == 0 ) \
+#define _EFNOT( expr, actn, args... ) ({ \
+    if ( (expr) == FALSE ) \
     { \
-        _ERROR( 1, actn, __VA_ARGS__ ); \
+        _ERROR( 1, actn, args ); \
     } \
 })
 #endif/*_EFNOT - error if not */
@@ -56,10 +56,10 @@
 #define _PCALL( exec, actn, ... ) ({ \
     exec; \
     _EFNOT( \
-        ::libasist::bugecode == _ZERO, \
+        ::libasist::bugecode == ZERO, \
         { \
             actn; \
-            ::libasist::bugecode = _ZERO; \
+            ::libasist::bugecode = ZERO; \
         }, \
         __VA_ARGS__ ); \
 })

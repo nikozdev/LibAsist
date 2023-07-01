@@ -1,8 +1,7 @@
 *.DS_Store
 *.obj
 *.bin
+*.exe
+*.run
 *.pch
 *.gch
-
-*bin/
-*obj/

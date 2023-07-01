@@ -9,19 +9,19 @@
 namespace libasist { namespace nums { /* typedef */
 
 template <typename value_t, count_t count>
-class vector_t_t
+class vector_t
 {
 public: /* typedef */
 
-    using this_t = vector_t_t<value_t, count>;
+    using this_t = vector_t<value_t, count>;
 
     using vdata_t = value_t[count];
 
 public: /* codetor */
 
-    vector_t_t() : vdata{ ZERO } { }
+    vector_t() : vdata{ ZERO } { }
 
-    vector_t_t(inlist_t_t<value_t> ilist) : vdata{ ZERO }
+    vector_t(inlist_t<value_t> ilist) : vdata{ ZERO }
     {
         auto iter = ilist.begin();
         for ( auto index = 0; index < ilist.size(); index++ )
@@ -29,18 +29,18 @@ public: /* codetor */
             this->vdata[ index ] = *(iter++);
         }
     }
-    vector_t_t( value_t value ): this_t()
+    vector_t( value_t value ): this_t()
     {
         for ( auto index = 0; index < count; index++ )
         {
             this->vdata[ index ] = value;
         }
     }
-    vector_t_t( const vector_t_t& copy ): this_t()
+    vector_t( const vector_t& copy ): this_t()
     {
         std::memcpy( this, &copy, get_msize() );
     }
-    vector_t_t( vector_t_t&& copy ): this_t()
+    vector_t( vector_t&& copy ): this_t()
     {
         std::memmove( this, &copy, get_msize() );
     }
@@ -146,8 +146,8 @@ public: /* datadef */
     vdata_t vdata;
 };
 
+#ifndef _PRIM_FOR
 #define _PRIM_FOR( _ACT_ ) \
-\
 _ACT_( u, 2 ) \
 _ACT_( u, 3 ) \
 _ACT_( u, 4 ) \
@@ -158,21 +158,21 @@ _ACT_( f, 2 ) \
 _ACT_( f, 3 ) \
 _ACT_( f, 4 ) \
 /* _PRIM_FOR */
-#   define _PRIM_DEF_ACT( _tchar, _count ) \
-typedef vector_t_t< v1##_tchar##_t, _count > v##_count##_tchar##_t;
-_PRIM_FOR( _PRIM_DEF_ACT )
-#   undef _PRIM_DEF_ACT
-#   undef _PRIM_FOR
+#ifndef _PRIM_DEF_ACT
+#define _PRIM_DEF_ACT( _tchar, _count ) \
+typedef vector_t< v1##_tchar##_t, _count > v##_count##_tchar##_t;
+#endif/*_PRIM_DEF_ACT*/
+_PRIM_FOR(_PRIM_DEF_ACT)
+#undef _PRIM_DEF_ACT
+#undef _PRIM_FOR
+#endif/*_PRIM_FOR*/
 
-    using coord_t = v2s_t;
-    using sizes_t = v2u_t;
+} } /* typedef */
 
-    } } /* typedef */
-
-namespace libasist { namespace nums { /* symbols */
+namespace libasist { namespace nums { /* operats */
 
 template< typename stream_t, typename value_t, count_t count >
-stream_t& operator<<( stream_t& stream, const vector_t_t< value_t, count >& vector )
+stream_t& operator<<( stream_t& stream, const vector_t< value_t, count >& vector )
 {
     for ( auto index = 0; index < count; index++ )
     {
@@ -181,7 +181,7 @@ stream_t& operator<<( stream_t& stream, const vector_t_t< value_t, count >& vect
     return stream;
 }
 template< typename stream_t, typename value_t, count_t count >
-const stream_t& operator>>( const stream_t& stream, vector_t_t< value_t, count >& vector )
+const stream_t& operator>>( const stream_t& stream, vector_t< value_t, count >& vector )
 {
     for ( auto index = 0; index < count; index++ )
     {
