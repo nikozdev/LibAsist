@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_META_HXX
+#define LIBASIST_HEAD_META_HXX 1
 
 /* headers */
 
@@ -243,3 +244,5 @@ decltype(auto)get_member(t_com_t&com, t_tup_t&tup)
 { return get_member(com, tup, std::make_index_sequence<std::tuple_size<t_tup_t>::value>()); }
 
 } /* actions */
+
+#endif/*LIBASIST_HEAD_META_HXX*/

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_NUMS_HXX
+#define LIBASIST_HEAD_NUMS_HXX 1
 
 /* headers */
 
@@ -144,13 +145,13 @@ value_t get_reversed
     return numrev;
 } /* get_reversed */
 
-template<typename value_t>
+template<typename n1_t, typename n2_t, typename re_t = v1s_t>
 [[nodiscard]] inline constexpr
-value_t get_min(value_t ln, value_t lr)
+re_t get_min(n1_t ln, n2_t lr)
 { return std::min(static_cast<v1s_t>(ln), static_cast<v1s_t>(lr)); }
-template<typename value_t>
+template<typename n1_t, typename n2_t, typename re_t = v1s_t>
 [[nodiscard]] inline constexpr
-value_t get_max(value_t ln, value_t lr)
+re_t get_max(n1_t ln, n2_t lr)
 { return std::max(static_cast<v1s_t>(ln), static_cast<v1s_t>(lr)); }
 
 /* check if a number is inside of l,r boundaries */
@@ -191,3 +192,5 @@ value_t get_aligned()
 
 
 } } /* getters */
+
+#endif/*LIBASIST_HEAD_NUMS_HXX*/

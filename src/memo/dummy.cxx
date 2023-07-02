@@ -1,3 +1,6 @@
+#ifndef LIBASIST_MEMO_DUMMY_CXX
+#define LIBASIST_MEMO_DUMMY_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -54,3 +57,5 @@ namespace libasist { namespace memo { /* datadef */
 dummy_t*dummy_t::basic = NULL;
 
 } } /* datadef */
+
+#endif/*LIBASIST_MEMO_DUMMY_CXX*/

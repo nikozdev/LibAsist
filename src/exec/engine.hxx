@@ -1,14 +1,15 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_EXEC_ENGINE_HXX
+#define LIBASIST_EXEC_ENGINE_HXX 1
 
 #include "../head.hxx"
 
-#include "single.hxx"
+/* headers */
+
+#include "../meta/single.hxx"
 
 /* content */
 
-namespace libasist { namespace util { /* typedef */
+namespace libasist { namespace exec { /* typedef */
 
 /* abstract state type */
 class a_engine_state_t
@@ -26,7 +27,7 @@ public: /* actions */
 
 /* template engine type */
 template<class t_class_t, class t_state_t = a_engine_state_t>
-class engine_t : public single_t<t_class_t>
+class engine_t : public meta::single_t<t_class_t>
 {
 public: /* typedef */
     /*
@@ -130,3 +131,5 @@ protected: /* datadef */
 }; /* engine_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_EXEC_ENGINE_HXX*/

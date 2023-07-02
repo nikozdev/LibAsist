@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_TYPE_HXX
+#define LIBASIST_HEAD_TYPE_HXX 1
 
 /* headers */
 
@@ -25,3 +26,5 @@ template<typename val_t, int uuid = 0> struct v4v_t
 { val_t x = 0, y = 0, z = 0, w = 0; };
 
 } /* typedef */
+
+#endif/*LIBASIST_HEAD_TYPE_HXX*/

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_MEMO_HXX
+#define LIBASIST_HEAD_MEMO_HXX 1
 
 /* headers */
 
@@ -17,6 +18,10 @@
 #include <memory>
 
 /* defines */
+
+#ifndef NULL
+#define NULL nullptr
+#endif/*NULL*/
 
 #if defined(_CONF_WORK) || 1
 /* 5-10% performance difference for me */
@@ -45,3 +50,5 @@ namespace libasist { /* typedef */
     using mstep_t = msize_t;
 
 } /* typedef */
+
+#endif/*LIBASIST_HEAD_MEMO_HXX*/

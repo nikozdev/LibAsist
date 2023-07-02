@@ -1,3 +1,6 @@
+#ifndef LIBASIST_TERM_MAIN_CXX
+#define LIBASIST_TERM_MAIN_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -7,9 +10,7 @@
 #include "envi.hxx"
 #include "help.hxx"
 
-#include "../meta.hxx"
-#include "../nums.hxx"
-#include "../memo.hxx"
+#include "../main.hxx"
 
 /* content */
 
@@ -124,15 +125,12 @@ int main(count_t argc, scstr_t argv[])
     if constexpr (TRUTH)
     {
         memo::init();
-#if 1
         using pager_t = memo::refer_t<
         memo::pager_t,
         &memo::giver_t::give_static<memo::heapy_t>,
         &memo::taker_t::take_static<memo::heapy_t>,
         count_t
         >;
-#endif
-#if 1
         {
             pager_t pager0{memo::pager_t::MSIZE, memo::heapy_t::get()};
             {
@@ -144,10 +142,26 @@ int main(count_t argc, scstr_t argv[])
                 pager_t pager2{pager1};
             }
         }
-#endif
         memo::quit();
     } /* memory test */
+    if constexpr (TRUTH)
+    {
+        class system_t { };
+        exec::system_t<system_t>system;
+        class engine_t { };
+        exec::engine_t<engine_t>engine;
+    } /* singleton test */
     return error_none;
 }
 
 } } /* actions */
+
+#ifdef _TYPE_EXE
+#   undef _TYPE_EXE
+int main(int argc, const char**argv)
+{
+    return libasist::term::main(argc, argv);
+}
+#endif
+
+#endif/*LIBASIST_TERM_MAIN_CXX*/

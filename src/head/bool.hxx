@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_BOOL_HXX
+#define LIBASIST_HEAD_BOOL_HXX 1
 
 /* headers */
 
@@ -26,3 +27,5 @@ using v1bit_t = bool_t;
 using v1b_t = v1bit_t;
 
 } /* typedef */
+
+#endif/*LIBASIST_HEAD_BOOL_HXX*/

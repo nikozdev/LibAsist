@@ -1,21 +1,22 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_DATA_SARRAY_HXX
+#define LIBASIST_DATA_SARRAY_HXX 1
 
 #include "../head.hxx"
 
+/* headers */
+
 /* content */
 
-namespace libasist { namespace work { /* typedef */
+namespace libasist { namespace data { /* typedef */
 
-/* darray_t
- * dynamic array templated class
+/* sarray_t
+ * static array templated class
  */
 template<typename vdata_t>
-class darray_t
+class sarray_t
 {
 public:     /* typedef */
-    using this_t = darray_t< vdata_t >;
+    using this_t = sarray_t< vdata_t >;
     using mdata_t = vdata_t*;
     /* iter_t
      * iterator
@@ -42,13 +43,13 @@ public:     /* typedef */
         mdata_t mdata;
     };
 public:     /* codetor */
-    darray_t()
+    sarray_t()
     {
     }
-    darray_t(count_t count)
+    sarray_t(count_t count)
     {
     }
-    ~darray_t()
+    ~sarray_t()
     {
     }
 public:     /* opertor */
@@ -58,6 +59,8 @@ public:     /* setters */
 public:     /* actions */
 private:    /* content */
     iter_t head;
-}; /* darray_t */
+};
 
 } } /* typedef */
+
+#endif/*LIBASIST_DATA_SARRAY_HXX*/

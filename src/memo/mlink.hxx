@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_MEMO_MLINK_HXX
+#define LIBASIST_MEMO_MLINK_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 /* content */
 
@@ -59,3 +60,5 @@ public: /* datadef */
 } mlink_t;
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_MLINK_HXX*/

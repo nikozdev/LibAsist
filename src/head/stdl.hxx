@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_STDL_HXX
+#define LIBASIST_HEAD_STDL_HXX 1
 
 /* headers */
 
@@ -58,3 +59,5 @@ template <typename t_key_t, typename t_val_t>
 using htable_t = std::unordered_map<t_key_t, t_val_t>;
 
 } /* typedef */
+
+#endif/*LIBASIST_HEAD_STDL_HXX*/

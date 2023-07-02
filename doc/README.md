@@ -6,9 +6,10 @@
 - initially created by nikozdev to...
 > avoid writting the same code for different projects
 > avoid external dependencies ( yes, i have "dependophobia" )
-> make own standards, frameworks
+> make own standards, frameworks and write more consistent code
 - the majority of the source code is written in c/c++ programming language
-- the only build script is "makefile" for...
+> i just love this and have no need for other langs yet... *for now*
+- the only build script i have is "Makefile"
 > building
 > cleaning
 > installation
@@ -32,6 +33,8 @@
 > compiled as an application for testing
 > compiled as a library for linkage
 - gnu/make is the main build system
+> i find it the most verbose and specific build system
+> i can set up anything i need with gnu/make on gnu/linux
 
 ### link as an executable
 
@@ -58,15 +61,12 @@
 
 - experimental
 > i am a solo dev, not an expert
-> this thing was initially developed for my usecases and education
+> this thing was initially developed for my usecases and my education
+> i always wanna have some source of truth for my code
 - generic
 > compile-time and run-time variables instead of magical or constant values
 > makefile is made as a general purpose file for scalable projects
-> templates and abstractions are added where it is appropriate
-> prioritising interface
-- embeddable
-> include headers by requirement
-> name collisions are prevented by "namespace" and "#undef"
+> prioritising interface flexibility over implementation details
 - configurable
 > by makefile
 > by source code of a user

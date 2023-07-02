@@ -1,12 +1,13 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_DATA_L1LIST_HXX 
+#define LIBASIST_DATA_L1LIST_HXX
 
 #include "../head.hxx"
 
+/* headers */
+
 /* content */
 
-namespace libasist { namespace work { /* typedef */
+namespace libasist { namespace data { /* typedef */
 /* 1-linked list template type */
 template<typename data_t>
 class l1list_t
@@ -74,3 +75,5 @@ private:    /* content */
 }; /* 1-linked list templated type */
 
 } } /* typedef */
+
+#endif/*LIBASIST_DATA_L1LIST_HXX*/

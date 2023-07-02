@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_TIME_HXX
+#define LIBASIST_HEAD_TIME_HXX 1
 
 /* headers */
 
@@ -13,10 +14,10 @@
 
 /* content */
 
-LIBASIST_NAMESPACE { namespace time {
-
-    /* consdef */
+namespace libasist { namespace time { /* consdef */
 
     constexpr auto FORMAT = "y%ym%md%d-h%Hm%Ms%S";
 
-} } /* LIBASIST_NAMESPACE */
+} } /* consdef */
+
+#endif/*LIBASIST_HEAD_TIME_HXX*/

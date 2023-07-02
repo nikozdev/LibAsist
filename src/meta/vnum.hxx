@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_META_VNUM_HXX
+#define LIBASIST_META_VNUM_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 /* content */
 
@@ -82,3 +83,5 @@ stream_t&operator>>(stream_t&stream, const vnum_t&vnum)
 namespace libasist { namespace meta { /* getters */
 
 } } /* actions */
+
+#endif/*LIBASIST_META_VNUM_HXX*/

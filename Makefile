@@ -1,8 +1,8 @@
 # basic
 
 NAME:=libasist
-VNUM:=0xa0a2a0
-TYPE:=RUN
+VNUM:=0xa0a2a1
+TYPE:=EXE
 CONF:=WORK
 
 # files
@@ -13,12 +13,16 @@ HDRSUF:=hxx
 PCHSUF:=gch
 SRCSUF:=cxx
 OBJSUF:=obj
-BINSUF_RUN:=run
-BINSUF_LIB:=lib
-ifeq ($(TYPE),LIB)
-	BINSUF:=$(BINSUF_LIB)
-else
-	BINSUF:=$(BINSUF_RUN)
+BINSUF_EXE:=exe
+BINSUF_SLL:=sll
+BINSUF_DLL:=dll
+ifeq ($(TYPE),)
+else ifeq ($(TYPE),EXE)
+	BINSUF:=$(BINSUF_EXE)
+else ifeq ($(TYPE),SLL)
+	BINSUF:=$(BINSUF_SLL)
+else ifeq ($(TYPE),DLL)
+	BINSUF:=$(BINSUF_DLL)
 endif
 MANSUF:=man
 
@@ -73,8 +77,9 @@ MANFTL:=$(patsubst $(MANFSD)/%,$(MANFTD)/%,$(MANFSL))
 LIBDIR:=$(FSDLOC)/lib
 LIBSET:=$(patsubst $(LIBDIR)/%,%,$(wildcard $(LIBDIR)/*))
 LIBUSE:=$(subst ,,$(LIBSET)) # no-build libs can be in the 1st arg
-LIBLIN:=$(patsubst %,$(LIBDIR)/%/bin/*.$(BINSUF_LIB),$(LIBUSE))
-LIBLIN:=$(wildcard $(LIBLIN))
+LIBMOD:=SLL
+LIBSUF:=$(BINSUF_$(LIBMOD))
+LIBLIN:=$(patsubst %,$(LIBDIR)/%/bin/*.$(LIBSUF),$(LIBUSE))
 
 ## compiler
 
@@ -94,18 +99,33 @@ CFLAGS+= -D_VNUM=$(VNUM) -D_VNUM_STR=\"$(VNUM)\"
 CFLAGS+= -D_TYPE_$(TYPE) -D_TYPE_STR=\"$(TYPE)\"
 CFLAGS+= -D_CONF_$(CONF) -D_CONF_STR=\"$(CONF)\"
 #CFLAGS+= $(shell pkg-config --cflags) # external deps here
+CFLAGS+= -I$(PCHFSD)
 CFLAGS+= $(patsubst %,-I$(LIBDIR)/%/src,$(LIBUSE))
+ifeq ($(TYPE),)
+else ifeq ($(TYPE),EXE)
+else ifeq ($(TYPE),SLL)
+else ifeq ($(TYPE),DLL)
+#CFLAGS+= -Wl,--out-implib=lib${module}.dll.a
+CFLAGS+= -Wl,--export-all-symbols
+CFLAGS+= -Wl,--enable-auto-import
+#CFLAGS+= -Wl,--whole-archive ${old_libs}
+#CFLAGS+= -Wl,--no-whole-archive ${dependency_libs}
+CFLAGS+= -fPIC
+endif
 
 ## linker
 
-ifeq ($(TYPE),LIB)
-	LMAKER:= $(shell which ar) -rc
-else
-	LMAKER:= $(shell which g++) -o
+ifeq ($(TYPE),)
+else ifeq ($(TYPE),EXE)
+LMAKER:= $(shell which g++) -o
+else ifeq ($(TYPE),SLL)
+LMAKER:= $(shell which ar) -rc
+else ifeq ($(TYPE),DLL)
+LMAKER:= $(shell which g++) -shared -o
 endif
 #LFLAGS+= $(shell pkg-config --libs) # external deps here
 LFLAGS+= $(patsubst %,-L$(LIBDIR)/%/bin,$(LIBUSE))
-LFLAGS+= $(patsubst %,-l:%.$(BINSUF_LIB),$(LIBUSE))
+LFLAGS+= $(patsubst %,-l:%.$(LIBSUF),$(LIBUSE))
 
 # terminal
 
@@ -124,58 +144,58 @@ TERMDB:= $(shell which gdb)
 
 build: build-head $(PCHFSL) $(OBJFSL) $(BINFSL) $(LIBLIN)
 build-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB build; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL build; done
 	$(info "[[build]]")
 
 clean: clean-head
-	$(TERMRM) $(OBJFSL) $(BINFSL)
+	$(TERMRM) $(OBJFSL) $(BINFSL) $(PCHFSL)
 clean-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB clean; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL clean; done
 	$(info "[[clean]]")
 
 ## external
 
 setup: setup-head $(BINFTL) $(MANFTL)
 setup-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB setup; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL setup; done
 	$(info "[[setup]]")
 
 reset: reset-head
 	$(TERMRM) $(BINFTL) $(MANFTL)
 reset-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB reset; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL reset; done
 	$(info "[[reset]]")
 
 ## addition
 
 again: again-head clean build
 again-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB again; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL again; done
 	$(info "[[again]]")
 
-ifeq ($(TYPE),RUN)
+ifeq ($(TYPE),EXE)
 start: start-head build
 	@for bin in ${BINFSL}; do $$bin $(ARGV); done
 else
 start: start-head build
 endif
 start-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB start; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL start; done
 	$(info "[[start]]")
 
 rerun: rerun-head again start
 rerun-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB rerun; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL rerun; done
 	$(info "[[rerun]]")
 
-ifeq ($(TYPE),RUN)
+ifeq ($(TYPE),EXE)
 debug: debug-head again
 	@for bin in ${BINFSL}; do $(TERMDB) $$bin $(ARGV); done
 else
 debug: debug-head again
 endif
 debug-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB debug; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL debug; done
 	$(info "[[debug]]")
 
 print: print-head
@@ -240,6 +260,8 @@ print: print-head
 	$(info [LIBDIR]=$(LIBDIR))
 	$(info [LIBSET]=$(LIBSET))
 	$(info [LIBUSE]=$(LIBUSE))
+	$(info [LIBMOD]=$(LIBMOD))
+	$(info [LIBSUF]=$(LIBSUF))
 	$(info [LIBLIN]=$(LIBLIN))
 	$(info [=[rules]=])
 	$(info [build]=link binary file from object code compiled from source code)
@@ -252,7 +274,7 @@ print: print-head
 	$(info [debug]=clean, rebuild and run the binary file with the debugger)
 	$(info [print]=write this whole text)
 print-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=LIB print; done
+	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL print; done
 	$(info [[print]])
 
 ## source
@@ -267,10 +289,11 @@ $(PCHFSD)/%.$(PCHSUF): $(HDRFSD)/%
 $(SRCFSD)/%.$(SRCSUF): $(HDRFSD)/%.$(HDRSUF)
 	$(info "[source]=$@")
 
+# strace is added to make sure precompiled header is used
 $(OBJFSD)/%.$(OBJSUF): $(SRCFSD)/%.$(SRCSUF)
 	$(info "[object]=$@")
-	$(CMAKER) $@ $^ $(CFLAGS)
-#strace -e openat -ff $(CMAKER) $@ $^ $(CFLAGS) 2>&1 | grep '\.hxx\.gch'
+	strace -e openat -ff $(CMAKER) $@ $^ $(CFLAGS) 2>&1 | grep '\.hxx\.gch'
+#$(CMAKER) $@ $^ $(CFLAGS)
 
 $(BINFSD)/%.$(BINSUF): $(OBJFSL)
 	$(info "[source-binary]=$@")

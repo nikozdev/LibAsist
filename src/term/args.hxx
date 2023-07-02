@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_TERM_ARGS_HXX
+#define LIBASIST_TERM_ARGS_HXX 1
 
 #include "../head.hxx"
 
@@ -22,3 +23,5 @@ namespace libasist { namespace term { /* vetters */
 
 namespace libasist { namespace term { /* actions */
 } } /* actions */
+
+#endif/*LIBASIST_TERM_ARGS_HXX*/

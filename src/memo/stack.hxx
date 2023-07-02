@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_MEMO_STACK_HXX
+#define LIBASIST_MEMO_STACK_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 #include "owner.hxx"
 
@@ -100,3 +101,5 @@ public:
 }; /* stack_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_STACK_HXX*/

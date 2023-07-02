@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_DBUG_HXX
+#define LIBASIST_HEAD_DBUG_HXX 1
 
 /* headers */
 
@@ -89,3 +90,5 @@ namespace libasist { /* actions */
 #endif/*_CONF_WORK*/
 
 } /* actions */
+
+#endif/*LIBASIST_HEAD_DBUG_HXX*/

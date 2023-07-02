@@ -1,18 +1,19 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_UTIL_SIGNAL_HXX
+#define LIBASIST_UTIL_SIGNAL_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 /* content */
 
 namespace libasist { namespace util { /* typedef */
 
 template <typename...args_t>
-class t_signal_t
+class signal_t
 {
 public: /* typedef */
-    using signal_t = t_signal_t<args_t...>;
+    using signal_t = signal_t<args_t...>;
     using func_t = std::function<void(args_t...)>;
     class link_t
     {
@@ -47,8 +48,8 @@ public: /* typedef */
     using relink_t = link_t*;
     using relink_list_t = darray_t<relink_t>;
 public: /* codetor */
-    t_signal_t() {}
-    ~t_signal_t() { this->quit(); }
+    signal_t() {}
+    ~signal_t() { this->quit(); }
 public: /* actions */
     inline relink_t find(index_t index)
     {
@@ -93,6 +94,8 @@ public: /* actions */
     }
 private:
     relink_list_t relink_list;
-}; /* t_signal_t */
+}; /* signal_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_UTIL_SIGNAL_HXX*/

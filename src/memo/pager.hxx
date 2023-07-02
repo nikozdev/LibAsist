@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_MEMO_PAGER_HXX
+#define LIBASIST_MEMO_PAGER_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 #include "owner.hxx"
 #include "mlink.hxx"
@@ -66,3 +67,5 @@ public: /* consdef */
 }; /* pager_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_PAGER_HXX*/

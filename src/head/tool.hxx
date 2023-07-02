@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_TOOL_HXX
+#define LIBASIST_HEAD_TOOL_HXX 1
 
 #ifndef _TOOL
 #if defined(__GNUC__) || defined(__GNUG__)
@@ -13,3 +14,5 @@
 #endif/*ifd(_MSC_VER)*/
 #define _TOOL 1
 #endif/*_TOOL*/
+
+#endif/*LIBASIST_HEAD_TOOL_HXX*/

@@ -1,3 +1,6 @@
+#ifndef LIBASIST_MEMO_STACK_CXX
+#define LIBASIST_MEMO_STACK_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -90,3 +93,5 @@ namespace libasist { namespace memo { /* datadef */
 stack_t*stack_t::basic = NULL;
 
 } } /* datadef */
+
+#endif/*LIBASIST_MEMO_STACK_CXX*/

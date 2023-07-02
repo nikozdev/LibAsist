@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_NUMS_HXX
+#define LIBASIST_NUMS_HXX 1
 
 #include "head.hxx"
+
+/* headers */
 
 /* content */
 
@@ -169,6 +170,27 @@ _PRIM_FOR(_PRIM_DEF_ACT)
 
 } } /* typedef */
 
+namespace libasist { namespace nums { /* actions */
+
+template <typename value_t>
+[[nodiscard, maybe_unused,
+deprecated(R"(
+this is rather a reminder about my fancy idea
+one day, working on somigame i just figured out this algorithm
+a tricky minimalistic way to get a unit vector rotated by 90 degrees
+)")
+]] inline constexpr
+value_t get_xy90turn(value_t value, bool_t lside = TRUTH)
+{
+    const auto rside = !lside;
+    return {
+        .x = value.y * (-1*lside+rside),
+        .y = value.x * (-1*rside+lside),
+    };
+}
+
+} } /* actions */
+
 namespace libasist { namespace nums { /* operats */
 
 template< typename stream_t, typename value_t, count_t count >
@@ -191,3 +213,5 @@ const stream_t& operator>>( const stream_t& stream, vector_t< value_t, count >& 
 }
 
 } } /* symbols */
+
+#endif/*LIBASIST_NUMS_HXX*/

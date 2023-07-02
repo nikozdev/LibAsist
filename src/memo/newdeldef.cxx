@@ -1,3 +1,6 @@
+#ifndef LIBASIST_MEMO_NEWDELDEF_CXX
+#define LIBASIST_MEMO_NEWDELDEF_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -147,3 +150,5 @@ void operator delete[](void*mdata, size_t msize, size_t malig) noexcept
 #endif /* _LIBASIST_NEWDELDEF_ELOG */
 }
 #endif /* _LIBASIST_NEWDELDEF */
+
+#endif/*LIBASIST_MEMO_NEWDELDEF_CXX*/

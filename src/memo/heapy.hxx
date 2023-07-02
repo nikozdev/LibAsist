@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_MEMO_HEAPY_HXX
+#define LIBASIST_MEMO_HEAPY_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 #include "owner.hxx"
 
@@ -75,3 +76,5 @@ public: /* consdef */
 }; /* heapy_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_HEAPY_HXX*/

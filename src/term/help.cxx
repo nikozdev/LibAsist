@@ -1,3 +1,6 @@
+#ifndef LIBASIST_TERM_HELP_CXX
+#define LIBASIST_TERM_HELP_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -32,3 +35,5 @@ error_enum help(error_enum error)
 }
 
 } } /* actions */
+
+#endif/*LIBASIST_TERM_HELP_CXX*/

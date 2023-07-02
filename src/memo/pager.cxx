@@ -1,3 +1,6 @@
+#ifndef LIBASIST_MEMO_PAGER_CXX
+#define LIBASIST_MEMO_PAGER_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -100,3 +103,5 @@ namespace libasist { namespace memo { /* datadef */
 pager_t*pager_t::basic = NULL;
 
 } } /* datadef */
+
+#endif/*LIBASIST_MEMO_PAGER_CXX*/

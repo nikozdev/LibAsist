@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_DEFN_HXX
+#define LIBASIST_HEAD_DEFN_HXX 1
 
 /* headers */
 
@@ -21,3 +22,5 @@
 #ifndef LIBASIST_VNUM_STR
 #define LIBASIST_VNUM_STR _GET_STR(LIBASIST_VNUM_STR)
 #endif/*LIBASIST_VNUM_STR*/
+
+#endif/*LIBASIST_HEAD_DEFN_HXX*/

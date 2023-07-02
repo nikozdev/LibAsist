@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_MEMO_REFER_HXX
+#define LIBASIST_MEMO_REFER_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 #include "giver.hxx"
 #include "taker.hxx"
@@ -242,3 +243,5 @@ private: /* datadef */
 }; /* refer_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_REFER_HXX*/

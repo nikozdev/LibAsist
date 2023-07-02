@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_MEMO_OWNER_HXX
+#define LIBASIST_MEMO_OWNER_HXX 1
 
 #include "../head.hxx"
 
@@ -89,3 +90,5 @@ public: /* operats */
 }; /* owner_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_OWNER_HXX*/

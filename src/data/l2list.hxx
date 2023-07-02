@@ -1,12 +1,13 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_DATA_L2LIST_HXX
+#define LIBASIST_DATA_L2LIST_HXX 1
 
 #include "../head.hxx"
 
+/* headers */
+
 /* content */
 
-namespace libasist { namespace work { /* typedef */
+namespace libasist { namespace data { /* typedef */
 /* 2-linked list templated type */
 template< typename value_t >
 class l2list_t
@@ -28,3 +29,5 @@ public: /* actions */
 }; /* 2-linked list template type */
 
 } } /* typedef */
+
+#endif/*LIBASIST_DATA_L2LIST_HXX*/

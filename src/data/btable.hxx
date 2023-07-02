@@ -1,12 +1,13 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_DATA_BTABLE_HXX
+#define LIBASIST_DATA_BTABLE_HXX 1
 
 #include "../head.hxx"
 
+/* headers */
+
 /* content */
 
-namespace libasist { namespace work { /* typedef */
+namespace libasist { namespace data { /* typedef */
 
 /* binary table template type */
 template<typename index_t, typename value_t>
@@ -29,3 +30,5 @@ public: /* actions */
 }; /* binary table templated type */
 
 } } /* typedef */
+
+#endif/*LIBASIST_UTIL_BTABLE_HXX*/

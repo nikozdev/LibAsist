@@ -1,4 +1,7 @@
 #ifndef LIBASIST_HEAD_HXX
+#define LIBASIST_HEAD_HXX 1
+
+/* headers */
 
 #include "head/conf.hxx"
 #include "head/osys.hxx"
@@ -11,11 +14,11 @@
 #include "head/nums.hxx"
 #include "head/memo.hxx"
 #include "head/text.hxx"
+#include "head/time.hxx"
 #include "head/ipop.hxx"
 #include "head/dbug.hxx"
 #include "head/exec.hxx"
 
 /* content */
 
-#define LIBASIST_HEAD_HXX 1
 #endif/*LIBASIST_HEAD_HXX*/

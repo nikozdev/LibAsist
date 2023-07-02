@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_TERM_OPTS_HXX
+#define LIBASIST_TERM_OPTS_HXX 1
 
 #include "../head.hxx"
 
@@ -24,3 +25,5 @@ bool_t vet_opt(const svstr_t&name);
 
 namespace libasist { namespace term { /* actions */
 } } /* actions */
+
+#endif/*LIBASIST_TERM_OPTS_HXX*/

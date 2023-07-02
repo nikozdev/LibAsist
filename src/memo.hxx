@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_MEMO_HXX
+#define LIBASIST_MEMO_HXX 1
 
 #include "head.hxx"
 
@@ -84,3 +85,5 @@ bool_t quit()
 }
 
 } } /* actions */
+
+#endif/*LIBASIST_MEMO_HXX*/

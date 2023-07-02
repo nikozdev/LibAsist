@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_MEMO_DUMMY_HXX
+#define LIBASIST_MEMO_DUMMY_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 #include "owner.hxx"
 
@@ -81,3 +82,5 @@ public: /* consdef */
 }; /* dummy_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_DUMMY_HXX*/

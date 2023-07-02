@@ -1,3 +1,6 @@
+#ifndef LIBASIST_MEMO_HEAPY_CXX
+#define LIBASIST_MEMO_HEAPY_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -64,3 +67,5 @@ namespace libasist { namespace memo { /* datadef */
 heapy_t*heapy_t::basic = NULL;
 
 } } /* datadef */
+
+#endif/*LIBASIST_MEMO_HEAPY_CXX*/

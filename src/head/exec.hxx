@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_EXEC_HXX
+#define LIBASIST_HEAD_EXEC_HXX 1
 
 /* headers */
 
@@ -19,3 +20,5 @@ namespace libasist { /* typedef */
     using flow_t = std::thread;
 
 } /* typedef */
+
+#endif/*LIBASIST_HEAD_EXEC_HXX*/

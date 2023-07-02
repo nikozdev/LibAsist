@@ -1,3 +1,6 @@
+#ifndef LIBASIST_MEMO_ARENA_CXX
+#define LIBASIST_MEMO_ARENA_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -106,3 +109,5 @@ namespace libasist { namespace memo { /* datadef */
 arena_t*arena_t::basic = NULL;;
 
 } } /* datadef */
+
+#endif/*LIBASIST_MEMO_ARENA_CXX*/

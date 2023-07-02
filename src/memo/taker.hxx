@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_MEMO_TAKER_HXX
+#define LIBASIST_MEMO_TAKER_HXX 1
 
 #include "../head.hxx"
 
@@ -80,3 +81,5 @@ public: /* operats */
 }; /* taker_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_TAKER_HXX*/

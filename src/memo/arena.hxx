@@ -1,8 +1,9 @@
-#pragma once
-
-/* headers */
+#ifndef LIBASIST_MEMO_ARENA_HXX
+#define LIBASIST_MEMO_ARENA_HXX 1
 
 #include "../head.hxx"
+
+/* headers */
 
 #include "owner.hxx"
 #include "mlink.hxx"
@@ -87,3 +88,5 @@ public: /* datadef */
 }; /* arena_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_ARENA_HXX*/

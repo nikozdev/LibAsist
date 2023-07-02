@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_TERM_MAIN_HXX
+#define LIBASIST_TERM_MAIN_HXX 1
 
 #include "../head.hxx"
 
@@ -25,3 +26,5 @@ int main(count_t argc, scstr_t argv[]);
 error_enum help(error_enum error);
 
 } } /* actions */
+
+#endif/*LIBASIST_TERM_MAIN_HXX*/

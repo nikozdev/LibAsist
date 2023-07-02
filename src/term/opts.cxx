@@ -1,3 +1,6 @@
+#ifndef LIBASIST_TERM_OPTS_CXX
+#define LIBASIST_TERM_OPTS_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -78,3 +81,5 @@ namespace libasist { namespace term { /* setters */
 
 namespace libasist { namespace term { /* actions */
 } } /* actions */
+
+#endif/*LIBASIST_TERM_OPTS_CXX*/

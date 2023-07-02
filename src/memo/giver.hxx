@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_MEMO_GIVER_HXX
+#define LIBASIST_MEMO_GIVER_HXX 1
 
 #include "../head.hxx"
 
@@ -87,3 +88,5 @@ public: /* operats */
 }; /* giver_t */
 
 } } /* typedef */
+
+#endif/*LIBASIST_MEMO_GIVER_HXX*/

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_IPOP_HXX
+#define LIBASIST_HEAD_IPOP_HXX 1
 
 /* headers */
 
@@ -24,11 +25,17 @@
 #error "_TOOL is undefined"
 #elif(defined(_TOOL_CLANG) || defined(_TOOL_MSVCC))
 #include <filesystem>
+namespace libasist { /* imports */
+namespace fstd = std::filesystem;
+} /* imports */
 #elif(defined(_TOOL_GNUCC))
 #include <experimental/bits/fs_fwd.h>
 #include <experimental/bits/fs_path.h>
 #include <experimental/bits/fs_dir.h>
 #include <experimental/bits/fs_ops.h>
+namespace libasist { /* imports */
+namespace fstd = std::experimental::filesystem;
+} /* imports */
 #endif/*ifd(_TOOL_GNUCC)*/
 
 /* defines */
@@ -49,9 +56,7 @@
         _FILE_NAME, \
         _FUNC_NAME, \
         _FILE_LINE, \
-        static_cast<schar_t>(text::endl), \
-        ##args, \
-        static_cast<schar_t>(text::endl)) \
+        text::ENDL_CHAR, ##args, text::ENDL_CHAR) \
 }
 #endif/*_OLOG*/
 
@@ -71,9 +76,7 @@
         _FILE_NAME, \
         _FUNC_NAME, \
         _FILE_LINE, \
-        static_cast<schar_t>(text::endl), \
-        ##args, \
-        static_cast<schar_t>(text::endl)) \
+        text::ENDL_CHAR, ##args, text::ENDL_CHAR) \
 }
 #endif/*_ELOG*/
 
@@ -81,21 +84,27 @@
 
 namespace libasist { /* typedef */
 
-    /* input-only-memory-data-stream */
-    using mdata_writer_t = std::istream;
-    using mdata_writer_iter_t = std::istream_iterator<scstr_t>;
-    /* output-only-memory-data-stream */
-    using mdata_reader_t = std::ostream;
-    using mdata_reader_iter_t = std::ostream_iterator<scstr_t>;
-    /* input-output-memory-data-stream */
-    using mdata_editor_t = std::iostream;
+/* input-only-memory-data-stream */
+using mdata_writer_t = std::istream;
+using mdata_writer_iter_t = std::istream_iterator<scstr_t>;
+/* output-only-memory-data-stream */
+using mdata_reader_t = std::ostream;
+using mdata_reader_iter_t = std::ostream_iterator<scstr_t>;
+/* input-output-memory-data-stream */
+using mdata_editor_t = std::iostream;
 
+/* input-only-file-data-stream */
+using fdata_writer_t = std::istream;
+/* output-only-file-data-stream */
+using fdata_reader_t = std::ostream;
+/* input-output-file-data-stream */
+using fdata_editor_t = std::iostream;
 
-    /* input-only-file-data-stream */
-    using fdata_writer_t = std::istream;
-    /* output-only-file-data-stream */
-    using fdata_reader_t = std::ostream;
-    /* input-output-file-data-stream */
-    using fdata_editor_t = std::iostream;
+using fpaf_t = fstd::path;
+using fdir_info_t = fstd::directory_entry;
+using fdir_iter_t = fstd::directory_iterator;
+using size_info_t = fstd::space_info;
 
 } /* typedef */
+
+#endif/*LIBASIST_HEAD_IPOP_HXX*/

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBASIST_HEAD_TEXT_HXX
+#define LIBASIST_HEAD_TEXT_HXX 1
 
 /* headers */
 
@@ -225,3 +226,5 @@ shstr_t operator""_shstr(const char*mdata, std::size_t msize) noexcept
 { return shstr_t::make_hstr(mdata, msize); }
 
 } /* operats */
+
+#endif/*LIBASIST_HEAD_TEXT_HXX*/

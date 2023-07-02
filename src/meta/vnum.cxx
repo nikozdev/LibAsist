@@ -1,3 +1,6 @@
+#ifndef LIBASIST_META_VNUM_CXX
+#define LIBASIST_META_VNUM_CXX 1
+
 #include "../head.hxx"
 
 /* headers */
@@ -106,3 +109,5 @@ vnum_t::vdata_t vnum_t::get_vdata(value_t whole)
 }
 
 } } /* typedef */
+
+#endif/*LIBASIST_META_VNUM_CXX*/
