@@ -48,8 +48,10 @@ public: /* actions */
             "[hpage]=(%p)[bpage]=(%p)[tpage]=(%p)"
             "[malig]=(%zu)"
             ")%c",
-            this->hpage, this->bpage, this->tpage,
-            this->owner,
+            static_cast<mdata_t>(this->hpage),
+            static_cast<mdata_t>(this->bpage),
+            static_cast<mdata_t>(this->tpage),
+            static_cast<mdata_t>(this->owner),
             this->malig,
             text::ENDL_CHAR
         );

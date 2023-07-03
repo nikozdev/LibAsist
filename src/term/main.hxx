@@ -1,30 +1,25 @@
 #ifndef LIBASIST_TERM_MAIN_HXX
-#define LIBASIST_TERM_MAIN_HXX 1
+#define LIBASIST_TERM_MAIN_HXX
 
 #include "../head.hxx"
+#include "../data/dpack.hxx"
 
-/* headers */
+namespace libasist { namespace term {
 
-/* content */
+// datadef
 
-namespace libasist { namespace term { /* datadef */
+extern data::dpack_t<svstr_t> args;
 
-extern darray_t<svstr_t> args;
-
-} } /* datadef */
-
-namespace libasist { namespace term { /* vetters */
+// vetters
 
 bool_t vet_opt(const svstr_t& opt);
 
-} } /* vetters */
-
-namespace libasist { namespace term { /* actions */
+// actions
 
 int main(count_t argc, scstr_t argv[]);
 
 error_enum help(error_enum error);
 
-} } /* actions */
+} } // namespace libasist { namespace term {
 
-#endif/*LIBASIST_TERM_MAIN_HXX*/
+#endif//LIBASIST_TERM_MAIN_HXX

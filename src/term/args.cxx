@@ -1,30 +1,15 @@
 #ifndef LIBASIST_TERM_ARGS_CXX
-#define LIBASIST_TERM_ARGS_CXX 1
+#define LIBASIST_TERM_ARGS_CXX
 
 #include "../head.hxx"
+#include "../data/dpack.hxx"
 
-/* headers */
+namespace libasist { namespace term {
 
-/* content */
+// datadef
 
-namespace libasist { namespace term { /* datadef */
+data::dpack_t<svstr_t> args;
 
-darray_t<svstr_t> args;
+} } // namespace libasist { namespace term {
 
-} } /* datadef */
-
-namespace libasist { namespace term { /* getters */
-} } /* getters */
-
-namespace libasist { namespace term { /* vetters */
-
-} } /* vetters */
-
-namespace libasist { namespace term { /* setters */
-} } /* setters */
-
-namespace libasist { namespace term { /* actions */
-
-} } /* actions */
-
-#endif/*LIBASIST_TERM_ARGS_CXX*/
+#endif//LIBASIST_TERM_ARGS_CXX

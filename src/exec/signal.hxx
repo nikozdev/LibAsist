@@ -46,7 +46,7 @@ public: /* typedef */
         friend signal_t;
     };
     using relink_t = link_t*;
-    using relink_list_t = darray_t<relink_t>;
+    using relink_list_t = dpack_t<relink_t>;
 public: /* codetor */
     signal_t() {}
     ~signal_t() { this->quit(); }

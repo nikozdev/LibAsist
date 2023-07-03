@@ -52,8 +52,8 @@ public: /* actions */
     void elog(void) const
     {
         _ELOG("[memo::heapy->elog]=("
-            "[msize_used]=(%zu)[msize_umax]=(%zu)"
-            "[malig]=(%zu))",
+            "[msize_used]=({:d})[msize_umax]=({:d})"
+            "[malig]=({:d}))",
             this->msize_used, this->msize_umax,
             this->malig
         );

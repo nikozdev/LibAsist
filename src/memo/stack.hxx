@@ -78,11 +78,11 @@ public: /* actions */
     void elog(void) const
     {
         _ELOG("[memo::stack->elog]=("
-            "[owner]=(%p)"
-            "[mdata_head]=(%p)[mdata_tail]=(%p)[mdata_back]=(%p)"
-            "[msize_full]=(%zu)[msize_used]=(%zu)[msize_umax]=(%zu)"
-            "[malig]=(%zu))",
-            this->owner,
+            "[owner]=({:p})"
+            "[mdata_head]=({:p})[mdata_tail]=({:p})[mdata_back]=({:p})"
+            "[msize_full]=({:d})[msize_used]=({:d})[msize_umax]=({:d})"
+            "[malig]=({:d}))",
+            static_cast<mdata_t>(this->owner),
             this->mdata_head, this->mdata_tail, this->mdata_back,
             this->msize_full, this->msize_used, this->msize_umax,
             this->malig

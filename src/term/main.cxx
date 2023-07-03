@@ -1,48 +1,48 @@
 #ifndef LIBASIST_TERM_MAIN_CXX
-#define LIBASIST_TERM_MAIN_CXX 1
+#define LIBASIST_TERM_MAIN_CXX
 
 #include "../head.hxx"
-
-/* headers */
-
-#include "args.hxx"
-#include "opts.hxx"
-#include "envi.hxx"
-#include "help.hxx"
+#include "../term/args.hxx"
+#include "../term/opts.hxx"
+#include "../term/envi.hxx"
+#include "../term/help.hxx"
 
 #include "../main.hxx"
 
-/* content */
+namespace libasist { namespace term {
 
-namespace libasist { namespace term { /* actions */
+// actions
 
 int main(count_t argc, scstr_t argv[])
 {
-    args = darray_t<svstr_t>(argv, argv + argc);
-    std::clog << text::endl;
+    args = data::dpack_t<svstr_t>(argv, argv + argc);
+    std::clog << text::ENDL_CHAR;
     if constexpr (TRUTH)
     {
-        std::clog << "(" << "[" << LIBASIST_NAME_STR << "]" << "[args]" << text::endl;
-        std::copy(argv, argv + argc, std::ostream_iterator<scstr_t>(std::clog, text::endl));
-        std::clog << "[" << LIBASIST_NAME_STR << "]" << "[args]" << ")" << text::endl;
-        std::clog << text::endl;
+        std::clog << "(" << "[" << LIBASIST_NAME_STR << "]" << "[args]" << text::ENDL_CHAR;
+        std::copy(
+            argv, argv + argc,
+            std::ostream_iterator<scstr_t>(std::clog, text::ENDL_CSTR)
+        );
+        std::clog << "[" << LIBASIST_NAME_STR << "]" << "[args]" << ")" << text::ENDL_CHAR;
+        std::clog << text::ENDL_CHAR;
     } /* title */
     if constexpr (FALSE)
     {
         nums::v2s_t v2s1 = { 0, 1 };
         nums::v2s_t v2s2 = v2s1 + 1;
         nums::v2s_t v2s3 = v2s1 + v2s2;
-        std::clog << v2s1 << v2s2 << v2s3 << text::endl;
-        std::clog << text::endl;
+        std::clog << v2s1 << v2s2 << v2s3 << text::ENDL_CHAR;
+        std::clog << text::ENDL_CHAR;
     } /* numeric vectors test */
     if constexpr (FALSE)
     {
-        std::clog << "get -t = " << get_opt( "-t" ) << text::endl;
-        std::clog << "get --test = " << get_opt( "--test" ) << text::endl;
-        std::clog << "vet --test = " << vet_opt( "--test" ) << text::endl;
-        std::clog << "get --arg = " << get_opt( "--arg" ) << text::endl;
-        std::clog << "vet --arg = " << vet_opt( "--arg" ) << text::endl;
-        std::clog << text::endl;
+        std::clog << "get -t = " << get_opt( "-t" ) << text::ENDL_CHAR;
+        std::clog << "get --test = " << get_opt( "--test" ) << text::ENDL_CHAR;
+        std::clog << "vet --test = " << vet_opt( "--test" ) << text::ENDL_CHAR;
+        std::clog << "get --arg = " << get_opt( "--arg" ) << text::ENDL_CHAR;
+        std::clog << "vet --arg = " << vet_opt( "--arg" ) << text::ENDL_CHAR;
+        std::clog << text::ENDL_CHAR;
     } /* command line options test */
     if constexpr (FALSE)
     {
@@ -52,39 +52,38 @@ int main(count_t argc, scstr_t argv[])
             get_opt("--config"),
             get_env("config"),
             "not found"_sdstr
-        ) << text::endl;
-        std::clog << text::endl;
+        ) << text::ENDL_CHAR;
+        std::clog << text::ENDL_CHAR;
     } /* command line arguments and environment test */
     if constexpr (FALSE)
     {
 #       define _ENUM_ACT_PRINT(key, num, str) \
-        std::clog << _GET_STR(key) << " = " << num << text::endl;
+        std::clog << _GET_STR(key) << " = " << num << text::ENDL_CHAR;
         _ENUM_FOR_ASCII(_ENUM_ACT_PRINT);
 #       undef _ENUM_ACT_PRINT
-        std::clog << text::endl;
+        std::clog << text::ENDL_CHAR;
     } /* enum macro test */
     if constexpr (TRUTH)
     {
-        std::clog << "version parsing" << text::ENDL_CHAR;
-        std::clog << meta::vnum_t( LIBASIST_VNUM ) << text::endl;
-        std::clog << meta::vnum_t( 0xa0a0a0 ) << text::endl;
-        std::clog << meta::vnum_t( 0xa0a0a1 ) << text::endl;
-        std::clog << meta::vnum_t( 0xa1a0a1 ) << text::endl;
-        std::clog << meta::vnum_t( 0xa1a2a1 ) << text::endl;
-        std::clog << meta::vnum_t( 0xa0a0a10 ) << text::endl;
-        std::clog << meta::vnum_t( 0xa1a0a10 ) << text::endl;
-        std::clog << meta::vnum_t( 0xa87a5a10 ) << text::endl;
-        std::clog << meta::vnum_t( 0xa987a654a321 ) << text::endl;
-        std::clog << meta::vnum_t( 1, 1, 1 ) << text::endl;
-        std::clog << meta::vnum_t( 987, 654, 321 ) << text::endl;
-        std::clog << text::endl;
+        _OLOG("version parsing");
+        _OLOG("{}", meta::vnum_t( LIBASIST_VNUM ));
+        _OLOG("{}", meta::vnum_t( 0xa0a0a0 ));
+        _OLOG("{}", meta::vnum_t( 0xa0a0a1 ));
+        _OLOG("{}", meta::vnum_t( 0xa1a0a1 ));
+        _OLOG("{}", meta::vnum_t( 0xa1a2a1 ));
+        _OLOG("{}", meta::vnum_t( 0xa0a0a10 ));
+        _OLOG("{}", meta::vnum_t( 0xa1a0a10 ));
+        _OLOG("{}", meta::vnum_t( 0xa87a5a10 ));
+        _OLOG("{}", meta::vnum_t( 0xa987a654a321 ));
+        _OLOG("{}", meta::vnum_t( 1, 1, 1 ));
+        _OLOG("{}", meta::vnum_t( 987, 654, 321 ));
     } /* vnum test */
     if constexpr (FALSE)
     {
-        auto inlist = inlist_t<int>{ -1, 1, 12345, 'a' };
+        auto inlist = ilist_t<int>{ -1, 1, 12345, 'a' };
         std::copy(
             inlist.begin(), inlist.end(),
-            std::ostream_iterator<int>(std::clog, text::endl)
+            std::ostream_iterator<int>(std::clog, text::ENDL_CSTR)
         );
     } /* inlist test */
     if constexpr (TRUTH)
@@ -98,7 +97,7 @@ int main(count_t argc, scstr_t argv[])
         bool_t lookup[TSIZE];
         std::memset(lookup, FALSE, sizeof(lookup));
         for (auto iter = 0; iter < TSIZE; iter++) { lookup[iter] = FALSE; }
-        std::clog << text::endl;
+        std::clog << text::ENDL_CHAR;
         for (msize_t ic = 0; ic < SSIZE; ic++)
         {
             for (msize_t iv = 0; iv < RANGE; iv++)
@@ -108,7 +107,7 @@ int main(count_t argc, scstr_t argv[])
                 auto lkey = hash.hash%TSIZE;
                 if (lookup[lkey] == TRUTH)
                 {
-                    _OLOG("[%u]=(%u,%s)",
+                    _OLOG("[{:d}]=({:d},{:s})",
                         lkey,
                         hash.hash,
                         hash.orig
@@ -120,7 +119,7 @@ int main(count_t argc, scstr_t argv[])
                 }
             }
         }
-        std::clog << text::endl;
+        std::clog << text::ENDL_CHAR;
     } /* hash test */
     if constexpr (TRUTH)
     {
@@ -154,7 +153,7 @@ int main(count_t argc, scstr_t argv[])
     return error_none;
 }
 
-} } /* actions */
+} } // namespace libasist { namespace term {
 
 #ifdef _TYPE_EXE
 #   undef _TYPE_EXE
@@ -164,4 +163,4 @@ int main(int argc, const char**argv)
 }
 #endif
 
-#endif/*LIBASIST_TERM_MAIN_CXX*/
+#endif//LIBASIST_TERM_MAIN_CXX

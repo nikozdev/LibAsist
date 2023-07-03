@@ -1,28 +1,30 @@
 #ifndef LIBASIST_NUMS_HXX
-#define LIBASIST_NUMS_HXX 1
+#define LIBASIST_NUMS_HXX
 
 #include "head.hxx"
 
-/* headers */
+// standard
 
-/* content */
+#include <limits>
 
-namespace libasist { namespace nums { /* typedef */
+namespace libasist { namespace nums {
+
+// typedef
 
 template <typename value_t, count_t count>
 class vector_t
 {
-public: /* typedef */
+public: // typedef
 
     using this_t = vector_t<value_t, count>;
 
     using vdata_t = value_t[count];
 
-public: /* codetor */
+public: // codetor
 
     vector_t() : vdata{ ZERO } { }
 
-    vector_t(inlist_t<value_t> ilist) : vdata{ ZERO }
+    vector_t(ilist_t<value_t> ilist) : vdata{ ZERO }
     {
         auto iter = ilist.begin();
         for ( auto index = 0; index < ilist.size(); index++ )
@@ -46,7 +48,7 @@ public: /* codetor */
         std::memmove( this, &copy, get_msize() );
     }
 
-public: /* getters */
+public: // getters
 
     constexpr static
     count_t get_count() { return count; }
@@ -54,7 +56,7 @@ public: /* getters */
     msize_t get_msize()
     { return count * sizeof( value_t ); }
 
-public: /* operats */
+public: // operats
 
     this_t& operator= ( value_t value )
     {
@@ -142,10 +144,10 @@ public: /* operats */
     value_t operator[]( index_t index ) const
     { return this->vdata[ index ]; }
 
-public: /* datadef */
+public: // datadef
 
     vdata_t vdata;
-};
+}; // vector template type
 
 #ifndef _PRIM_FOR
 #define _PRIM_FOR( _ACT_ ) \
@@ -158,19 +160,17 @@ _ACT_( s, 4 ) \
 _ACT_( f, 2 ) \
 _ACT_( f, 3 ) \
 _ACT_( f, 4 ) \
-/* _PRIM_FOR */
+// _PRIM_FOR
 #ifndef _PRIM_DEF_ACT
 #define _PRIM_DEF_ACT( _tchar, _count ) \
 typedef vector_t< v1##_tchar##_t, _count > v##_count##_tchar##_t;
-#endif/*_PRIM_DEF_ACT*/
+#endif//_PRIM_DEF_ACT
 _PRIM_FOR(_PRIM_DEF_ACT)
 #undef _PRIM_DEF_ACT
 #undef _PRIM_FOR
-#endif/*_PRIM_FOR*/
+#endif//_PRIM_FOR
 
-} } /* typedef */
-
-namespace libasist { namespace nums { /* actions */
+// actions
 
 template <typename value_t>
 [[nodiscard, maybe_unused,
@@ -189,9 +189,7 @@ value_t get_xy90turn(value_t value, bool_t lside = TRUTH)
     };
 }
 
-} } /* actions */
-
-namespace libasist { namespace nums { /* operats */
+// operats
 
 template< typename stream_t, typename value_t, count_t count >
 stream_t& operator<<( stream_t& stream, const vector_t< value_t, count >& vector )
@@ -212,6 +210,6 @@ const stream_t& operator>>( const stream_t& stream, vector_t< value_t, count >& 
     return stream;
 }
 
-} } /* symbols */
+} } // namespace libasist { namespace nums {
 
-#endif/*LIBASIST_NUMS_HXX*/
+#endif//LIBASIST_NUMS_HXX

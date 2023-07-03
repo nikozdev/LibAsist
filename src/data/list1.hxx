@@ -1,35 +1,35 @@
-#ifndef LIBASIST_DATA_L1LIST_HXX 
-#define LIBASIST_DATA_L1LIST_HXX
+#ifndef LIBASIST_DATA_LIST1_HXX 
+#define LIBASIST_DATA_LIST1_HXX
 
 #include "../head.hxx"
 
-/* headers */
+namespace libasist { namespace data {
 
-/* content */
+// typedef
 
-namespace libasist { namespace data { /* typedef */
-/* 1-linked list template type */
+#if 1
+#else
 template<typename data_t>
-class l1list_t
+class list1_t
 {
-public:     /* typedef */
-    using this_t = l1list_t< data_t >;
+public: // typedef
+    using this_t = list1_t< data_t >;
     typedef struct iter_t
     {
         data_t* data;
         iter_t* next;
     } iter_t;
-public:     /* codetor */
-    l1list_t():
+public: // codetor
+    list1_t():
         head{ nullptr, nullptr }
     {
     }
-    ~l1list_t()
+    ~list1_t()
     {
         this->remove( this->get_head() );
     }
-public:     /* opertor */
-public:     /* getters */
+public: // opertor
+public: // getters
     iter_t&get_head()
     {
         return this->head;
@@ -52,12 +52,12 @@ public:     /* getters */
         }
         return this->head;
     }
-public:     /* vetters */
-    bool_t vet_iter( const iter_t& iter )
+public: // vetters
+    bool_t vet_iter( const iter_t& iter ) const
     {
         return false;
     }
-public:     /* setters */
+public: // setters
     bool_t insert(const data_t& data)
     {
         return false;
@@ -70,10 +70,11 @@ public:     /* setters */
     {
         return false;
     }
-private:    /* content */
+private: // content
     iter_t head;
-}; /* 1-linked list templated type */
+}; // 1-linked list templated type
+#endif
 
-} } /* typedef */
+} } // namespace libasist { namespace data {
 
-#endif/*LIBASIST_DATA_L1LIST_HXX*/
+#endif//LIBASIST_DATA_LIST1_HXX

@@ -16,19 +16,19 @@ namespace libasist { namespace term { /* actions */
 error_enum help(error_enum error)
 {
     if ( error == error_none ) { return error; }
-    std::cerr << "[" LIBASIST_NAME_STR "]" << "[help]" << text::endl;
+    std::cerr << "[" LIBASIST_NAME_STR "]" << "[help]" << text::ENDL_CHAR;
     {
-        std::cerr << "- usage" << text::endl;
+        std::cerr << "- usage" << text::ENDL_CHAR;
         {
-            std::cerr << "> " << LIBASIST_NAME_STR << " [-o|--option]..." << text::endl;
+            std::cerr << "> " << LIBASIST_NAME_STR << " [-o|--option]..." << text::ENDL_CHAR;
         }
-        std::cerr << "- options" << text::endl;
+        std::cerr << "- options" << text::ENDL_CHAR;
         {
         }
-        std::cerr << "- error" << text::endl;
+        std::cerr << "- error" << text::ENDL_CHAR;
         {
-            std::cerr << "> code=" << static_cast< int >( error ) << text::endl;
-            std::cerr << "> text=" << error_text[ error ] << text::endl;
+            std::cerr << "> code=" << static_cast< int >( error ) << text::ENDL_CHAR;
+            std::cerr << "> text=" << error_text[ error ] << text::ENDL_CHAR;
         }
     }
     return error;

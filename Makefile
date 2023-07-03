@@ -1,9 +1,46 @@
 # basic
 
 NAME:=libasist
-VNUM:=0xa0a2a1
+VNUM:=0xa0a2a2
 TYPE:=EXE
 CONF:=WORK
+
+# operating system
+
+ifeq ($(OSYS),)
+ifeq ($(findstring Windows,$(OS)),Windows)
+OSYS:=winos
+else ifeq ($(shell uname -s),Linux)
+OSYS:=linux
+else ifeq ($(shell uname -s),Darwin)
+OSYS:=macos
+else
+$(info failed to figure out the operating system)
+endif
+endif
+
+# architecture
+
+ARCH:=x64
+ifeq ($(ARCH),)
+ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
+ARCH:=x64
+else ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+ARCH:=x32
+else ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+ARCH:=x64
+else ifeq ($(shell uname -p),x86)
+ARCH:=x32
+else ifeq ($(shell uname -p),x32)
+ARCH:=x32
+else ifeq ($(shell uname -p),x64)
+ARCH:=x64
+else ifeq ($(shell uname -p),arm)
+ARCH:=arm
+else
+$(info failed to figure out the system architecture)
+endif
+endif
 
 # files
 
@@ -18,11 +55,11 @@ BINSUF_SLL:=sll
 BINSUF_DLL:=dll
 ifeq ($(TYPE),)
 else ifeq ($(TYPE),EXE)
-	BINSUF:=$(BINSUF_EXE)
+BINSUF:=$(BINSUF_EXE)
 else ifeq ($(TYPE),SLL)
-	BINSUF:=$(BINSUF_SLL)
+BINSUF:=$(BINSUF_SLL)
 else ifeq ($(TYPE),DLL)
-	BINSUF:=$(BINSUF_DLL)
+BINSUF:=$(BINSUF_DLL)
 endif
 MANSUF:=man
 
@@ -83,8 +120,55 @@ LIBLIN:=$(patsubst %,$(LIBDIR)/%/bin/*.$(LIBSUF),$(LIBUSE))
 
 ## compiler
 
+ifeq ($(OSYS),)
+$(info undefined operating system)
+else ifeq ($(OSYS),linux)
 CMAKER:= $(shell which g++) -c -o
-CFLAGS+= -std=c++20
+ifeq ($(TYPE),)
+$(info undefined build type)
+else ifeq ($(TYPE),EXE)
+else ifeq ($(TYPE),SLL)
+else ifeq ($(TYPE),DLL)
+#CFLAGS+= -Wl,--out-implib=lib${module}.dll.a
+CFLAGS+= -Wl,--export-all-symbols
+CFLAGS+= -Wl,--enable-auto-import
+#CFLAGS+= -Wl,--whole-archive ${old_libs}
+#CFLAGS+= -Wl,--no-whole-archive ${dependency_libs}
+CFLAGS+= -fPIC
+else
+$(info unknown build type: $(TYPE))
+endif
+else ifeq ($(OSYS),macos)
+CMAKER:= $(shell which clang++) -c -o
+ifeq ($(TYPE),)
+$(info unkown build type)
+else ifeq ($(TYPE),EXE)
+else ifeq ($(TYPE),SLL)
+else ifeq ($(TYPE),DLL)
+#CFLAGS+= -Wl,--out-implib=lib${module}.dll.a
+CFLAGS+= -Wl,--export-all-symbols
+CFLAGS+= -Wl,--enable-auto-import
+#CFLAGS+= -Wl,--whole-archive ${old_libs}
+#CFLAGS+= -Wl,--no-whole-archive ${dependency_libs}
+CFLAGS+= -fPIC
+else
+$(info unknown build type: $(TYPE))
+endif
+else ifeq ($(OSYS),winos)
+# temporary value, figure this out
+CMAKER:= cl
+ifeq ($(TYPE),)
+$(info unkown build type)
+else ifeq ($(TYPE),EXE)
+else ifeq ($(TYPE),SLL)
+else ifeq ($(TYPE),DLL)
+else
+$(info unknown build type: $(TYPE))
+endif
+else
+$(info undefined operating system: $(OSYS))
+endif
+CFLAGS+= -std=c++23
 ifeq ($(CONF),)
 else ifeq ($(CONF),WORK)
 CFLAGS+= -O0 -g
@@ -101,28 +185,53 @@ CFLAGS+= -D_CONF_$(CONF) -D_CONF_STR=\"$(CONF)\"
 #CFLAGS+= $(shell pkg-config --cflags) # external deps here
 CFLAGS+= -I$(PCHFSD)
 CFLAGS+= $(patsubst %,-I$(LIBDIR)/%/src,$(LIBUSE))
-ifeq ($(TYPE),)
-else ifeq ($(TYPE),EXE)
-else ifeq ($(TYPE),SLL)
-else ifeq ($(TYPE),DLL)
-#CFLAGS+= -Wl,--out-implib=lib${module}.dll.a
-CFLAGS+= -Wl,--export-all-symbols
-CFLAGS+= -Wl,--enable-auto-import
-#CFLAGS+= -Wl,--whole-archive ${old_libs}
-#CFLAGS+= -Wl,--no-whole-archive ${dependency_libs}
-CFLAGS+= -fPIC
-endif
 
 ## linker
 
+ifeq ($(OSYS),)
+$(info undefined operating system)
+else ifeq ($(OSYS),linux)
 ifeq ($(TYPE),)
+$(info undefined build type)
 else ifeq ($(TYPE),EXE)
 LMAKER:= $(shell which g++) -o
 else ifeq ($(TYPE),SLL)
 LMAKER:= $(shell which ar) -rc
 else ifeq ($(TYPE),DLL)
 LMAKER:= $(shell which g++) -shared -o
+else
+$(info unknown build type: $(TYPE))
 endif
+else ifeq ($(OSYS),macos)
+LMAKER:= $(shell which llvm-ar)
+ifeq ($(TYPE),)
+$(info undefined build type)
+else ifeq ($(TYPE),EXE)
+LMAKER:= $(shell which clang++) -o
+else ifeq ($(TYPE),SLL)
+LMAKER:= $(shell which llvm-ar)
+else ifeq ($(TYPE),DLL)
+LMAKER:= $(shell which clang++) -shared -o
+else
+$(info unknown build type: $(TYPE))
+endif
+else ifeq ($(OSYS),winos)
+# temporary value, figure this out
+ifeq ($(TYPE),)
+$(info undefined build type)
+else ifeq ($(TYPE),EXE)
+LMAKER:= link
+else ifeq ($(TYPE),SLL)
+LMAKER:= link
+else ifeq ($(TYPE),DLL)
+LMAKER:= link
+else
+$(info unknown build type: $(TYPE))
+endif
+else
+$(info unknown operating system: $(OSYS))
+endif
+LFLAGS+= -lstdc++
 #LFLAGS+= $(shell pkg-config --libs) # external deps here
 LFLAGS+= $(patsubst %,-L$(LIBDIR)/%/bin,$(LIBUSE))
 LFLAGS+= $(patsubst %,-l:%.$(LIBSUF),$(LIBUSE))
@@ -204,6 +313,8 @@ print: print-head
 	$(info [VNUM]=$(VNUM))
 	$(info [TYPE]=$(TYPE))
 	$(info [CONF]=$(CONF))
+	$(info [OSYS]=$(OSYS))
+	$(info [ARCH]=$(ARCH))
 	$(info [ARGV]=$(ARGV))
 	$(info [=[files]=])
 	$(info [==[suffix]==])
@@ -289,11 +400,12 @@ $(PCHFSD)/%.$(PCHSUF): $(HDRFSD)/%
 $(SRCFSD)/%.$(SRCSUF): $(HDRFSD)/%.$(HDRSUF)
 	$(info "[source]=$@")
 
-# strace is added to make sure precompiled header is used
+# strace can be used to make sure precompiled header is used
+# # but this is gonna hide errors during the compilation
 $(OBJFSD)/%.$(OBJSUF): $(SRCFSD)/%.$(SRCSUF)
 	$(info "[object]=$@")
-	strace -e openat -ff $(CMAKER) $@ $^ $(CFLAGS) 2>&1 | grep '\.hxx\.gch'
-#$(CMAKER) $@ $^ $(CFLAGS)
+	$(CMAKER) $@ $^ $(CFLAGS)
+#strace -e openat -ff $(CMAKER) $@ $^ $(CFLAGS) 2>&1 | grep '\.hxx\.gch'
 
 $(BINFSD)/%.$(BINSUF): $(OBJFSL)
 	$(info "[source-binary]=$@")

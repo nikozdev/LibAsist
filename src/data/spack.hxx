@@ -1,22 +1,22 @@
-#ifndef LIBASIST_DATA_DARRAY_HXX
-#define LIBASIST_DATA_DARRAY_HXX 1
+#ifndef LIBASIST_DATA_SPACK_HXX
+#define LIBASIST_DATA_SPACK_HXX
 
 #include "../head.hxx"
 
-/* headers */
+namespace libasist { namespace data {
 
-/* content */
+// typedef
 
-namespace libasist { namespace data { /* typedef */
-
-/* darray_t
- * dynamic array templated class
- */
+#if 1
+// static array template type
+template <typename t_val_t, size_t t_count>
+using spack_t = std::array<t_val_t, t_count>;
+#else
 template<typename vdata_t>
-class darray_t
+class spack_t
 {
 public:     /* typedef */
-    using this_t = darray_t< vdata_t >;
+    using this_t = spack_t< vdata_t >;
     using mdata_t = vdata_t*;
     /* iter_t
      * iterator
@@ -43,13 +43,13 @@ public:     /* typedef */
         mdata_t mdata;
     };
 public:     /* codetor */
-    darray_t()
+    spack_t()
     {
     }
-    darray_t(count_t count)
+    spack_t(count_t count)
     {
     }
-    ~darray_t()
+    ~spack_t()
     {
     }
 public:     /* opertor */
@@ -59,8 +59,9 @@ public:     /* setters */
 public:     /* actions */
 private:    /* content */
     iter_t head;
-}; /* darray_t */
+}; // static pack template type
+#endif
 
-} } /* typedef */
+} } // namespace libasist { namespace data {
 
-#endif/*LIBASIST_DATA_DARRAY_HXX*/
+#endif//LIBASIST_DATA_SPACK_HXX

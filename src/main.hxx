@@ -1,9 +1,7 @@
 #ifndef LIBASIST_MAIN_HXX
-#define LIBASIST_MAIN_HXX 1
+#define LIBASIST_MAIN_HXX
 
 #include "head.hxx"
-
-/* headers */
 
 #include "meta.hxx"
 #include "nums.hxx"
@@ -18,4 +16,4 @@
 #include "term.hxx"
 #include "guis.hxx"
 
-#endif/*LIBASIST_MAIN_HXX*/
+#endif//LIBASIST_MAIN_HXX

@@ -1,31 +1,27 @@
 #ifndef LIBASIST_EXEC_ENGINE_HXX
-#define LIBASIST_EXEC_ENGINE_HXX 1
+#define LIBASIST_EXEC_ENGINE_HXX
 
 #include "../head.hxx"
-
-/* headers */
-
 #include "../meta/single.hxx"
+#include "../data/dpack.hxx"
 
-/* content */
+namespace libasist { namespace exec {
 
-namespace libasist { namespace exec { /* typedef */
+// typedef
 
-/* abstract state type */
 class a_engine_state_t
 {
-public: /* typedef */
+public: // typedef
     using name_t = std::string;
     using this_t = a_engine_state_t;
-public: /* codetor */
+public: // codetor
     virtual ~a_engine_state_t() = default;
-public: /* actions */
+public: // actions
     virtual inline v1bit_t init() { return TRUTH; }
     virtual inline v1bit_t quit() { return TRUTH; }
     virtual inline v1bit_t work() { return TRUTH; }
-}; /* abstract engine state */
+}; // abstract engine state
 
-/* template engine type */
 template<class t_class_t, class t_state_t = a_engine_state_t>
 class engine_t : public meta::single_t<t_class_t>
 {
@@ -37,7 +33,7 @@ public: /* typedef */
 	using work_flow_t = std::thread;
 	using work_flag_t = v1bit_t;
 	using state_t = t_state_t;
-	using state_list_t = darray_t<state_t*>;
+	using state_list_t = data::dpack_t<state_t*>;
     using this_t = engine_t<t_class_t>;
 public: /* getters */
     inline work_flow_t&get_work_flow()
@@ -60,7 +56,7 @@ public: /* setters */
     {
         _EFNOT(this->vet_state(index), return *this, "index error!");
         delete this->state_list[index];
-        this->state_list.erase(this->state_lsit.begin() + index);
+        this->state_list.erase(this->state_list.begin() + index);
         return *this;
     }
     this_t&delete_state()
@@ -128,8 +124,8 @@ protected: /* datadef */
 		return TRUTH;
 	};
 	state_list_t state_list;
-}; /* engine_t */
+}; // template engine type
 
-} } /* typedef */
+} } // namespace libasist { namespace exec {
 
-#endif/*LIBASIST_EXEC_ENGINE_HXX*/
+#endif//LIBASIST_EXEC_ENGINE_HXX

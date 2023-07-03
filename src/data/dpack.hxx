@@ -1,26 +1,23 @@
-#ifndef LIBASIST_DATA_SARRAY_HXX
-#define LIBASIST_DATA_SARRAY_HXX 1
+#ifndef LIBASIST_DATA_DPACK_HXX
+#define LIBASIST_DATA_DPACK_HXX
 
 #include "../head.hxx"
 
-/* headers */
+namespace libasist { namespace data {
 
-/* content */
+// typedef
 
-namespace libasist { namespace data { /* typedef */
-
-/* sarray_t
- * static array templated class
- */
+#if 1
+// dynamic array template type
+template <typename t_val_t>
+using dpack_t = std::vector<t_val_t>;
+#else
 template<typename vdata_t>
-class sarray_t
+class dpack_t
 {
-public:     /* typedef */
-    using this_t = sarray_t< vdata_t >;
+public: // typedef
+    using this_t = dpack_t< vdata_t >;
     using mdata_t = vdata_t*;
-    /* iter_t
-     * iterator
-     */
     class iter_t
     {
     public:     /* typedef */
@@ -41,26 +38,27 @@ public:     /* typedef */
     public:     /* setters */
     private:    /* content */
         mdata_t mdata;
-    };
-public:     /* codetor */
-    sarray_t()
+    }; // iterator
+public: // codetor
+    dpack_t()
     {
     }
-    sarray_t(count_t count)
+    dpack_t(count_t count)
     {
     }
-    ~sarray_t()
+    ~dpack_t()
     {
     }
-public:     /* opertor */
-public:     /* getters */
-public:     /* vetters */
-public:     /* setters */
-public:     /* actions */
-private:    /* content */
+public: // opertor
+public: // getters
+public: // vetters
+public: // setters
+public: // actions
+private: // content
     iter_t head;
-};
+}; // dynamic pack template type
+#endif
 
-} } /* typedef */
+} } // typedef
 
-#endif/*LIBASIST_DATA_SARRAY_HXX*/
+#endif//LIBASIST_DATA_DPACK_HXX

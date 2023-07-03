@@ -41,64 +41,68 @@ namespace fstd = std::experimental::filesystem;
 /* defines */
 
 #ifndef _OPUT
-#define _OPUT( args... ) fprintf( stdout, ##args );
+#define _OPUT( ... ) { \
+    std::format_to( \
+        std::ostream_iterator< \
+        decltype(std::cout)::char_type \
+        >(std::cout), \
+        __VA_ARGS__ \
+    ); \
+}
 #endif/*_OPUT*/
 #ifndef _OLOG
-#define _OLOG( mesg, args... ) { \
+#define _OLOG( ... ) { \
     _OPUT( \
-        "[from]%s" \
-        "[file]%s" \
-        "[func]%s" \
-        "[line]%d" \
-        "[mesg]%c" mesg "%c", \
+        "[from]{:s}" \
+        "[file]{:s}" \
+        "[func]{:s}" \
+        "[line]{:d}" \
+        "[mesg]{:c}{:s}{:c}", \
         \
         "olog", \
         _FILE_NAME, \
         _FUNC_NAME, \
         _FILE_LINE, \
-        text::ENDL_CHAR, ##args, text::ENDL_CHAR) \
+        text::ENDL_CHAR, \
+        std::format( __VA_ARGS__ ), \
+        text::ENDL_CHAR \
+    ); \
 }
 #endif/*_OLOG*/
 
 #ifndef _EPUT
-#define _EPUT( args... ) fprintf( stderr, ##args );
+#define _EPUT( ... ) { \
+    std::format_to( \
+        std::ostream_iterator< \
+        decltype(std::cerr)::char_type \
+        >(std::cout), \
+        __VA_ARGS__ \
+    ); \
+}
 #endif/*_EPUT*/
 #ifndef _ELOG
-#define _ELOG( mesg, args... ) { \
+#define _ELOG( ... ) { \
     _EPUT( \
-        "[from]%s" \
-        "[file]%s" \
-        "[func]%s" \
-        "[line]%d" \
-        "[mesg]%c" mesg "%c", \
+        "[from]{:s}" \
+        "[file]{:s}" \
+        "[func]{:s}" \
+        "[line]{:d}" \
+        "[mesg]{:c}{:s}{:c}", \
         \
         "elog", \
         _FILE_NAME, \
         _FUNC_NAME, \
         _FILE_LINE, \
-        text::ENDL_CHAR, ##args, text::ENDL_CHAR) \
+        text::ENDL_CHAR, \
+        std::format( __VA_ARGS__ ), \
+        text::ENDL_CHAR \
+    ); \
 }
 #endif/*_ELOG*/
 
 /* content */
 
 namespace libasist { /* typedef */
-
-/* input-only-memory-data-stream */
-using mdata_writer_t = std::istream;
-using mdata_writer_iter_t = std::istream_iterator<scstr_t>;
-/* output-only-memory-data-stream */
-using mdata_reader_t = std::ostream;
-using mdata_reader_iter_t = std::ostream_iterator<scstr_t>;
-/* input-output-memory-data-stream */
-using mdata_editor_t = std::iostream;
-
-/* input-only-file-data-stream */
-using fdata_writer_t = std::istream;
-/* output-only-file-data-stream */
-using fdata_reader_t = std::ostream;
-/* input-output-file-data-stream */
-using fdata_editor_t = std::iostream;
 
 using fpaf_t = fstd::path;
 using fdir_info_t = fstd::directory_entry;

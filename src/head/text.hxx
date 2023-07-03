@@ -21,6 +21,7 @@
 #include <string_view>
 
 #include <sstream>
+#include <format>
 
 /* defines */
 
@@ -30,7 +31,7 @@
 
 /* content */
 
-namespace libasist { /* typedef */
+namespace libasist { /* forward */
 
 using schar_t = char; /* standard character */
 using uchar_t = unsigned char; /* unsigned character */
@@ -43,6 +44,21 @@ using uvstr_t = std::basic_string_view<uchar_t>; /* unsigned view string */
 
 using sdstr_t = std::basic_string<schar_t>; /* standard dynamic string */
 using udstr_t = std::basic_string<uchar_t>; /* unsgined dynamic string */
+
+} /* forward */
+
+namespace libasist { namespace text { /* consdef */
+
+constexpr scstr_t BELL_CSTR = "\a";
+constexpr schar_t BELL_CHAR = '\a';
+constexpr scstr_t ENDL_CSTR = "\n";
+constexpr schar_t ENDL_CHAR = '\n';
+constexpr scstr_t ENDS_CSTR = "\0";
+constexpr schar_t ENDS_CHAR = '\0';
+
+} } /* constdef */
+
+namespace libasist { /* typedef */
 
 /* template hash string template type */
 template< typename t_char_t>
@@ -154,35 +170,7 @@ thstr_t(const t_char_t*data, const size_t size) -> thstr_t<t_char_t>;
 template<typename t_char_t, size_t t_size>
 thstr_t(const t_char_t(&data)[t_size]) -> thstr_t<t_char_t>;
 
-namespace text { /* special chars */
-
-struct endl_t {
-    constexpr explicit operator schar_t() { return '\n'; }
-    constexpr operator scstr_t() { return "\n"; }
-} static inline endl;
-struct ends_t {
-    constexpr explicit operator schar_t() { return '\0'; }
-    constexpr operator scstr_t() { return "\0"; }
-} static inline ends;
-struct bell_t {
-    constexpr explicit operator schar_t() { return '\a'; }
-    constexpr operator scstr_t() { return "\a"; }
-} static inline bell;
-
-} /** special chars **/
-
 } /* typedef */
-
-namespace libasist { namespace text { /* consdef */
-
-constexpr scstr_t BELL_CSTR = "\a";
-constexpr schar_t BELL_CHAR = '\a';
-constexpr scstr_t ENDL_CSTR = "\n";
-constexpr schar_t ENDL_CHAR = '\n';
-constexpr scstr_t ENDS_CSTR = "\0";
-constexpr schar_t ENDS_CHAR = '\0';
-
-} } /* constdef */
 
 namespace libasist { /* operats */
 
@@ -226,5 +214,18 @@ shstr_t operator""_shstr(const char*mdata, std::size_t msize) noexcept
 { return shstr_t::make_hstr(mdata, msize); }
 
 } /* operats */
+
+namespace std { /* standard */
+
+template<> struct formatter<libasist::sdata_t> : public formatter<void*> {};
+template<> struct formatter<libasist::udata_t> : public formatter<void*> {};
+template<> struct formatter<short signed*> : public formatter<void*> {};
+template<> struct formatter<short unsigned*> : public formatter<void*> {};
+template<> struct formatter<int signed*> : public formatter<void*> {};
+template<> struct formatter<int unsigned*> : public formatter<void*> {};
+template<> struct formatter<float*> : public formatter<void*> {};
+template<> struct formatter<double*> : public formatter<void*> {};
+
+} /* standard */
 
 #endif/*LIBASIST_HEAD_TEXT_HXX*/

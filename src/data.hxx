@@ -1,20 +1,12 @@
 #ifndef LIBASIST_DATA_HXX
-#define LIBASIST_DATA_HXX 1
+#define LIBASIST_DATA_HXX
 
 #include "head.hxx"
+#include "data/spack.hxx"
+#include "data/dpack.hxx"
+#include "data/list1.hxx"
+#include "data/list2.hxx"
+#include "data/btree.hxx"
+#include "data/table.hxx"
 
-/* headers */
-
-#include "data/sarray.hxx"
-#include "data/darray.hxx"
-#include "data/l1list.hxx"
-#include "data/l2list.hxx"
-#include "data/btable.hxx"
-#include "data/htable.hxx"
-
-/* content */
-
-namespace libasist { namespace data { /* typedef */
-} } /* typedef */
-
-#endif/*LIBASIST_DATA_HXX*/
+#endif//LIBASIST_DATA_HXX
