@@ -369,7 +369,6 @@ print: print-head
 	$(info [debug]=clean, rebuild and run the binary file with the debugger)
 	$(info [print]=write this whole text)
 print-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL print; done
 	$(info [[print]])
 
 ## source
