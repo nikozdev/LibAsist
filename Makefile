@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VNUM:=0xa0a2a2
+VNUM:=0xa0a2a3
 TYPE:=EXE
 CONF:=WORK
 
@@ -113,7 +113,7 @@ MANFTL:=$(patsubst $(MANFSD)/%,$(MANFTD)/%,$(MANFSL))
 
 LIBDIR:=$(FSDLOC)/lib
 LIBSET:=$(patsubst $(LIBDIR)/%,%,$(wildcard $(LIBDIR)/*))
-LIBUSE:=$(subst ,,$(LIBSET)) # no-build libs can be in the 1st arg
+LIBUSE:=$(subst ,,$(LIBSET))
 LIBMOD:=SLL
 LIBSUF:=$(BINSUF_$(LIBMOD))
 LIBLIN:=$(patsubst %,$(LIBDIR)/%/bin/*.$(LIBSUF),$(LIBUSE))
@@ -253,58 +253,42 @@ TERMDB:= $(shell which gdb)
 
 build: build-head $(PCHFSL) $(OBJFSL) $(BINFSL) $(LIBLIN)
 build-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL build; done
 	$(info "[[build]]")
 
 clean: clean-head
 	$(TERMRM) $(OBJFSL) $(BINFSL) $(PCHFSL)
 clean-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL clean; done
 	$(info "[[clean]]")
 
 ## external
 
 setup: setup-head $(BINFTL) $(MANFTL)
 setup-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL setup; done
 	$(info "[[setup]]")
 
 reset: reset-head
 	$(TERMRM) $(BINFTL) $(MANFTL)
 reset-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL reset; done
 	$(info "[[reset]]")
 
 ## addition
 
 again: again-head clean build
 again-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL again; done
 	$(info "[[again]]")
 
-ifeq ($(TYPE),EXE)
 start: start-head build
 	@for bin in ${BINFSL}; do $$bin $(ARGV); done
-else
-start: start-head build
-endif
 start-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL start; done
 	$(info "[[start]]")
 
 rerun: rerun-head again start
 rerun-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL rerun; done
 	$(info "[[rerun]]")
 
-ifeq ($(TYPE),EXE)
 debug: debug-head again
 	@for bin in ${BINFSL}; do $(TERMDB) $$bin $(ARGV); done
-else
-debug: debug-head again
-endif
 debug-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL debug; done
 	$(info "[[debug]]")
 
 print: print-head
@@ -400,12 +384,9 @@ $(PCHFSD)/%.$(PCHSUF): $(HDRFSD)/%
 $(SRCFSD)/%.$(SRCSUF): $(HDRFSD)/%.$(HDRSUF)
 	$(info "[source]=$@")
 
-# strace can be used to make sure precompiled header is used
-# # but this is gonna hide errors during the compilation
 $(OBJFSD)/%.$(OBJSUF): $(SRCFSD)/%.$(SRCSUF)
 	$(info "[object]=$@")
 	$(CMAKER) $@ $^ $(CFLAGS)
-#strace -e openat -ff $(CMAKER) $@ $^ $(CFLAGS) 2>&1 | grep '\.hxx\.gch'
 
 $(BINFSD)/%.$(BINSUF): $(OBJFSL)
 	$(info "[source-binary]=$@")
