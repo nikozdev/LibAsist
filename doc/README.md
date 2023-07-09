@@ -2,10 +2,10 @@
 
 - lib-asist
 > library assistant
-- utilities, functions, types, etc for programming
+- the most basic things repeatedly written in my projects
 - initially created by nikozdev to...
 > avoid writting the same code for different projects
-> avoid external dependencies ( yes, i have "dependophobia" )
+> avoid external dependencies ( yes, i had "dependophobia" )
 > make own standards, frameworks and write more consistent code
 - the majority of the source code is written in c/c++ programming language
 > i just love this and have no need for other langs yet... *for now*
@@ -35,6 +35,11 @@
 - gnu/make is the main build system
 > i find it the most verbose and specific build system
 > i can set up anything i need with gnu/make on gnu/linux
+- i may consider using cmake
+> it would be easier to integrate other deps
+> that would also be better for portability
+> for now, i just dislike cmake and do not want to use it
+> > because of it's format and interfaces
 
 ### link as an executable
 
