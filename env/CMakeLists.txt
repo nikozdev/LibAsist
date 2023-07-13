@@ -20,17 +20,18 @@ file(GLOB vFileSetSrc CMAKE_CONFIGURE_DEPENDS
     "${vFileDirSrc}/*/*.cxx"
     ) # file
 # oput
-##set(RUNTIME_OUTPUT_DIRECTORY "../gen")
+set(vFileDirBin "${vFileLoc}/gen")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
+set(RUNTIME_OUTPUT_DIRECTORY ${vFileDirBin})
 # set_property()
 #add_library(${vProjName} STATIC)
 add_executable(${vProjName})
-##target_link_libraries(PUBLIC libasist)
+##target_link_libraries(${vProjName} PUBLIC)
 target_link_options(${vProjName} PUBLIC
     -lstdc++
     ) # target_link_options
-target_compile_options(${vProjName} PUBLIC
+target_compile_options(${vProjName} PRIVATE
     -O0 -g
     -fpermissive
     -Wno-class-conversion
@@ -41,8 +42,9 @@ target_compile_features(${vProjName} PUBLIC
     cxx_constexpr
     cxx_variadic_templates
     ) # target_compile_features
-target_include_directories(${vProjName} PUBLIC
+target_include_directories(${vProjName} PRIVATE
     "${vFileDirSrc}"
+    "${vFileDirBin}"
     ) # target_include_directories
 target_compile_definitions(${vProjName} PUBLIC
     _NAME=${vProjName} _NAME_STR=\"${vProjName}\"
