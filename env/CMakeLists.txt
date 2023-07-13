@@ -12,20 +12,21 @@ set(vProjConf WORK)
 set(CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED 20)
 set(CMAKE_CXX_COMPILER g++)
-# iput
+# file
 set(vFileLoc "${PROJECT_SOURCE_DIR}/..")
 set(vFileDirSrc "${vFileLoc}/src")
 file(GLOB vFileSetSrc CMAKE_CONFIGURE_DEPENDS
     "${vFileDirSrc}/*.cxx"
     "${vFileDirSrc}/*/*.cxx"
     ) # file
-# oput
-set(vFileDirBin "${vFileLoc}/gen")
+set(vFileDirGen "${vFileLoc}/gen")
+set(RUNTIME_OUTPUT_DIRECTORY ${vFileDirGen}/run)
+set(LIBRARY_OUTPUT_DIRECTORY ${vFileDirGen}/lib)
+set(ARCHIVE_OUTPUT_DIRECTORY ${vFileDirGen}/lib)
+# make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
-set(RUNTIME_OUTPUT_DIRECTORY ${vFileDirBin})
 # set_property()
-#add_library(${vProjName} STATIC)
 add_executable(${vProjName})
 ##target_link_libraries(${vProjName} PUBLIC)
 target_link_options(${vProjName} PUBLIC
@@ -44,7 +45,7 @@ target_compile_features(${vProjName} PUBLIC
     ) # target_compile_features
 target_include_directories(${vProjName} PRIVATE
     "${vFileDirSrc}"
-    "${vFileDirBin}"
+    "${vFileDirGen}"
     ) # target_include_directories
 target_compile_definitions(${vProjName} PUBLIC
     _NAME=${vProjName} _NAME_STR=\"${vProjName}\"
@@ -53,3 +54,4 @@ target_compile_definitions(${vProjName} PUBLIC
     _CONF_${vProjConf} _CONF_STR=\"${vProjConf}\"
     ) # target_definitions
 target_sources(${vProjName} PUBLIC ${vFileSetSrc})
+target_precompile_headers(${vProjName} PRIVATE ${vFileDirSrc}/head.hxx)
