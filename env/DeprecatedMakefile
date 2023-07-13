@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VNUM:=0xa0a2a3
+VNUM:=0xa0a3a0
 TYPE:=EXE
 CONF:=WORK
 
@@ -61,7 +61,6 @@ BINSUF:=$(BINSUF_SLL)
 else ifeq ($(TYPE),DLL)
 BINSUF:=$(BINSUF_DLL)
 endif
-MANSUF:=man
 
 ## source
 
@@ -75,7 +74,6 @@ SRCFSD:=$(FSDLOC)/src
 OBJFSD:=$(FSDLOC)/obj
 
 BINFSD:=$(FSDLOC)/bin
-MANFSD:=$(FSDLOC)/man
 
 RSCFSD:=$(FSDLOC)/rsc
 
@@ -87,7 +85,6 @@ SRCFSL:=$(wildcard $(SRCFSD)/*.$(SRCSUF) $(SRCFSD)/**/*.$(SRCSUF))
 OBJFSL:=$(patsubst $(SRCFSD)/%.$(SRCSUF),$(OBJFSD)/%.$(OBJSUF),$(SRCFSL))
 
 BINFSL:=$(BINFSD)/$(NAME).$(BINSUF)
-MANFSL:=$(wildcard $(MANFSD)/*.$(MANSUF))
 
 RSCFSL:= $(wildcard $(RSCFSD)/*.*) $(wildcard $(RSCFSD)/*/*.*)
 
@@ -100,12 +97,10 @@ FTDLOC:=$(HOME)/.local
 ### directories
 
 BINFTD:=$(FTDLOC)/bin
-MANFTD:=$(FTDLOC)/share/man/man1
 
 ### lists
 
 BINFTL:=$(patsubst $(BINFSD)/%.*,$(BINFTD)/%,$(BINFSL))
-MANFTL:=$(patsubst $(MANFSD)/%,$(MANFTD)/%,$(MANFSL))
 
 # build
 
@@ -262,12 +257,12 @@ clean-head:
 
 ## external
 
-setup: setup-head $(BINFTL) $(MANFTL)
+setup: setup-head $(BINFTL)
 setup-head:
 	$(info "[[setup]]")
 
 reset: reset-head
-	$(TERMRM) $(BINFTL) $(MANFTL)
+	$(TERMRM) $(BINFTL)
 reset-head:
 	$(info "[[reset]]")
 
@@ -307,7 +302,6 @@ print: print-head
 	$(info [SRCSUF]=$(SRCSUF))
 	$(info [OBJSUF]=$(OBJSUF))
 	$(info [BINSUF]=$(BINSUF))
-	$(info [MANSUF]=$(MANSUF))
 	$(info [==[source]==])
 	$(info [===[directories]===])
 	$(info [FSDLOC]=$(FSDLOC))
@@ -316,7 +310,6 @@ print: print-head
 	$(info [SRCFSD]=$(SRCFSD))
 	$(info [OBJFSD]=$(OBJFSD))
 	$(info [BINFSD]=$(BINFSD))
-	$(info [MANFSD]=$(MANFSD))
 	$(info [RSCFSD]=$(RSCFSD))
 	$(info [===[lists]===])
 	$(info [HDRFSL]=$(HDRFSL))
@@ -324,17 +317,14 @@ print: print-head
 	$(info [SRCFSL]=$(SRCFSL))
 	$(info [OBJFSL]=$(OBJFSL))
 	$(info [BINFSL]=$(BINFSL))
-	$(info [MANFSL]=$(MANFSL))
 	$(info [RSCFSL]=$(RSCFSL))
 	$(info [==[target]==])
 	$(info [===[locations]===])
 	$(info [FTDLOC]=$(FTDLOC))
 	$(info [===[directories]===])
 	$(info [BINFTD]=$(BINFTD))
-	$(info [MANFTD]=$(MANFTD))
 	$(info [===[lists]===])
 	$(info [BINFTL]=$(BINFTL))
-	$(info [MANFTL]=$(MANFTL))
 	$(info [=[build]=])
 	$(info [==[compiler]==])
 	$(info [CMAKER]=$(CMAKER))
@@ -361,15 +351,14 @@ print: print-head
 	$(info [=[rules]=])
 	$(info [build]=link binary file from object code compiled from source code)
 	$(info [clean]=remove compiled object code and linked binary file)
-	$(info [setup]=copy binary and manual files into the system)
-	$(info [reset]=remove binary and manual files from the system)
+	$(info [setup]=copy binary files into the system)
+	$(info [reset]=remove binary files from the system)
 	$(info [again]=clean and rebuild the project again)
 	$(info [start]=build and run the binary file)
 	$(info [rerun]=clean, rebuild and run the binary file with the shell)
 	$(info [debug]=clean, rebuild and run the binary file with the debugger)
 	$(info [print]=write this whole text)
 print-head:
-	@for lib in ${LIBUSE}; do ${MAKE} -C $(LIBDIR)/$$lib TYPE=SLL print; done
 	$(info [[print]])
 
 ## source
@@ -392,9 +381,6 @@ $(BINFSD)/%.$(BINSUF): $(OBJFSL)
 	$(info "[source-binary]=$@")
 	$(LMAKER) $@ $^ $(LFLAGS)
 
-$(MANFSD)/%.$(MANSUF):
-	$(info "[source-manual]=$@")
-
 ## target
 
 $(BINFTD)/%: %.$(BINSUF)
@@ -402,10 +388,5 @@ $(BINFTD)/%: %.$(BINSUF)
 	$(TERMCP) $< $@
 	$(TERMCO) $@
 	$(TERMCM) 744 $@
-
-$(MANFTD)/%.$(MANSUF): %.$(MANSUF)
-	$(info "[target-manual]=$@")
-	$(TERMCP) $< $@
-	$(TERMCM) 644 $@
 
 # endof

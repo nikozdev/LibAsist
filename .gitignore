@@ -1,7 +1,5 @@
 *.DS_Store
-*.obj
 *.pch
 *.gch
-*.exe
-*.sll
-*.dll
+gen/
+!gen/.aaa
