@@ -1,7 +1,7 @@
 # basic
 
 NAME:=libasist
-VNUM:=0xa0a2a2
+VNUM:=0xa1a0a0
 TYPE:=EXE
 CONF:=WORK
 
