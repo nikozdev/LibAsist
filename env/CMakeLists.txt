@@ -1,57 +1,100 @@
 cmake_minimum_required(VERSION 3.20)
+# mods
+include(dCmake.dir/mHelpRegex.cmake)
+include(dCmake.dir/mHelpOpt.cmake)
 # proj
-project(libasist
-    VERSION "0.3.0"
-    DESCRIPTION "core library of nikozdev"
+project(LibAsist
+    VERSION 0.0.0
+    DESCRIPTION "core library assistant of nikozdev"
     ) # project
-set(vProjName "${PROJECT_NAME}")
-set(vProjVnum "${PROJECT_VERSION}")
-set(vProjType EXE)
-set(vProjConf WORK)
+enable_language(CXX)
+set(vProjName ${PROJECT_NAME})
+set(vProjNameLib "l${vProjName}")
+set(vProjNameExe "e${vProjName}")
+set(vProjVnum ${PROJECT_VERSION})
+set(vProjDesc ${PROJECT_DESCRIPTION})
 # lang
-set(CXX_STANDARD 20)
-set(CXX_STANDARD_REQUIRED 20)
-set(CMAKE_CXX_COMPILER g++)
+set(vLangVnum 23)
+set(CMAKE_CXX_STANDARD ${vLangVnum})
+set(CMAKE_CXX_STANDARD_REQUIRED ${vLangVnum})
 # file
-set(vFileLoc "${PROJECT_SOURCE_DIR}/..")
-set(vFileDirSrc "${vFileLoc}/src")
-file(GLOB vFileSetSrc CMAKE_CONFIGURE_DEPENDS
-    "${vFileDirSrc}/*.cxx"
-    "${vFileDirSrc}/*/*.cxx"
-    ) # file
-set(vFileDirGen "${vFileLoc}/gen")
-set(RUNTIME_OUTPUT_DIRECTORY ${vFileDirGen}/run)
-set(LIBRARY_OUTPUT_DIRECTORY ${vFileDirGen}/lib)
-set(ARCHIVE_OUTPUT_DIRECTORY ${vFileDirGen}/lib)
+set(vFdirLoc ${PROJECT_SOURCE_DIR}/..)
+set(vFdirSrcRoot ${vFdirLoc}/src)
+set(vFdirSrcBase ${vFdirSrcRoot}/d${vProjName}.dir)
+set(vFdirGen ${vFdirLoc}/gen)
+set(RUNTIME_OUTPUT_DIRECTORY ${vFdirGen}/dExe.dir)
+set(LIBRARY_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
+set(ARCHIVE_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
 # make
+set(oProjConf "work")
+set(vProjConfList "play;work;")
+fOptEnum(oProjConf vProjConfList "project configuration")
+if(NOT oProjConfType)
+    message("project configuration is not defined")
+elseif(oProjConf STREQUAL "play")
+    set(CMAKE_BUILD_TYPE Release)
+elseif(oProjConf STREQUAL "work")
+    set(CMAKE_BUILD_TYPE Debug)
+else()
+    message("project configuration is not handled")
+endif() # oProjConf
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_BUILD_TYPE Debug)
-# set_property()
-add_executable(${vProjName})
-##target_link_libraries(${vProjName} PUBLIC)
-target_link_options(${vProjName} PUBLIC
-    -lstdc++
-    ) # target_link_options
-target_compile_options(${vProjName} PRIVATE
-    -O0 -g
+## lib
+add_library(${vProjNameLib} INTERFACE)
+set(vMakeDirsLib ${vFdirSrcRoot})
+set(vMakeDefsLib
+    "$<$<CXX_COMPILER_ID:MSVC>:>"
+    "$<$<CXX_COMPILER_ID:GNU,Clang>:>"
+    "d${vProjName}ProjName=\"${vProjName}\""
+    "d${vProjName}ProjVnum=\"${vProjVnum}\""
+    "d${vProjName}ProjDesc=\"${vProjDesc}\""
+    "d${vProjName}ProjConf=\"${oProjConf}\""
+    "d${vProjName}ProjConf${oProjConf}"
+    ) # vMakeDefsLib
+set(vMakeFeatLib
+    cxx_std_23
+    cxx_constexpr
+    cxx_variadic_templates
+    ) # vMakeFeatLib
+set(vMakeOptsLib
     -fpermissive
     -Wno-class-conversion
     -Wno-error=narrowing -Wno-narrowing
-    ) # target_compile_options
-target_compile_features(${vProjName} PUBLIC
-    cxx_std_20
-    cxx_constexpr
-    cxx_variadic_templates
-    ) # target_compile_features
-target_include_directories(${vProjName} PRIVATE
-    "${vFileDirSrc}"
-    "${vFileDirGen}"
-    ) # target_include_directories
-target_compile_definitions(${vProjName} PUBLIC
-    _NAME=${vProjName} _NAME_STR=\"${vProjName}\"
-    _VNUM=${vProjVnum} _VNUM_STR=\"${vProjVnum}\"
-    _TYPE_${vProjType} _TYPE_STR=\"${vProjType}\"
-    _CONF_${vProjConf} _CONF_STR=\"${vProjConf}\"
-    ) # target_definitions
-target_sources(${vProjName} PUBLIC ${vFileSetSrc})
-target_precompile_headers(${vProjName} PRIVATE ${vFileDirSrc}/head.hxx)
+    ) # vMakeOptsLib
+### libs
+### last
+target_compile_options(${vProjNameLib} INTERFACE ${vMakeOptsLib})
+target_compile_features(${vProjNameLib} INTERFACE ${vMakeFeatLib})
+target_compile_definitions(${vProjNameLib} INTERFACE ${vMakeDefsLib})
+target_include_directories(${vProjNameLib} INTERFACE ${vMakeDirsLib})
+target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
+## exe
+option(oMakeExe "make project executable" 1)
+if(oMakeExe)
+    add_executable(${vProjNameExe} ${vFdirSrcBase}/fMain.cxx)
+    set(vMakeDirsExe "")
+    set(vMakeDefsExe "d${vProjName}MakeExe")
+    set(vMakeFeatExe "")
+    set(vMakeOptsExe "")
+    # test
+    option(oTestProjExe "test project executable" 1)
+    if(oTestProjExe)
+        enable_testing()
+        add_test(NAME tHello
+            COMMAND ${vFdirGen}/${vProjNameExe}
+            ) # add_test
+        set(vPassRegex "hello world")
+        set_tests_properties(tHello PROPERTIES
+            PASS_REGULAR_EXPRESSION ${vPassRegex}
+            ) # set_tests_properties
+        list(APPEND vMakeDefsExe "d${vProjName}TestProjExe")
+    endif(oTestProjExe)
+    # libs
+    target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
+    # last
+    target_compile_options(${vProjNameExe} PRIVATE ${vMakeOptsExe})
+    target_compile_features(${vProjNameExe} PRIVATE ${vMakeFeatExe})
+    target_compile_definitions(${vProjNameExe} PRIVATE ${vMakeDefsExe})
+    target_include_directories(${vProjNameExe} PRIVATE ${vMakeDirsExe})
+    target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fMain.hxx)
+endif(oMakeExe)
