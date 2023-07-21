@@ -152,14 +152,14 @@ SpaceBeforeRangeBasedForLoopColon:  false # for (auto a:v)
 SpaceBeforeSquareBrackets:          false # a []
 SpaceInEmptyBlock:                  false # { }
 SpaceInEmptyParentheses:            false # ( )
-SpacesBeforeTrailingComments:       1
+SpacesBeforeTrailingComments:       0
 SpacesInAngles:                     Never # < >
 SpacesInCStyleCastParentheses:      false # ( int )i
 SpacesInConditionalStatement:       false # if ( b ) {}
 SpacesInContainerLiterals:          false  # v = [ 1, 2, 3, ]
 SpacesInLineCommentPrefix: # //    4 spaces max
-  Minimum:                          1
-  Maximum:                          -1
+  Minimum:                          0
+  Maximum:                          0
 SpacesInParentheses:                false # ( 'c' )
 SpacesInSquareBrackets:             false # ( v[ 42 ] )
 StatementMacros:
