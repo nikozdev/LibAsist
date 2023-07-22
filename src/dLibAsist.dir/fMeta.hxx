@@ -17,9 +17,46 @@ namespace nLibAsist
 {
 namespace nMeta
 {
+//typedef
 using tVoid = void;
 template<typename tValT>
-using tListI = std::initializer_list<tValT>;//list-initializer template type
+using tIList = std::initializer_list<tValT>;
+/* tTypeDef
+ * compile-time meta-type to "typedef ... tType" in itself
+ */
+template<typename tTypeT>
+dTypeDefIline struct tTypeDef
+{
+	typedef tTypeT tType;
+};
+/* tTypeDefIfThenOnly
+ * compile-time meta-type to "typedef ... tType" in itself
+ * "tType" is gonna be defined as "tThenT" only if "cIfT" is 1
+ */
+template<nBool::tBool cIfT, typename tThenT>
+dTypeDefIline struct tTypeDefIfThenOnly
+{
+	typedef tThenT tType;
+};//tTypeDefIfThenOnly<cTruth>
+template<typename tThenT>
+dTypeDefIline struct tTypeDefIfThenOnly<nBool::cFalse, tThenT>
+{
+};//tTypeDefIfThenOnly<cFalse>
+/* tTypeDefIfThenElse
+ * compile-time meta-type to "typedef ... tType" in itself
+ * "tType" is "tThenT" if "cIfT" is 1
+ * "tElse" is "tThenT" if "cIfT" is 0
+ */
+template<nBool::tBool cIfT, typename tThenT, typename tElseT = tThenT>
+dTypeDefIline struct tTypeDefIfThenElse
+{
+	typedef tThenT tType;
+};//tTypeDefIfThenElse<cTruth>
+template<typename tThenT, typename tElseT>
+dTypeDefIline struct tTypeDefIfThenElse<nBool::cFalse, tThenT, tElseT>
+{
+	typedef tElseT tType;
+};//tTypeDefSwitch<cFalse>
 //actions
 template<typename tVal>
 aUseReturned("get next value not equal to the first, or get the last"
@@ -29,8 +66,8 @@ aUseReturned("get next value not equal to the first, or get the last"
 }//fGetNotEmpty
 template<typename tVal, typename... tArg>
 aUseReturned("get next value not equal to the first, or get the last"
-) dFuncDefConst
-	auto &fGetNequOrLast(const tVal &rNequ, const tVal &rNext, tArg &&...rList)
+) dFuncDefConst auto
+	&fGetNequOrLast(const tVal &rNequ, const tVal &rNext, tArg &&...rList)
 {
 	return rNext == rNequ ? fGetNeq(rNequ, std::forward<tArg>(rList)...) : rNext;
 }//fGetNotLast
