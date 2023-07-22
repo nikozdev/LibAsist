@@ -1,5 +1,5 @@
-#ifndef dLibAsistHeadTimeHxx
-#define dLibAsistHeadTimeHxx
+#ifndef dLibAsistTimeHxx
+#define dLibAsistTimeHxx
 //headers
 #include "fNums.hxx"
 #include "fMemo.hxx"
@@ -9,6 +9,6 @@
 //content
 namespace nTime
 {
-constexpr auto cFormat = "y%ym%md%d-h%Hm%Ms%S";
+dDataDefConst auto cFormat = "y%ym%md%d-h%Hm%Ms%S";
 }//namespace nTime
-#endif//dLibAsistHeadTimeHxx
+#endif//dLibAsistTimeHxx

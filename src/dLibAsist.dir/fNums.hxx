@@ -1,11 +1,13 @@
-#ifndef dLibAsistHeadNumsHxx
-#define dLibAsistHeadNumsHxx
+#ifndef dLibAsistNumsHxx
+#define dLibAsistNumsHxx
 //headers
+#include "fTool.hxx"
 #include "fBool.hxx"
 //-//standard
 #include <cmath>
 #include <numeric>
 #include <cstdint>
+#include <limits>
 //content
 namespace nLibAsist
 {
@@ -46,26 +48,28 @@ using tReal8 = double;//type of fractional number with 8 byte size
 using tRealM = float; //type of fractional number main
 using tReal	 = tRealM;//type of fractional number
 //consdef
-constexpr auto		cZero			  = 0;		 //0
-constexpr auto		cUnit			  = 1;		 //1
-constexpr auto		cUnitNeg		  = -1;		 //-1
-constexpr auto		cUnitPos		  = +1;		 //+1
-inline const tCount cNullCountZero	  = cZero;	 //null object count 0
-inline const tCount cNullCountUnit	  = cUnit;	 //null object count 1
-inline const tCount cNullCountUnitNeg = cUnitNeg;//null object count -1
-inline const tCount cNullCountUnitPos = cUnitPos;//null object count +1
-inline const tIndex cNullIndexZero	  = cZero;	 //null object index 0
-inline const tIndex cNullIndexUnit	  = cUnit;	 //null object count 1
-inline const tIndex cNullIndexUnitNeg = cUnitNeg;//null object count -1
-inline const tIndex cNullIndexUnitPos = cUnitPos;//null object count +1
-constexpr auto		cMathPi			  = 3.14159;
-constexpr auto		cMathDegFromRad	  = 180.0 / cMathPi;
-constexpr auto		cMathRadFromDeg	  = cMathPi / 180.0;
+// clang-format off
+dDataDefConst auto		   cZero			 = 0;
+dDataDefConst auto		   cUnit			 = 1;
+dDataDefConst auto		   cUnitNeg			 = -1;
+dDataDefConst auto		   cUnitPos			 = +1;
+dDataDefIline const tCount cNullCountZero	 = cZero;
+dDataDefIline const tCount cNullCountUnit	 = cUnit;
+dDataDefIline const tCount cNullCountUnitNeg = cUnitNeg;
+dDataDefIline const tCount cNullCountUnitPos = cUnitPos;
+dDataDefIline const tIndex cNullInDexZero	 = cZero;
+dDataDefIline const tIndex cNullInDexUnit	 = cUnit;
+dDataDefIline const tIndex cNullInDexUnitNeg = cUnitNeg;
+dDataDefIline const tIndex cNullInDexUnitPos = cUnitPos;
+dDataDefConst auto		   cMathPi			 = 3.14159;
+dDataDefConst auto		   cMathDegFromRad	 = 180.0 / cMathPi;
+dDataDefConst auto		   cMathRadFromDeg	 = cMathPi / 180.0;
+// clang-format on
 //getters
 //-//arithmetic
 template<typename tNumV, typename tPowV>
-[[nodiscard("get number multiplied by itself <power> times")]]
-inline constexpr auto fGetPow(tNumV vNumV, tPowV vPowV)
+aUseReturned("get number multiplied by itself <power> times"
+) dFuncDefConst auto fGetPow(tNumV vNumV, tPowV vPowV)
 {
 	return std::pow(vNumV, vPowV);
 }//fGetPow
@@ -75,8 +79,8 @@ template<
 	typename tNumV,
 	typename tAliV,
 	tCount cSysN = 2>
-[[nodiscard("get number aligned to lower or upper level of alignment")]]
-constexpr tRetV fGetAli(tNumV vNumV, tAliV vAliV)
+aUseReturned("get number aligned to lower or upper level of alignment"
+) dFuncDefConst tRetV fGetAli(tNumV vNumV, tAliV vAliV)
 {
 	static_assert(cSysN == 2, "sorry, i do not support non-binary alignment");
 	//align the value
@@ -100,40 +104,40 @@ constexpr tRetV fGetAli(tNumV vNumV, tAliV vAliV)
 	return reinterpret_cast<tRetV>(vNumV);
 }//fGetAli
 template<typename tRetT, typename tNumV, typename tAliV, tCount cSysN = 2>
-[[nodiscard("get number aligned to lower level of alignment")]]
-constexpr tRetT fGetAliLower(tNumV vNumV, tAliV vAliV)
+aUseReturned("get number aligned to lower level of alignment"
+) dFuncDefConst tRetT fGetAliLower(tNumV vNumV, tAliV vAliV)
 {
 	return fGetAli<nBool::cTruth, tRetT, tNumV, tAliV, cSysN>(vNumV, vAliV);
 }//fGetAliLower
 template<typename tRetT, typename tNumV, typename tAliV, tCount cSysN = 2>
-[[nodiscard("get number aligned to upper level of alignment")]]
-constexpr tRetT fGetAliUpper(tNumV vNumV, tAliV vAliV)
+aUseReturned("get number aligned to upper level of alignment"
+) dFuncDefConst tRetT fGetAliUpper(tNumV vNumV, tAliV vAliV)
 {
 	return fGetAli<nBool::cFalse, tRetT, tNumV, tAliV>(vNumV, vAliV);
 }//fGetAliUpper
 template<typename tDegN, typename tRadN>
-[[nodiscard("convert degrees into radians")]]
-constexpr tDegN fGetDegFromRad(tRadN vRadN)
+aUseReturned("convert degrees into radians"
+) dFuncDefConst tDegN fGetDegFromRad(tRadN vRadN)
 {
 	return reinterpret_cast<tDegN>(vRadN * cMathDegFromRad);
 }//fGetDegFromRad
 template<typename tDegN, typename tRadN>
-[[nodiscard("convert radians into degrees")]]
-constexpr tRadN fGetRadFromDeg(tDegN vDegN)
+aUseReturned("convert radians into degrees"
+) dFuncDefConst tRadN fGetRadFromDeg(tDegN vDegN)
 {
 	return reinterpret_cast<tRadN>(vDegN * cMathRadFromDeg);
 }//fGetRadFromDeg
 //-//meta
 template<typename tNumV = tIntSM>
-[[nodiscard("get -1 or +1 out of signed number (+1 for 0 because -128+127)")]]
-inline constexpr auto fGetSign(tNumV vNumV)
+aUseReturned("get -1 or +1 out of signed number (+1 for 0 because -128+127)"
+) dFuncDefConst auto fGetSign(tNumV vNumV)
 {
 	static_assert(std::is_signed<tNumV>().value, "sign of unsigned number");
 	return vNumV < cZero ? cUnitNeg : cUnitPos;
 }//fGetSign
 template<typename tNumV, tCount cSysN = 10>
-[[nodiscard("get digit count of number")]]
-inline constexpr auto fGetCount(tNumV vNumV)
+aUseReturned("get digit count of number"
+) dFuncDefConst auto fGetCount(tNumV vNumV)
 {
 	static_assert((cSysN > cUnit), "numeric system with 1 digit or less");
 	tCount vCount = cZero;
@@ -145,24 +149,24 @@ inline constexpr auto fGetCount(tNumV vNumV)
 	return vCount;
 }//fGetCount
 template<typename tNumV = tIntSM, tCount cSysN = 10>
-[[nodiscard("get digit on position from left")]]
-inline constexpr tNumV fGetFromL(tNumV vNumV, tIndex vPosI)
+aUseReturned("get digit on position from left"
+) dFuncDefConst tNumV fGetFromL(tNumV vNumV, tIndex vPosI)
 {
 	static_assert((cSysN > 1), "numeric system with 1 digit or less");
 	return vNumV % fGetPower<tNumV>(cSysN, vPosI + 1)
 		 / fGetPow<tNumV>(cSysN, vPosI - 1);
 }//fGetSideL
 template<typename tNumV = tIntSM, tCount cSysN = 10>
-[[nodiscard("get digit on position from right")]]
-inline constexpr tNumV fGetFromR(tNumV vNumV, tIndex vPosI)
+aUseReturned("get digit on position from right"
+) dFuncDefConst tNumV fGetFromR(tNumV vNumV, tIndex vPosI)
 {
 	static_assert((cSysN > 1), "numeric system with 1 digit or less");
 	return vNumV / fGetPower<tNumV>(cSysN, vPosI - 1) % cSysN;
 }//fGetFromR
 //-//transformation
 template<typename tNumV, tCount cSysN = 10>
-[[nodiscard("reverse a number from right to left")]]
-inline constexpr tNumV fGetRev(tNumV vNumV)
+aUseReturned("reverse a number from right to left"
+) dFuncDefConst tNumV fGetRev(tNumV vNumV)
 {
 	static_assert((cSysN > cUnit), "numeric system with 1 digit or less");
 	tNumV vRevN = 0;
@@ -178,29 +182,29 @@ inline constexpr tNumV fGetRev(tNumV vNumV)
 }//fGetRev
 //-//relation
 template<typename tNumL, typename tNumR = tNumL, typename tRetV = tNumL>
-[[nodiscard("get minimum of 2 values with any type")]]
-inline constexpr tRetV fGetMin(tNumL vNumL, tNumR vNumR)
+aUseReturned("get minimum of 2 values with any type"
+) dFuncDefConst tRetV fGetMin(tNumL vNumL, tNumR vNumR)
 {
 	return std::min(static_cast<tRetV>(vNumL), static_cast<tRetV>(vNumR));
 }//fGetMin
 template<typename tNumL, typename tNumR = tNumL, typename tRetV = tNumL>
-[[nodiscard("get maximum of 2 values with any type")]]
-inline constexpr tRetV fGetMax(tNumL vNumL, tNumR vNumR)
+aUseReturned("get maximum of 2 values with any type"
+) dFuncDefConst tRetV fGetMax(tNumL vNumL, tNumR vNumR)
 {
 	return std::max(static_cast<tRetV>(vNumL), static_cast<tRetV>(vNumR));
 }//fGetMax
 template<typename tNumV, typename tNumL = tNumV, typename tNumR = tNumL>
-[[nodiscard("check if a number is inside of boundaries")]]
-inline constexpr nBool::tBool fVetISide(tNumV vNumV, tNumL vNumL, tNumR vNumR)
+aUseReturned("check if a number is inside of boundaries"
+) dFuncDefConst nBool::tBool fVetISide(tNumV vNumV, tNumL vNumL, tNumR vNumR)
 {
 	return (vNumV >= vNumL) && (vNumR >= vNumV);
 }//fVetISide
 template<typename tNumV, typename tNumL, typename tNumR>
-[[nodiscard("check if a number is inside of boundaries")]]
-inline constexpr nBool::tBool fVetOSide(tNumV vNumV, tNumL vNumL, tNumR vNumR)
+aUseReturned("check if a number is inside of boundaries"
+) dFuncDefConst nBool::tBool fVetOSide(tNumV vNumV, tNumL vNumL, tNumR vNumR)
 {
 	return (vNumV < vNumL) || (vNumR > vNumV);
 }//fVetOSide
 }//namespace nNums
 }//namespace nLibAsist
-#endif//dLibAsistHeadNumsHxx
+#endif//dLibAsistNumsHxx

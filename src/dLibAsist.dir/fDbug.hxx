@@ -1,5 +1,5 @@
-#ifndef dLibAsistHeadDbugHxx
-#define dLibAsistHeadDbugHxx
+#ifndef dLibAsistDbugHxx
+#define dLibAsistDbugHxx
 //headers
 #include "fOsys.hxx"
 #include "fTool.hxx"
@@ -7,6 +7,7 @@
 #include "fIpop.hxx"
 //-//standard
 #include <csignal>
+#include <cerrno>
 //defines
 #ifndef dFileName
 #define dFileName __FILE__
@@ -21,12 +22,12 @@
 #define dFuncSign __PRETTY_FUNCTION__
 #endif//dFuncSign
 #ifndef fError
-#define fError(vCode, vActn, vArgs...)     \
-	({                                     \
-		fElog(vArgs);                      \
-		::LibAsist::nDbug::breakpoint();   \
-		::LibAsist::nDbug::vECode = vCode; \
-		vActn;                             \
+#define fError(vCode, vActn, vArgs...)   \
+	({                                   \
+		fElog(vArgs);                    \
+		::LibAsist::nDbug::breakpoint(); \
+		errno = vCode;                   \
+		vActn;                           \
 	})
 #endif//fError - raise an error signal
 #ifndef fEfnot
@@ -39,17 +40,17 @@
 	})
 #endif//fEfnot - error if not
 #ifndef fPcall
-#define fPcall(vExec, vActn, ...)              \
-	({                                         \
-		vExec;                                 \
-		fEfnot(                                \
-			::LibAsist::nDbug::vECode == 0,    \
-			{                                  \
-				vActn;                         \
-				::LibAsist::nDbug::vECode = 0; \
-			},                                 \
-			__VA_ARGS__                        \
-		);                                     \
+#define fPcall(vExec, vActn, ...) \
+	({                            \
+		vExec;                    \
+		fEfnot(                   \
+			errno == 0,           \
+			{                     \
+				vActn;            \
+				errno = 0;        \
+			},                    \
+			__VA_ARGS__           \
+		);                        \
 	})
 #endif//fPcall - protected call
 //content
@@ -57,29 +58,29 @@ namespace nLibAsist
 {
 namespace nDbug
 {
-//datadef
-inline static auto vECode = 0;
+//typedef
+using tECode = nNums::tIntSM;
 //actions
 #ifdef dLibAsistProjConfWork
 #ifdef SIGINT
-inline auto breakpoint()
+dFuncDefIline auto fBreak()
 {
 	std::raise(SIGINT);
-}
-#elif(defined(dOsysWinos))
-inline auto breakpoint()
+}//fBreak
+#elif(defined(dLibAsistOsysWinos))
+dFuncDefIline auto fBreak()
 {
 	fEput(text::cBellCstr);
 	system("pause");
-}
+}//fBreak
 #else
-#error "breakpoint function is not defined"
+#error "fBrean function is not defined"
 #endif//SIGINT
 #else
-inline auto breakpoint()
+dFuncDefIline auto fBreak()
 {
-}
-#endif /*_CONF_WORK*/
+}//fBreak
+#endif//dLibAsistProjConfWork
 }//namespace nDbug
 }//namespace nLibAsist
-#endif//dLibAsistHeadDbugHxx
+#endif//dLibAsistDbugHxx

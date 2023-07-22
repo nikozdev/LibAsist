@@ -121,7 +121,7 @@ PenaltyExcessCharacter:               1024
 PenaltyIndentedWhitespace:            1024
 PenaltyReturnTypeOnItsOwnLine:        1024
 QualifierAlignment: Custom
-QualifierOrder: [ "inline", "static", "constexpr", "const", "friend", "type" ]
+QualifierOrder: [ "inline", "static", "constexpr", "friend", "const", "type" ]
 ReflowComments:   true  # obey ColumnLimit
 RemoveBracesLLVM: false # remove {} for "if", "while", "for" { oneliners }
 RemoveSemicolon:  false # remove ; after }
@@ -169,6 +169,14 @@ AttributeMacros:
   - __capability
   - __output
   - __unused
+  - aDepreaction
+  - aUseReturned
+  - aNotReturned
+  - aNotReturned
+  - aCanBeUnused
+  - aSetDeclspec
+  - aDllExported
+  - aDllImported
 StatementAttributeLikeMacros: 
   - Q_EMIT
 ForEachMacros:
@@ -187,3 +195,33 @@ WhitespaceSensitiveMacros:
 TypenameMacros:
   - STACK_OF
   - LIST
+  - dFuncDecIline
+  - dFuncDecIline
+  - dFuncDecConst
+  - dFuncDecExter
+  - dFuncDecInter
+  - dFuncDefIline
+  - dFuncDefIline
+  - dFuncDefConst
+  - dFuncDefExter
+  - dFuncDefInter
+  - dDataDecIline
+  - dDataDecIline
+  - dDataDecConst
+  - dDataDecExter
+  - dDataDecInter
+  - dDataDefIline
+  - dDataDefIline
+  - dDataDefConst
+  - dDataDefExter
+  - dDataDefInter
+  - dTypeDecIline
+  - dTypeDecIline
+  - dTypeDecConst
+  - dTypeDecExter
+  - dTypeDecInter
+  - dTypeDefIline
+  - dTypeDefIline
+  - dTypeDefConst
+  - dTypeDefExter
+  - dTypeDefInter

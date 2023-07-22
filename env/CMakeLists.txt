@@ -26,10 +26,12 @@ set(RUNTIME_OUTPUT_DIRECTORY ${vFdirGen}/dExe.dir)
 set(LIBRARY_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
 set(ARCHIVE_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
 # make
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+##conf
 set(oProjConf "Work")
 set(vProjConfList "Play;Work;")
 fOptEnum(oProjConf vProjConfList "project configuration")
-if(NOT oProjConfType)
+if(oProjConf STREQUAL "")
     message("project configuration is not defined")
 elseif(oProjConf STREQUAL "Play")
     set(CMAKE_BUILD_TYPE Release)
@@ -37,19 +39,31 @@ elseif(oProjConf STREQUAL "Work")
     set(CMAKE_BUILD_TYPE Debug)
 else()
     message("project configuration is not handled")
-endif() # oProjConf
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif(oProjConf STREQUAL "")
+##type
+set(oProjType "Hol")
+set(vProjTypeList "Exe;Hol;Dll;Sll")
+fOptEnum(oProjType vProjTypeList "project type")
+if(oProjType STREQUAL "")
+    message("project type is not defined")
+elseif(oProjType STREQUAL "Exe")
+elseif(oProjType STREQUAL "Hol")
+elseif(oProjType STREQUAL "Dll")
+elseif(oProjType STREQUAL "Sll")
+else()
+    message("project type is not handled")
+endif(oProjType STREQUAL "")
 ## lib
 add_library(${vProjNameLib} INTERFACE)
 set(vMakeDirsLib ${vFdirSrcRoot})
 set(vMakeDefsLib
     "$<$<CXX_COMPILER_ID:MSVC>:>"
     "$<$<CXX_COMPILER_ID:GNU,Clang>:>"
-    "d${vProjName}ProjName=\"${vProjName}\""
-    "d${vProjName}ProjVnum=\"${vProjVnum}\""
-    "d${vProjName}ProjDesc=\"${vProjDesc}\""
-    "d${vProjName}ProjConf=\"${oProjConf}\""
-    "d${vProjName}ProjConf${oProjConf}"
+    "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
+    "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
+    "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
+    "d${vProjName}ProjConf${oProjConf}" "dProjConf${oProjConf}"
+    "d${vProjName}ProjType${oProjType}" "dProjType${oProjConf}"
     ) # vMakeDefsLib
 set(vMakeFeatLib
     cxx_std_23
@@ -62,6 +76,35 @@ set(vMakeOptsLib
     -Wno-error=narrowing -Wno-narrowing
     ) # vMakeOptsLib
 ### libs
+set(oLibsFormat "Fmt")
+set(vLibsListFormat "Std;Fmt;")
+fOptEnum(oLibsFormat vLibsListFormat  "library for formatting")
+if(oLibsFormat STREQUAL "")
+    message(WARNING "library for format is not defined")
+elseif(oLibsFormat STREQUAL "Fmt")
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(${vProjNameLib} INTERFACE fmt::fmt-header-only)
+    list(APPEND vMakeDefsLib "d${vProjName}LibsFormatFmt")
+elseif(oLibsFormat STREQUAL "Std")
+    if(${oLibsFormatStdCompiles})
+    else()
+        set(CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} "--std=c++20")
+        check_cxx_source_compiles(
+            "#include <format> int main() { return 0; }"
+            oLibsFormatStdCompiles
+            ) # check_cxx_source_compiles
+        if(${oLibsFormatStdCompiles})
+        else()
+            message(WARNING
+                "std::format does not compile"
+                " - choose another library for format"
+                ) # message
+        endif()
+    endif(oLibsFormatStdCompiles)
+else()
+    message(WARNING "library for format is not handled")
+endif(oLibsFormat STREQUAL "")
+list(APPEND vMakeDefsLib "d${vProjName}LibsFormat${oLibsFormat}")
 ### last
 target_compile_options(${vProjNameLib} INTERFACE ${vMakeOptsLib})
 target_compile_features(${vProjNameLib} INTERFACE ${vMakeFeatLib})
@@ -77,8 +120,8 @@ if(oMakeExe)
     set(vMakeFeatExe "")
     set(vMakeOptsExe "")
     # test
-    option(oTestProjExe "test project executable" 1)
-    if(oTestProjExe)
+    option(oTestExe "test project executable" 1)
+    if(oTestExe)
         enable_testing()
         add_test(NAME tHello
             COMMAND ${vFdirGen}/${vProjNameExe}
@@ -87,8 +130,8 @@ if(oMakeExe)
         set_tests_properties(tHello PROPERTIES
             PASS_REGULAR_EXPRESSION ${vPassRegex}
             ) # set_tests_properties
-        list(APPEND vMakeDefsExe "d${vProjName}TestProjExe")
-    endif(oTestProjExe)
+        list(APPEND vMakeDefsExe "d${vProjName}TestExe")
+    endif(oTestExe)
     # libs
     target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
     # last
@@ -96,5 +139,5 @@ if(oMakeExe)
     target_compile_features(${vProjNameExe} PRIVATE ${vMakeFeatExe})
     target_compile_definitions(${vProjNameExe} PRIVATE ${vMakeDefsExe})
     target_include_directories(${vProjNameExe} PRIVATE ${vMakeDirsExe})
-    target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fMain.hxx)
+    target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
 endif(oMakeExe)

@@ -1,6 +1,7 @@
-#ifndef dLibAsistHeadTextHxx
-#define dLibAsistHeadTextHxx
+#ifndef dLibAsistTextHxx
+#define dLibAsistTextHxx
 //headers
+#include "fTool.hxx"
 #include "fBool.hxx"
 #include "fNums.hxx"
 #include "fMemo.hxx"
@@ -9,7 +10,28 @@
 #include <cstring>
 #include <string_view>
 #include <sstream>
+#ifdef dLibAsistLibsFormatFmt
+#include <fmt/format.h>
+#include <fmt/ranges.h>
+namespace nLibAsist
+{
+namespace nText
+{
+using namespace nBool;
+namespace nFormat = ::fmt;
+}//namespace nText
+}//namespace nLibAsist
+#endif//dLibAsistLibsFormatFmt
+#ifdef dLibAsistLibsFormatStd
 #include <format>
+namespace nLibAsist
+{
+namespace nText
+{
+namespace nFormat = ::std;
+}//namespace nText
+}//namespace nLibAsist
+#endif//dLibAsistLibsFormatStd
 //defines
 #ifndef fGetStrFromArg
 #define fGetStrFromArg(str) #str
@@ -50,12 +72,12 @@ using tDstrS = std::basic_string<tCharS>;//type of dynamic string signed
 using tDstrM = std::basic_string<tCharM>;//type of dynamic string main
 using tDstr	 = tDstrM;					 //type of dynamic string
 //consdef
-constexpr tCstrM cBellCstr = "\a";
-constexpr tCharM cBellChar = '\a';
-constexpr tCstrM cEndlCstr = "\n";
-constexpr tCharM cEndlChar = '\n';
-constexpr tCstrM cEndsCstr = "\0";
-constexpr tCharM cEndsChar = '\0';
+dDataDefConst tCstrM cBellCstr = "\a";
+dDataDefConst tCharM cBellChar = '\a';
+dDataDefConst tCstrM cEndlCstr = "\n";
+dDataDefConst tCharM cEndlChar = '\n';
+dDataDefConst tCstrM cEndsCstr = "\0";
+dDataDefConst tCharM cEndsChar = '\0';
 //typedef
 template<typename tCharT>
 class tHstrT
@@ -71,7 +93,7 @@ public://typedef
 	{
 	public: /* codetor */
 
-		constexpr tConstant(tData vData) noexcept: vData{vData}
+		dFuncDefConst tConstant(tData vData) noexcept: vData{vData}
 		{
 		}
 
@@ -82,38 +104,43 @@ public://typedef
 
 public://consdef
 
-	static constexpr tHash cMoved = 0xff'ff'ff'ff;
-	static constexpr tHash cPrime = 0x00'ff'ff'ff;
+	dDataDefConst dDataDefInter tHash cMoved = 0xff'ff'ff'ff;
+	dDataDefConst dDataDefInter tHash cPrime = 0x00'ff'ff'ff;
 
 public://codetor
 
-	constexpr tHstrT() noexcept
+	aUseReturned("make hashed string with default values"
+	) dFuncDefConst tHstrT() noexcept
 	{
 	}
-	constexpr tHstrT(tCstr cData, const tSize cSize, const tHash cHash) noexcept
+	aUseReturned("make hashed string with all given values"
+	) dFuncDefConst tHstrT(tCstr cData, const tSize cSize, const tHash cHash) noexcept
 		: cData{cData}, cSize{cSize}, cHash{cHash}
 	{
 	}
-	constexpr tHstrT(tCstr cData, const tSize cSize) noexcept
+	aUseReturned("make hashed string out of a string with defined size"
+	) dFuncDefConst tHstrT(tCstr cData, const tSize cSize) noexcept
 		: tThis{fMakeHstr(cData, cSize)}
 	{
 	}
 
 	template<tSize cSizeT>
-	constexpr tHstrT(tCstr (&cData)[cSizeT]) noexcept
+	aUseReturned("make hashed string out of a stack-allocated string"
+	) dFuncDefConst tHstrT(tCstr (&cData)[cSizeT]) noexcept
 		: tThis{fMakeHstr(cData, cSizeT)}
 	{
 	}
 
-	explicit constexpr tHstrT(tConstant vConstant) noexcept
+	aUseReturned("make hashed string out of the constant wrapper"
+	) explicit dFuncDefConst tHstrT(tConstant vConstant) noexcept
 		: tThis{fMakeHstr(vConstant.vData)}
 	{
 	}
 
 public://actions
 
-	[[nodiscard("make hashed string out of c-string with null-terminator")]]
-	static constexpr tThis fMakeHstr(tCstr cData) noexcept
+	aUseReturned("make hashed string out of string with null-terminator"
+	) dFuncDefConst dFuncDefInter tThis fMakeHstr(tCstr cData) noexcept
 	{
 		tHash vHash = tThis::cMoved;
 		tSize vSize = 0;
@@ -123,8 +150,8 @@ public://actions
 		}
 		return tThis{cData, vSize, vHash};
 	}//fMakeHstr
-	[[nodiscard("make hashed string out of c-string with defined size")]]
-	static constexpr tThis fMakeHstr(tCstr cData, tSize vSize) noexcept
+	aUseReturned("make hashed string out of a string with defined size"
+	) dFuncDefConst dFuncDefInter tThis fMakeHstr(tCstr cData, tSize vSize) noexcept
 	{
 		tHash vHash = tThis::cMoved;
 		for(tSize vStep{}; vStep < vSize; ++vStep)
@@ -133,32 +160,34 @@ public://actions
 		}
 		return tThis{cData, vSize, vHash};
 	}//fMakeHstr
-	[[nodiscard("make hashed value out of c-string with defined size")]]
-	static constexpr tHash fMakeHash(tCstr cData, const tSize cSize) noexcept
+	aUseReturned("make hashed value out of c-string with defined size"
+	) dFuncDefConst dFuncDefInter tHash
+		fMakeHash(tCstr cData, const tSize cSize) noexcept
 	{
 		return fMakeHstr(cData, cSize);
 	}//fMakeHash
 	template<tSize cSize>
-	[[nodiscard("make hashed value out of stack-allocated c-string")]]
-	static constexpr tHash fMakeHash(tCstr (&cData)[cSize]) noexcept
+	aUseReturned("make hashed value out of stack-allocated c-string"
+	) dFuncDefConst dFuncDefInter tHash fMakeHash(tCstr (&cData)[cSize]
+	) noexcept
 	{
 		return fMakeHstr(cData, cSize);
 	}//fMakeHash
-	[[nodiscard("make hashed value out of constant wrapper")]]
-	static constexpr tHash fMakeHash(tConstant vConstant) noexcept
+	aUseReturned("make hashed value out of constant wrapper"
+	) dFuncDefInter dFuncDefConst tHash fMakeHash(tConstant vConstant) noexcept
 	{
 		return fMakeHstr(vConstant);
 	}//fMakeHash
 
-public: /* symbols */
+public://operats
 
-	[[nodiscard("convert hashed string into the hashed value")]] constexpr
+	aUseReturned("convert hashed string into the hashed value") dFuncDefConst
 	operator tHash() const noexcept
 	{
 		return this->hash;
 	}//operator tHash
-	[[nodiscard("convert hashed string into the original string"
-	)]] constexpr explicit
+	aUseReturned("convert hashed string into the original string"
+	) dFuncDefConst explicit
 	operator const tChar *() const noexcept
 	{
 		return this->cData;
@@ -177,87 +206,108 @@ using tHstrM = tHstrT<tCharM>;//type of hashed string main
 using tHstr	 = tHstrT<tChar>; //type of hashed string
 //deducts
 template<typename tCharT>
-[[nodiscard("deduction guide for hashed-string from c-string"
-)]] tHstrT(const tCharT *cData, const tSize cSize) -> tHstrT<tCharT>;
+aUseReturned("deduction guide for hashed-string from c-string"
+) dFuncDefExter explicit tHstrT(const tCharT *cData, const tSize cSize)
+	-> tHstrT<tCharT>;
 template<typename tCharT, tSize cSizeT>
-[[nodiscard("deduction guide for hashed-string from stack-allocated-string"
-)]] tHstrT(const tCharT (&cData)[cSizeT]) -> tHstrT<tCharT>;
+aUseReturned("deduction guide for hashed-string from stack-allocated-string"
+) dFuncDefExter tHstrT(const tCharT (&cData)[cSizeT]) -> tHstrT<tCharT>;
 //operats
 //-//string
 //-//-//hashed
 //-//-//-//equal
 template<typename tCharT>
-[[nodiscard("compare hashes of hashed strings")]]
-inline constexpr nBool::tBool
+aUseReturned("compare hashes of hashed strings") dFuncDefConst tBool
 operator==(const tHstrT<tCharT> &vHstrL, const tHstrT<tCharT> &vHstrR)
 {
 	return vHstrL.vHash == vHstrR.vHash;
 }//operator==
 template<typename tCharT>
-[[nodiscard("compare hashes of hashed strings")]]
-inline constexpr nBool::tBool
+aUseReturned("compare hashes of hashed strings") dFuncDefConst tBool
 operator!=(const tHstrT<tCharT> &vHstrL, const tHstrT<tCharT> &vHstrR)
 {
 	return !(vHstrL == vHstrR);
 }//operator!=
 //-//-//-//less than
 template<typename tCharT>
-[[nodiscard("compare sizes of hashed strings")]]
-inline constexpr nBool::tBool
+aUseReturned("compare sizes of hashed strings") dFuncDefConst tBool
 operator<(const tHstrT<tCharT> &vHstrL, const tHstrT<tCharT> &vHstrR)
 {
 	return vHstrL.cSize < vHstrR.cSize;
 }//operator<
 template<typename tCharT>
-[[nodiscard]]
-inline constexpr nBool::tBool
+aUseReturned("compare sizes of hashed strings") dFuncDefConst tBool
 operator<=(const tHstrT<tCharT> &vHstrL, const tHstrT<tCharT> &vHstrR)
 {
 	return !(vHstrL < vHstrR);
 }//operator<=
 //-//-//-//more than
 template<typename tCharT>
-[[nodiscard]]
-inline constexpr nBool::tBool
+aUseReturned("compare sizes of hashed strings") dFuncDefConst tBool
 operator>(const tHstrT<tCharT> &vHstrL, const tHstrT<tCharT> &vHstrR)
 {
 	return vHstrL < vHstrR;
 }//operator>
 template<typename tCharT>
-[[nodiscard("compare sizes of hashed strings")]]
-inline constexpr nBool::tBool
+aUseReturned("compare sizes of hashed strings") dFuncDefConst tBool
 operator>=(const tHstrT<tChar> &vHstrL, const tHstrT<tCharT> &vHstrR)
 {
 	return !(vHstrL < vHstrR);
 }//operator>=
 //-//-//-//literal
-[[nodiscard("string literal for hashed-string-main conversion")]]
-inline constexpr tHstrM
-operator""_HstrM(const tCharM *cData, tSize cSize) noexcept
+aUseReturned("string literal for hashed-string-main conversion"
+) dFuncDefConst tHstrM
+operator""_Hstr(const tCharM *cData, tSize cSize) noexcept
 {
 	return tHstrM::fMakeHstr(cData, cSize);
 }//operator""
 //-//-//constant
-[[nodiscard("string literal for static-string conversion")]]
-inline constexpr tCstr
+aUseReturned("string literal for string conversion") dFuncDefConst tCstr
 operator""_Cstr(const tChar *cData, tSize csize) noexcept
 {
 	return tCstr{cData};
 }//operator""
 //-//-//dynamic
-[[nodiscard("string literal for dynamic-string conversion")]]
-inline tDstr
+aUseReturned("string literal for dynamic-string conversion") dFuncDefIline tDstr
 operator""_Dstr(const tChar *cData, tSize cSize) noexcept
 {
 	return tDstr{cData, cSize};
 }//operator""
 //-//-//view
-[[nodiscard("string literal for view-string conversion")]]
-inline tVstr
+aUseReturned("string literal for view-string conversion") dFuncDefConst tVstr
 operator""_Vstr(const tChar *cData, const tSize cSize) noexcept
 {
 	return tVstr{cData, cSize};
 }//operator""
+//actions
+aUseReturned("compare two c-strings for being one equal to the other"
+) dFuncDefIline tBool fVetEq(tCstr vCstrL, tCstr vCstrR, tBool vVet = 1)
+{
+	return (std::strcmp(vCstrL, vCstrR) == 0) == vVet;
+}//fVetEq
+aUseReturned("compare two c-strings for being one longer than the other"
+) dFuncDefIline tBool fVetGt(tCstr vCstrL, tCstr vCstrR)
+{
+	return std::strlen(vCstrL) > std::strlen(vCstrR);
+}//fVetGt
+aUseReturned("compare two c-strings for being one shorter than the other"
+) dFuncDefIline tBool fVetLt(tCstr vCstrL, tCstr vCstrR)
+{
+	return std::strlen(vCstrL) < std::strlen(vCstrR);
+}//fVetLt
+aUseReturned("find out if the given string string array contains a string"
+) dFuncDefIline tBool
+	fVetIn(tCstrM vCstr, tCstrM pHead[], tCstrM pTail[], tBool vVet = 1)
+{
+	for(tCstrM *pIter = pHead; pIter < pTail; pIter++)
+	{
+		if(fVetEq(vCstr, *pIter))
+		{
+			return vVet;
+		}
+	}
+	return !vVet;
+}//fVetIn
 }//namespace nText
 }//namespace nLibAsist
 #if 0
@@ -281,4 +331,4 @@ struct formatter<nLibAsist::nNums::tRealM*>: public formatter<void *>
 };
 }//namespace std
 #endif
-#endif//dLibAsistHeadTextHxx
+#endif//dLibAsistTextHxx

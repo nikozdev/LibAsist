@@ -1,5 +1,5 @@
-#ifndef dLibAsistHeadExecHxx
-#define dLibAsistHeadExecHxx
+#ifndef dLibAsistExecHxx
+#define dLibAsistExecHxx
 //headers
 #include <thread>
 //content
@@ -10,4 +10,4 @@ namespace nExec
 using tFlow = std::thread;
 }//namespace nExec
 }//namespace nLibAsist
-#endif//dLibAsistHeadExecHxx
+#endif//dLibAsistExecHxx

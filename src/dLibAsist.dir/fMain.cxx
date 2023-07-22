@@ -1,13 +1,13 @@
 #ifndef dLibAsistMainCxx
 #define dLibAsistMainCxx
 //headers
-#include "fMain.hxx"
+#include "fHead.hxx"
 //content
 #ifdef dLibAsistMakeExe
 //actions
-int main(int vArgC, char *vArgV[])
+int main(int vArgC, const char *vArgV[])
 {
-	return nLibAsist::fMain(vArgC, vArgV);
+	return ::nLibAsist::nMain::fMain(vArgC, vArgV);
 }//main
 #endif//dLibAsistMakeExe
 #endif//dLibAsistMainCxx
