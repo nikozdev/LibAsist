@@ -43,13 +43,11 @@ namespace nFileSys = std::experimental::filesystem;
 	{                                                         \
 		fOput(                                                \
 			"[from]{:s}"                                      \
-			"[file]{:s}"                                      \
 			"[func]{:s}"                                      \
 			"[line]{:d}"                                      \
 			"[mesg]{:c}{:s}{:c}",                             \
                                                               \
 			"olog",                                           \
-			dFileName,                                        \
 			dFuncName,                                        \
 			dFileLine,                                        \
 			::nLibAsist::nText::cEndlChar,                    \
@@ -72,13 +70,11 @@ namespace nFileSys = std::experimental::filesystem;
 	{                                                         \
 		fEput(                                                \
 			"[from]{:s}"                                      \
-			"[file]{:s}"                                      \
 			"[func]{:s}"                                      \
 			"[line]{:d}"                                      \
 			"[mesg]{:c}{:s}{:c}",                             \
                                                               \
 			"elog",                                           \
-			dFileName,                                        \
 			dFuncName,                                        \
 			dFileLine,                                        \
 			::nLibAsist::nText::cEndlChar,                    \
