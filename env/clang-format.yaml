@@ -103,7 +103,7 @@ IntegerLiteralSeparator: # 0xf0'f0
   Hex:              2
   HexMinDigits:     4
 KeepEmptyLinesAtTheStartOfBlocks: false # if(expr){\n...}
-LambdaBodyIndentation: OuterScope # call(\n\t[](){})
+LambdaBodyIndentation: Signature # call(\n\t[](){})
 LineEnding:      DeriveLF
 MacroBlockBegin: ''
 MacroBlockEnd:   ''
