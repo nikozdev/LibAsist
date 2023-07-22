@@ -87,7 +87,7 @@ IndentCaseBlocks:           false
 IndentCaseLabels:           false
 IndentGotoLabels:           false # aligned with the rest of the code
 IndentExternBlock:          NoIndent
-IndentPPDirectives:         AfterHash
+IndentPPDirectives:         None
 IndentWrappedFunctionNames: false # r\N\Tf(){}
 InsertBraces:               true  # if () {...} instead of if () ...
 InsertNewlineAtEOF:         false # no need to \n at the end of each file
