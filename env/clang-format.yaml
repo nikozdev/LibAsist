@@ -96,7 +96,7 @@ RequiresClausePosition:        OwnLine # typename<>\Nrequires\Nstruct{};
 RequiresExpressionIndentation: OuterScope #
 InsertTrailingCommas: Wrapped # {a,}
 IntegerLiteralSeparator: # 0xf0'f0
-  Binary:           5
+  Binary:           4
   BinaryMinDigits:  4
   Decimal:          3
   DecimalMinDigits: 4
