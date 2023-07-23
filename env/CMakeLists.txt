@@ -86,8 +86,7 @@ elseif(oLibsFormat STREQUAL "Fmt")
     target_link_libraries(${vProjNameLib} INTERFACE fmt::fmt-header-only)
     list(APPEND vMakeDefsLib "d${vProjName}LibsFormatFmt")
 elseif(oLibsFormat STREQUAL "Std")
-    if(${oLibsFormatStdCompiles})
-    else()
+    if(NOT oLibsFormatStdCompiles)
         set(CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} "--std=c++20")
         check_cxx_source_compiles(
             "#include <format> int main() { return 0; }"
@@ -100,7 +99,7 @@ elseif(oLibsFormat STREQUAL "Std")
                 " - choose another library for format"
                 ) # message
         endif()
-    endif(oLibsFormatStdCompiles)
+    endif(NOT oLibsFormatStdCompiles)
 else()
     message(WARNING "library for format is not handled")
 endif(oLibsFormat STREQUAL "")
@@ -122,15 +121,65 @@ if(oMakeExe)
     # test
     option(oTestExe "test project executable" 1)
     if(oTestExe)
+        include(CTest)
         enable_testing()
-        add_test(NAME tHello
+        list(APPEND vMakeDefsExe "d${vProjName}TestExe")
+        #
+        set(vTestName "tHello")
+        add_test(NAME ${vTestName}
             COMMAND ${vFdirGen}/${vProjNameExe}
             ) # add_test
         set(vPassRegex "hello world")
         set_tests_properties(tHello PROPERTIES
             PASS_REGULAR_EXPRESSION ${vPassRegex}
             ) # set_tests_properties
-        list(APPEND vMakeDefsExe "d${vProjName}TestExe")
+        #
+        set(vTestName "tOsys")
+        add_test(NAME ${vTestName}
+            COMMAND ${vFdirGen}/${vProjNameExe} ${vTestName}
+            ) # add_test
+        #set(vPassRegex "[${vTestName}]=()=[${vTestName}]")
+        set(vPassRegex "")
+        string(APPEND vPassRegex "[${vTestName}]=(.+")
+        string(APPEND vPassRegex "[Posix]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex "[Linux]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex "[Apple]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex "[Macos]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex "[Winos]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex ")=[${vTestName}].+")
+        fRegexIgnoreABracket(vPassRegex)
+        set_tests_properties(${vTestName} PROPERTIES
+            PASS_REGULAR_EXPRESSION ${vPassRegex}
+            ) # set_tests_properties
+        #
+        set(vTestName "tTool")
+        add_test(NAME ${vTestName}
+            COMMAND ${vFdirGen}/${vProjNameExe} ${vTestName}
+            ) # add_test
+        set(vPassRegex "")
+        string(APPEND vPassRegex "[${vTestName}]=(.+")
+        string(APPEND vPassRegex ")=[${vTestName}].+")
+        fRegexIgnoreABracket(vPassRegex)
+        set_tests_properties(${vTestName} PROPERTIES
+            PASS_REGULAR_EXPRESSION ${vPassRegex}
+            ) # set_tests_properties
+        #
+        set(vTestName "tExec")
+        add_test(NAME ${vTestName}
+            COMMAND ${vFdirGen}/${vProjNameExe} ${vTestName}
+            ) # add_test
+        set(vPassRegex "")
+        string(APPEND vPassRegex "[${vTestName}]=(.+")
+        string(APPEND vPassRegex "[task]=(1).+")
+        string(APPEND vPassRegex "[call]=(2).+")
+        string(APPEND vPassRegex "[setter]=(3).+")
+        string(APPEND vPassRegex "[flowid]=(.+)[icount]=(2000000).+")
+        string(APPEND vPassRegex ")=[${vTestName}].+")
+        fRegexIgnoreABracket(vPassRegex)
+        set_tests_properties(${vTestName} PROPERTIES
+            PASS_REGULAR_EXPRESSION ${vPassRegex}
+            ) # set_tests_properties
+        #
     endif(oTestExe)
     # libs
     target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
