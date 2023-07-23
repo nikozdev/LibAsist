@@ -158,6 +158,34 @@ if(oMakeExe)
             ) # add_test
         set(vPassRegex "")
         string(APPEND vPassRegex "[${vTestName}]=(.+")
+        string(APPEND vPassRegex "[Clang]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex "[Gnucc]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex "[Msvcc]=([flag]=(.+)[mask]=(.+)).+")
+        string(APPEND vPassRegex ")=[${vTestName}].+")
+        fRegexIgnoreABracket(vPassRegex)
+        set_tests_properties(${vTestName} PROPERTIES
+            PASS_REGULAR_EXPRESSION ${vPassRegex}
+            ) # set_tests_properties
+        #
+        set(vTestName "tNums")
+        add_test(NAME ${vTestName}
+            COMMAND ${vFdirGen}/${vProjNameExe} ${vTestName}
+            ) # add_test
+        set(vPassRegex "")
+        string(APPEND vPassRegex "[${vTestName}]=(.+")
+        string(APPEND vPassRegex "[fGetPow(2,2)]=(4).+")
+        string(APPEND vPassRegex "[fGetAliUpper(2,8)]=(8).+")
+        string(APPEND vPassRegex "[fGetAliLower(7,4)]=(4).+")
+        string(APPEND vPassRegex "[fGetAbs(-4200)]=(4200).+")
+        string(APPEND vPassRegex "[fGetSign(-420)]=(-1).+")
+        string(APPEND vPassRegex "[fGetCount(-42)]=(2).+")
+        string(APPEND vPassRegex "[fGetFromL(-123456,3)]=(3).+")
+        string(APPEND vPassRegex "[fGetFromR(-123456,3)]=(4).+")
+        string(APPEND vPassRegex "[fGetRev(-12345)]=(-54321).+")
+        #string(APPEND vPassRegex "[fGetMin(-1,+1)]=(-1).+")
+        #string(APPEND vPassRegex "[fGetMax(-1,+1)]=(+1).+")
+        #string(APPEND vPassRegex "[fVetISide(0,-1,+1)]=(1).+")
+        #string(APPEND vPassRegex "[fVetOSide(2,-1,+1)]=(1).+")
         string(APPEND vPassRegex ")=[${vTestName}].+")
         fRegexIgnoreABracket(vPassRegex)
         set_tests_properties(${vTestName} PROPERTIES

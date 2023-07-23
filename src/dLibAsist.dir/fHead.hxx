@@ -71,6 +71,21 @@ aHasReturned("proxy main function can return an error code value"
 	if(fVetIn("tTool", &vArgV[cUnit], &vArgV[vArgC]))
 	{
 		fOput("[tTool]=(\n");
+		dDataDefConst std::pair<tCstr, tMask> cOsysTable[]{
+			{"Clang", dToolMaskClang},
+			{"Gnucc", dToolMaskGnucc},
+			{"Msvcc", dToolMaskMsvcc},
+		};//cOsysTable
+		for(auto vI: cOsysTable)
+		{
+			fOput(
+				"[{0:s}]=([flag]=({1:1b})[mask]=({2:016b})){3:c}",
+				vI.first,
+				dToolMaskCheck(vI.second),
+				dToolMaskApply(vI.second),
+				'\n'
+			);
+		}
 		fOput(")=[tTool]\n");
 	}
 	if(fVetIn("tBool", &vArgV[cUnit], &vArgV[vArgC]))
@@ -81,6 +96,19 @@ aHasReturned("proxy main function can return an error code value"
 	if(fVetIn("tNums", &vArgV[cUnit], &vArgV[vArgC]))
 	{
 		fOput("[tNums]=(\n");
+		fOput("[fGetPow(2,2)]=({0})\n", fGetPow(2, 2));
+		fOput("[fGetAliUpper(2,8)]=({0})\n", fGetAliUpper(2, 8));
+		fOput("[fGetAliLower(7,4)]=({0})\n", fGetAliLower(7, 4));
+		fOput("[fGetAbs(-4200)]=({0})\n", fGetAbs(-4'200));
+		fOput("[fGetSign(-420)]=({0})\n", fGetSign(-420));
+		fOput("[fGetCount(-42)]=({0})\n", fGetCount(-42));
+		fOput("[fGetFromL(-123456,3)]=({0})\n", fGetFromL(-123'456, 3));
+		fOput("[fGetFromR(-123456,3)]=({0})\n", fGetFromR(-123'456, 3));
+		fOput("[fGetRev(-12345)]=({0})\n", fGetRev(-12'345));
+		fOput("[fGetMin(-1,+1)]=({0:+})\n", fGetMin(-1, +1));
+		fOput("[fGetMax(-1,+1)]=({0:+})\n", fGetMax(-1, +1));
+		fOput("[fVetISide(0,-1,+1)]=({0:b})\n", fVetISide(0, -1, +1));
+		fOput("[fVetOSide(2,-1,+1)]=({0:b})\n", fVetOSide(2, -1, +1));
 		fOput(")=[tNums]\n");
 	}
 	if(fVetIn("tMeta", &vArgV[cUnit], &vArgV[vArgC]))
