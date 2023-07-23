@@ -69,7 +69,7 @@ aUseReturned("get next value not equal to the first, or get the last"
 ) dFuncDefConst auto
 	&fGetNequOrLast(const tVal &rNequ, const tVal &rNext, tArg &&...rList)
 {
-	return rNext == rNequ ? fGetNeq(rNequ, std::forward<tArg>(rList)...) : rNext;
+	return rNext == rNequ ? fGetNequOrLast(rNequ, std::forward<tArg>(rList)...) : rNext;
 }//fGetNotLast
 template<typename tVal, typename tMem>
 aUseReturned("get value member directly") dFuncDefConst decltype(auto

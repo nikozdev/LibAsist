@@ -192,6 +192,21 @@ if(oMakeExe)
             PASS_REGULAR_EXPRESSION ${vPassRegex}
             ) # set_tests_properties
         #
+        set(vTestName "tMeta")
+        add_test(NAME ${vTestName}
+            COMMAND ${vFdirGen}/${vProjNameExe} ${vTestName}
+            ) # add_test
+        set(vPassRegex "")
+        string(APPEND vPassRegex "[${vTestName}]=(.+")
+        string(APPEND vPassRegex "[fGetNequOrLast(1,1,3,4)]=(3).+")
+        string(APPEND vPassRegex "[fGetMember(vS,&tS::vI)]=(1).+")
+        string(APPEND vPassRegex "[fGetMember(vS,{&tS::vI})]=(1).+")
+        string(APPEND vPassRegex ")=[${vTestName}].+")
+        fRegexIgnoreABracket(vPassRegex)
+        set_tests_properties(${vTestName} PROPERTIES
+            PASS_REGULAR_EXPRESSION ${vPassRegex}
+            ) # set_tests_properties
+        #
         set(vTestName "tExec")
         add_test(NAME ${vTestName}
             COMMAND ${vFdirGen}/${vProjNameExe} ${vTestName}

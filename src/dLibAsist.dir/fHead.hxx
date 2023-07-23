@@ -114,6 +114,16 @@ aHasReturned("proxy main function can return an error code value"
 	if(fVetIn("tMeta", &vArgV[cUnit], &vArgV[vArgC]))
 	{
 		fOput("[tMeta]=(\n");
+		struct tS
+		{
+			tIntSM vI = 1;
+		} vS;
+		std::tuple<decltype(&tS::vI)> vT = {&tS::vI};
+		fOput("[fGetNequOrLast(1,1,3,4)]=({0:})\n", fGetNequOrLast(1, 1, 3, 4));
+		fOput(
+			"[fGetMember(vS,&tS::vI)]=({0:})\n", fGetMember(vS, std::get<0>(vT))
+		);
+		//fOput("[fGetMember(vS,{&tS::vT})]=({0:})\n", fGetMember(vS, vT));
 		fOput(")=[tMeta]\n");
 	}
 	if(fVetIn("tText", &vArgV[cUnit], &vArgV[vArgC]))
