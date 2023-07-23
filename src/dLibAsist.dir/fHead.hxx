@@ -30,66 +30,82 @@ using namespace nDbug;
 aHasReturned("proxy main function can return an error code value"
 ) dFuncDefIline tECode fMain(tIntSM vArgC, tCstr vArgV[])
 {
+	fOput("{1}[{0}]=({1}", dProjName, cEndlChar);
 	fOlog("hello world");
 	if constexpr(cTruth)
 	{
-		fOput("{1}[{0}]=({1}", dProjName, cEndlChar);
 		std::copy(
 			&vArgV[cZero],
 			&vArgV[vArgC],
 			std::ostream_iterator<tCstrM>(std::clog, cEndlCstr)
 		);
-		fOput("{1})=[{0}]{1}", dProjName, cEndlChar);
 	}//title
 #ifdef dLibAsistTestExe
 	if(vArgC == 1)
 	{
 		fElog("undefined testing arguments");
-		return 1;
+		errno = EINVAL;
 	}
 	if(fVetIn("tOsys", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[osys]=(\n");
-		fOput(")=[osys]\n");
+		fOput("[tOsys]=(\n");
+		dDataDefConst std::pair<tCstr, tMask> cOsysTable[]{
+			{"Posix", dOsysMaskPosix},
+			{"Linux", dOsysMaskLinux},
+			{"Apple", dOsysMaskApple},
+			{"Macos", dOsysMaskMacos},
+			{"Winos", dOsysMaskWinos},
+		};//cOsysTable
+		for(auto vI: cOsysTable)
+		{
+			fOput(
+				"[{0:s}]=([flag]=({1:1b})[mask]=({2:016b})){3:c}",
+				vI.first,
+				dOsysMaskCheck(vI.second),
+				dOsysMaskApply(vI.second),
+				'\n'
+			);
+		}
+		fOput(")=[tOsys]\n");
 	}
 	if(fVetIn("tTool", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[tool]=(\n");
-		fOput(")=[tool]\n");
+		fOput("[tTool]=(\n");
+		fOput(")=[tTool]\n");
 	}
 	if(fVetIn("tBool", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[bool]=(\n");
-		fOput(")=[bool]\n");
+		fOput("[tBool]=(\n");
+		fOput(")=[tBool]\n");
 	}
 	if(fVetIn("tNums", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[nums]=(\n");
-		fOput(")=[nums]\n");
+		fOput("[tNums]=(\n");
+		fOput(")=[tNums]\n");
 	}
 	if(fVetIn("tMeta", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[meta]=(\n");
-		fOput(")=[meta]\n");
+		fOput("[tMeta]=(\n");
+		fOput(")=[tMeta]\n");
 	}
 	if(fVetIn("tText", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[text]=(\n");
-		fOput(")=[text]\n");
+		fOput("[tText]=(\n");
+		fOput(")=[tText]\n");
 	}
 	if(fVetIn("tTime", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[time]=(\n");
-		fOput(")=[time]\n");
+		fOput("[tTime]=(\n");
+		fOput(")=[tTime]\n");
 	}
 	if(fVetIn("tIpop", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[ipop]=(\n");
-		fOput(")=[ipop]\n");
+		fOput("[tIpop]=(\n");
+		fOput(")=[tIpop]\n");
 	}
 	if(fVetIn("tExec", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("[exec]=(\n");
+		fOput("[tExec]=(\n");
 		if constexpr(cTruth)
 		{
 			tIndex vIndex = 1;
@@ -157,14 +173,15 @@ aHasReturned("proxy main function can return an error code value"
 			tFlow{fFlow, std::ref(vLocker), std::ref(vCount)}.join();
 			fOlog("[flowid]=({0:x})[icount]=({1})", fGetFlowIndex(), vCount);
 		}//mutex
-		fOput("\n)=[exec]\n");
+		fOput("\n)=[tExec]\n");
 	}
 	if(fVetIn("tDbug", &vArgV[cUnit], &vArgV[vArgC]))
 	{
-		fOput("\n[dbug]=(\n");
-		fOput("\n)=[dbug]\n");
+		fOput("\n[tDbug]=(\n");
+		fOput("\n)=[tDbug]\n");
 	}
 #endif//dLibAsistTestExe
+	fOput("{1})=[{0}]{1}", dProjName, cEndlChar);
 	return errno;
 }//fMain
 }//nMain

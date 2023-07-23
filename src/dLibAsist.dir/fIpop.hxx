@@ -10,15 +10,15 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
-#ifndef dLibAsistTool
-#error "dLibAsistTool is undefined"
-#elif(defined(dLibAsistToolClang) || defined(dLibAsistToolMsvcc))
+#ifndef dToolMask
+#error "dToolMask is undefined"
+#elif(dToolMaskCheck(dToolMaskClang | dToolMaskMsvcc))
 #include <filesystem>
 namespace nLibAsist
 {//imports
 namespace nFileSys = std::filesystem;
 }//namespace nLibAsist
-#elif(defined(dLibAsistToolGnucc))
+#elif(dToolMaskCheck(dToolMaskGnucc))
 #include <experimental/bits/fs_fwd.h>
 #include <experimental/bits/fs_path.h>
 #include <experimental/bits/fs_dir.h>
@@ -27,7 +27,7 @@ namespace nLibAsist
 {//imports
 namespace nFileSys = std::experimental::filesystem;
 }//namespace nLibAsist
-#endif//ifd(dLibAsistToolGnucc)
+#endif//ifd(dToolMask)
 //defines
 #ifndef fOput
 #define fOput(...)                                                            \

@@ -1,19 +1,25 @@
-#ifndef dLibAsistToolhxx
-#define dLibAsistToolhxx
+#ifndef dLibAsistToolHxx
+#define dLibAsistToolHxx
 //defines
-#ifndef dLibAsistTool
+#ifndef dToolMask
 #if defined(__GNUC__) || defined(__GNUG__)
 #if defined(__clang__)
-#define dLibAsistToolClang
+#define dToolMaskClang 0b1000'0000
+#define dToolMaskGnucc 0b0000'0000
 #else
-#define dLibAsistToolGnucc
+#define dToolMaskClang 0b0000'0000
+#define dToolMaskGnucc 0b0100'0000
 #endif//ifd(__clang__)
 #endif//ifd(__GNUC__) || defined(__GNUG__)
 #if defined(_MSC_VER)
-#define dLibAsistToolMsvcc
+#define dToolMaskMsvcc 0b0010'0000
+#else
+#define dToolMaskMsvcc 0b0000'0000
 #endif//ifd(_MSC_VER)
-#define dLibAsistTool
-#endif//dLibAsistTool
+#define dToolMask			  (dToolMaskClang | dToolMaskGnucc | dToolMaskMsvcc)
+#define dToolMaskApply(dMask) (dToolMask & dMask)
+#define dToolMaskCheck(dMask) (dToolMaskApply(dMask) > 0)
+#endif//dToolMask
 //-//attributes-with-comments
 #ifndef aLibAsist
 #define aLibAsist
@@ -22,23 +28,23 @@
 #define aHasReturned(...) [[]]
 #define aNotReturned(...) [[noreturn]]
 #define aCanBeUnused(...) [[maybe_unused]]
-#ifndef dLibAsistTool
+#ifndef dToolMask
 #error("undefined code-processing tool")
-#elif defined(dLibAsistToolGnucc)
+#elif defined(dToolMaskGnucc)
 #define aSetDeclspec(vSpec, ...) ()
 #define aDllExported(...)		 ()
 #define aDllImported(...)		 ()
-#elif defined(dLibAsistToolMsvcc)
+#elif defined(dToolMaskMsvcc)
 #define aSetDeclspec(vSpec, ...) __declspec(vSpec)
 #define aDllExported(...)		 __declspec(__dllexport)
 #define aDllImported(...)		 __declspec(__dllimport)
-#elif defined(dLibAsistToolClang)
+#elif defined(dToolMaskClang)
 #define aSetDeclspec(vSpec, ...) ()
 #define aDllExported(...)		 ()
 #define aDllImported(...)		 ()
 #else
 #error("unhandled code-processing tool")
-#endif//dLibAsistTool
+#endif//dToolMask
 #endif//aLibAsist
 //-//dec-n-def
 namespace nLibAsist
@@ -141,4 +147,4 @@ dTypeDefInter struct tTypeInter
 //headers
 #include <algorithm>
 //content
-#endif//dLibAsistToolhxx
+#endif//dLibAsistToolHxx

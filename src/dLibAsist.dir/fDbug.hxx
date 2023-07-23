@@ -67,14 +67,14 @@ dFuncDefIline auto fBreak()
 {
 	std::raise(SIGINT);
 }//fBreak
-#elif(defined(dLibAsistOsysWinos))
+#elif(dOsysMaskCheck(dOsysMaskWinos))
 dFuncDefIline auto fBreak()
 {
 	fEput(text::cBellCstr);
 	system("pause");
 }//fBreak
 #else
-#error "fBrean function is not defined"
+#error "fBreak function is not defined"
 #endif//SIGINT
 #else
 dFuncDefIline auto fBreak()

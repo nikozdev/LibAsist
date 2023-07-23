@@ -10,5 +10,6 @@ dDataDefConst auto cFalse = false;
 //typedef
 using tBool = bool;
 using tFlag = bool;
+using tMask = long;
 }//namespace nBool
 #endif//dLibAsistBoolHxx
