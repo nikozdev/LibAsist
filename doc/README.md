@@ -2,73 +2,58 @@
 
 - lib-asist
 > library assistant
-- utilities, functions, types, etc for programming
-- initially created by nikozdev to...
+- it contains the most basic things repeatedly written in my projects
+> > command line argument parsing
+> > standard type aliases
+> > standard headers
+> > memory management
+- initially created by me (nikozdev) to...
 > avoid writting the same code for different projects
-> avoid external dependencies ( yes, i have "dependophobia" )
 > make own standards, frameworks and write more consistent code
 - the majority of the source code is written in c/c++ programming language
-> i just love this and have no need for other langs yet... *for now*
-- the only build script i have is "Makefile"
-> building
-> cleaning
-> installation
-> uninstallation
-> debugging
-> execution
-- just run "make *command*"
-> appending "VARIABLE=VALUE" may affect the process
-
-## precompile
-
-- the important thing is that all headers are intended to be precompiled
-> there are lots of standard headers included
-> a lot of code is interconnected here
-> so for now, this has to be in a precompiled header
+> i just love this lang and have no need for other langs yet... *for now*
 
 ## build and usage
 
-- this library can be...
-> included with some headers into source code
-> compiled as an application for testing
-> compiled as a library for linkage
-- gnu/make is the main build system
-> i find it the most verbose and specific build system
-> i can set up anything i need with gnu/make on gnu/linux
+- the primary build system is cmake
+> which actually generates platform dependent build files
+> and i recommend using the library as a subdirectory within cmake
+> > since this is gonna have some internal definitions
+> the build script is located at [env/CMakeLists.txt]
+- this is header-only library
+> no compillation needed for usage
+> pre-compiled-headers are highly recommended when including the project
+- nothing is needed to build, only add this as a cmake subdirectory
+> or include headers directly without any build system support
+- i prefer and recommend installing it as a cmake package
+> "cmake -S env -B gen --install"
+> > it probably needs "administrative privelege" to run
+> > then it can be used as simple as "find\_package(pLibAsist)"
 
-### link as an executable
+## file structure
 
-- build and start
-> make start
-> > compile and link and run in the shell
-> make rerun
-> > recompile and relink and run in the shell
-> make debug
-> > recompile and relink and run in a debugger
-
-### link as a library
-
-- this can be built as...
-> statically linked library
-> > make build TYPE=SLL
-> dynamically linked library
-> > make build TYPE=DLL
-- library usage depends on...
-> operating system
-> compiler
+- the root mostly consists of directories
+> doc for documents and-or documentations
+> env for environment, build systems, development tools
+> gen for generated files, object code, binary files
+> src for source files and headers
+> rsc for resources, images, sounds, videos
+- there are some files that are difficult to move away from root
+> .gitignore - even moving this into individual folders
+> > won't prevent malicious .DS\_Store from MacOS from spawning at the root
+> .gitattributes - this should be almost the same for every directory
 
 ## design
 
 - experimental
 > i am a solo dev, not an expert
 > this thing was initially developed for my usecases and my education
-> i always wanna have some source of truth for my code
+> i am also trying to get some source of truth for my code
 - generic
 > compile-time and run-time variables instead of magical or constant values
-> makefile is made as a general purpose file for scalable projects
 > prioritising interface flexibility over implementation details
 - configurable
-> by makefile
+> by cmake and [env/CMakeLists.txt]
 > by source code of a user
 > by aliases of primitive and generic types
 > for example: setting the integer type as "using v1s\_t = short;"
