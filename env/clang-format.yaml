@@ -173,7 +173,7 @@ AttributeMacros:
   - aUseReturned
   - aNotReturned
   - aNotReturned
-  - aCanBeUnused
+  - aMaybeUnused
   - aSetDeclspec
   - aDllExported
   - aDllImported
