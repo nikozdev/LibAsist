@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
+include_guard(GLOBAL)
 # mods
-include(dCmake.dir/mHelpRegex.cmake)
-include(dCmake.dir/mHelpOpt.cmake)
+include(dCmake.dir/dHelp.dir/fRegex.cmake)
+include(dCmake.dir/dHelp.dir/fOpt.cmake)
 # proj
 project(LibAsist
     VERSION 0.0.0
@@ -11,22 +12,44 @@ enable_language(CXX)
 set(vProjName ${PROJECT_NAME})
 set(vProjNameLib "l${vProjName}")
 set(vProjNameExe "e${vProjName}")
+set(vProjNameDir "d${vProjName}.dir")
+set(vProjNameDst "p${vProjName}")
 set(vProjVnum ${PROJECT_VERSION})
+set(vProjVnumMajor ${PROJECT_VERSION_MAJOR})
+set(vProjVnumMinor ${PROJECT_VERSION_MINOR})
+set(vProjVnumMicro ${PROJECT_VERSION_PATCH})
 set(vProjDesc ${PROJECT_DESCRIPTION})
 # lang
 set(vLangVnum 23)
 set(CMAKE_CXX_STANDARD ${vLangVnum})
-set(CMAKE_CXX_STANDARD_REQUIRED ${vLangVnum})
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 # file
-set(vFdirLoc ${PROJECT_SOURCE_DIR}/..)
-set(vFdirSrcRoot ${vFdirLoc}/src)
-set(vFdirSrcBase ${vFdirSrcRoot}/d${vProjName}.dir)
-set(vFdirGen ${vFdirLoc}/gen)
-set(RUNTIME_OUTPUT_DIRECTORY ${vFdirGen}/dExe.dir)
-set(LIBRARY_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
-set(ARCHIVE_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
+set(vFdirLocRoot "${PROJECT_SOURCE_DIR}/..")
+set(vFdirSrcRoot "${vFdirLocRoot}/src")
+set(vFdirSrcBase "${vFdirSrcRoot}/${vProjNameDir}")
+set(vFdirGenRoot "${vFdirLocRoot}/gen")
+set(vFdirEnvRoot "${vFdirLocRoot}/env")
+set(vFdirDocRoot ${vFdirLocRoot}/doc)
+set(vFdirDstRoot "${CMAKE_INSTALL_PREFIX}")
+set(vFdirDstBins "${vFdirDstRoot}/bin")
+set(vFdirDstLibs "${vFdirDstRoot}/lib")
+set(vFdirDstHead "${vFdirDstRoot}/include")
+set(CMAKE_INSTALL_PREFIX "${vFdirDst}")
 # make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+##type
+set(oProjTypePick "Hol")
+set(vProjTypeList "Exe;Hol;Dll;Sll")
+fOptEnum(oProjTypePick vProjTypeList "project type")
+if(oProjTypePick STREQUAL "")
+    message("project type is not defined")
+elseif(oProjTypePick STREQUAL "Exe")
+elseif(oProjTypePick STREQUAL "Hol")
+elseif(oProjTypePick STREQUAL "Dll")
+elseif(oProjTypePick STREQUAL "Sll")
+else()
+    message("project type is not handled")
+endif(oProjTypePick STREQUAL "")
 ##conf
 set(oProjConf "Work")
 set(vProjConfList "Play;Work;")
@@ -40,25 +63,15 @@ elseif(oProjConf STREQUAL "Work")
 else()
     message("project configuration is not handled")
 endif(oProjConf STREQUAL "")
-##type
-set(oProjType "Hol")
-set(vProjTypeList "Exe;Hol;Dll;Sll")
-fOptEnum(oProjType vProjTypeList "project type")
-if(oProjType STREQUAL "")
-    message("project type is not defined")
-elseif(oProjType STREQUAL "Exe")
-elseif(oProjType STREQUAL "Hol")
-elseif(oProjType STREQUAL "Dll")
-elseif(oProjType STREQUAL "Sll")
-else()
-    message("project type is not handled")
-endif(oProjType STREQUAL "")
 ## lib
 add_library(${vProjNameLib} INTERFACE)
-set(vMakeDirsLib ${vFdirSrcRoot})
+set(vMakeDirsLib
+$<BUILD_INTERFACE:${vFdirSrcRoot}>; # do not use " in generator expressions
+$<INSTALL_INTERFACE:${vFdirDstHead}>; # i don't know why this shit happens
+) # vMakeDirsLib
 set(vMakeDefsLib
-    "$<$<CXX_COMPILER_ID:MSVC>:>"
-    "$<$<CXX_COMPILER_ID:GNU,Clang>:>"
+    $<$<CXX_COMPILER_ID:MSVC>:>
+    $<$<CXX_COMPILER_ID:GNU,Clang>:>
     "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
     "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
     "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
@@ -76,42 +89,56 @@ set(vMakeOptsLib
     -Wno-error=narrowing -Wno-narrowing
     ) # vMakeOptsLib
 ### libs
-set(oLibsFormat "Fmt")
+set(vLibsList "")
+#### format
+set(oLibsPickFormat "Fmt")
 set(vLibsListFormat "Std;Fmt;")
-fOptEnum(oLibsFormat vLibsListFormat  "library for formatting")
-if(oLibsFormat STREQUAL "")
-    message(WARNING "library for format is not defined")
-elseif(oLibsFormat STREQUAL "Fmt")
-    find_package(fmt CONFIG REQUIRED)
-    target_link_libraries(${vProjNameLib} INTERFACE fmt::fmt-header-only)
-    list(APPEND vMakeDefsLib "d${vProjName}LibsFormatFmt")
-elseif(oLibsFormat STREQUAL "Std")
-    if(NOT oLibsFormatStdCompiles)
+fOptEnum(oLibsPickFormat vLibsListFormat  "library pick for formatting")
+if(oLibsPickFormat STREQUAL "")
+    message(WARNING "library pick for format is not defined")
+elseif(oLibsPickFormat STREQUAL "Fmt")
+    find_package(fmt GLOBAL CONFIG REQUIRED)
+    target_link_libraries(${vProjNameLib} INTERFACE fmt::fmt)
+    list(APPEND vLibsList "fmt;")
+elseif(oLibsPickFormat STREQUAL "Std")
+    if(NOT oLibsPickFormatStdCompiles)
         set(CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} "--std=c++20")
         check_cxx_source_compiles(
             "#include <format> int main() { return 0; }"
-            oLibsFormatStdCompiles
+            oLibsPickFormatStdCompiles
             ) # check_cxx_source_compiles
-        if(${oLibsFormatStdCompiles})
+        if(${oLibsPickFormatStdCompiles})
         else()
             message(WARNING
                 "std::format does not compile"
                 " - choose another library for format"
                 ) # message
         endif()
-    endif(NOT oLibsFormatStdCompiles)
+    endif(NOT oLibsPickFormatStdCompiles)
 else()
-    message(WARNING "library for format is not handled")
-endif(oLibsFormat STREQUAL "")
-list(APPEND vMakeDefsLib "d${vProjName}LibsFormat${oLibsFormat}")
+    message(WARNING "library pick for format is not handled")
+endif(oLibsPickFormat STREQUAL "")
+list(APPEND vMakeDefsLib "d${vProjName}LibsPickFormat${oLibsPickFormat}")
 ### last
 target_compile_options(${vProjNameLib} INTERFACE ${vMakeOptsLib})
 target_compile_features(${vProjNameLib} INTERFACE ${vMakeFeatLib})
 target_compile_definitions(${vProjNameLib} INTERFACE ${vMakeDefsLib})
 target_include_directories(${vProjNameLib} INTERFACE ${vMakeDirsLib})
+target_sources(${vProjNameLib}
+    INTERFACE FILE_SET HEADERS
+    BASE_DIRS "${vFdirSrcBase}"
+    FILES
+    "${vFdirSrcBase}/fOsys.hxx" "${vFdirSrcBase}/fTool.hxx"
+    "${vFdirSrcBase}/fBool.hxx" "${vFdirSrcBase}/fNums.hxx"
+    "${vFdirSrcBase}/fMeta.hxx" "${vFdirSrcBase}/fMemo.hxx"
+    "${vFdirSrcBase}/fText.hxx" "${vFdirSrcBase}/fTime.hxx"
+    "${vFdirSrcBase}/fIpop.hxx" "${vFdirSrcBase}/fDbug.hxx"
+    "${vFdirSrcBase}/fExec.hxx"
+    "${vFdirSrcBase}/fHead.hxx"
+    ) # target_sources
 target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
 ## exe
-option(oMakeExe "make project executable" 1)
+option(oMakeExe "make project executable" 0)
 if(oMakeExe)
     add_executable(${vProjNameExe} ${vFdirSrcBase}/fMain.cxx)
     set(vMakeDirsExe "")
@@ -119,7 +146,7 @@ if(oMakeExe)
     set(vMakeFeatExe "")
     set(vMakeOptsExe "")
     # test
-    option(oTestExe "test project executable" 1)
+    option(oTestExe "test project executable" 0)
     if(oTestExe)
         include(CTest)
         enable_testing()
@@ -231,5 +258,46 @@ if(oMakeExe)
     target_compile_features(${vProjNameExe} PRIVATE ${vMakeFeatExe})
     target_compile_definitions(${vProjNameExe} PRIVATE ${vMakeDefsExe})
     target_include_directories(${vProjNameExe} PRIVATE ${vMakeDirsExe})
-    target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
+    target_precompile_headers(${vProjNameExe} PRIVATE ${vFdirSrcBase}/fHead.hxx)
 endif(oMakeExe)
+# pack
+include(InstallRequiredSystemLibraries)
+set(CPACK_RESOURCE_FILE_LICENSE "${vFdirDocRoot}/license.md")
+set(CPACK_PACKAGE_VERSION_MAJOR "${vProjVnumMajor}")
+set(CPACK_PACKAGE_VERSION_MINOR "${vProjVnumMinor}")
+set(CPACK_PACKAGE_VERSION_PATCH "${vProjVnumMicro}")
+include(CPack)
+set(vProjFdirDst "${vFdirDstLibs}/cmake/${vProjNameDst}")
+string(APPEND vProjFdirDst "-${vProjVnumMajor}")
+string(APPEND vProjFdirDst "-${vProjVnumMinor}")
+string(APPEND vProjFdirDst "-${vProjVnumMicro}")
+string(APPEND vProjFdirDst ".dir")
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    "${vFdirEnvRoot}/dCMake.dir/dPack.dir/fConfig.cmake.in"
+    "${vFdirGenRoot}/${vProjNameDst}Config.cmake"
+    INSTALL_DESTINATION "${vProjFdirDst}"
+    ) # package Config
+write_basic_package_version_file(
+    "${vFdirGenRoot}/${vProjNameDst}ConfigVersion.cmake"
+    VERSION ${vProjVnum}
+    COMPATIBILITY SameMajorVersion
+    ) # package ConfigVersion
+install(
+    TARGETS ${vProjNameLib} EXPORT ${vProjNameDst}
+    FILE_SET HEADERS DESTINATION ${vFdirDstHead}/${vProjNameDir}
+    ) # install target with header
+install(EXPORT "${vProjNameDst}"
+    FILE "${vProjNameDst}.cmake"
+    DESTINATION "${vProjFdirDst}"
+    NAMESPACE "${vProjNameDst}::"
+    ) # install Target
+install(FILES
+    "${vFdirGenRoot}/${vProjNameDst}Config.cmake"
+    "${vFdirGenRoot}/${vProjNameDst}ConfigVersion.cmake"
+    DESTINATION "${vProjFdirDst}"
+    ) # install ConfigVersion
+export(EXPORT "${vProjNameDst}"
+    FILE "${vFdirGenRoot}/${vProjNameDst}.cmake"
+    NAMESPACE "${vProjNameDst}::"
+    ) # export Target
