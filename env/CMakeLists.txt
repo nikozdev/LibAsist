@@ -3,6 +3,7 @@ include_guard(GLOBAL)
 # mods
 include(dCmake.dir/dHelp.dir/fRegex.cmake)
 include(dCmake.dir/dHelp.dir/fOpt.cmake)
+include(dCmake.dir/dHelp.dir/fPack.cmake)
 # proj
 project(LibAsist
     VERSION 1.0.1
@@ -23,6 +24,10 @@ set(vProjDesc ${PROJECT_DESCRIPTION})
 set(vLangVnum 23)
 set(CMAKE_CXX_STANDARD ${vLangVnum})
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+# osys
+mark_as_advanced(FORCE CMAKE_OSX_ARCHITECTURES)
+mark_as_advanced(FORCE CMAKE_OSX_DEPLOYMENT_TARGET)
+mark_as_advanced(FORCE CMAKE_OSX_SYSROOT)
 # file
 set(vFdirLocRoot "${PROJECT_SOURCE_DIR}/..")
 set(vFdirSrcRoot "${vFdirLocRoot}/src")
@@ -36,36 +41,38 @@ set(vFdirDstLibs "${vFdirDstRoot}/lib")
 set(vFdirDstHead "${vFdirDstRoot}/include")
 set(CMAKE_INSTALL_PREFIX "${vFdirDstRoot}" CACHE PATH "install prefix" FORCE)
 # conf
-set(oProjConf "Work")
+set(oProjConfPick "Work")
 set(vProjConfList "Work;Play;Dist;")
-fOptEnum(oProjConf vProjConfList "project configuration")
-if(oProjConf STREQUAL "")
+set(vProjConfDesc "controlled by oProjConfPick")
+fOptEnum(oProjConfPick vProjConfList "project configuration")
+if(oProjConfPick STREQUAL "")
     message("project configuration is not defined")
-elseif(oProjConf STREQUAL "Work")
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "controlled by oProjConf" FORCE)
-elseif(oProjConf STREQUAL "Play")
-    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "controlled by oProjConf" FORCE)
-elseif(oProjConf STREQUAL "Dist")
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "controlled by oProjConf" FORCE)
+elseif(oProjConfPick STREQUAL "Work")
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "${vProjConfDesc}" FORCE)
+elseif(oProjConfPick STREQUAL "Play")
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "${vProjConfDesc}" FORCE)
+elseif(oProjConfPick STREQUAL "Dist")
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "${vProjConfDesc}" FORCE)
 else()
     message("project configuration is not handled")
-endif(oProjConf STREQUAL "")
-fOptEnum(CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES "controlled by oProjConf")
+endif(oProjConfPick STREQUAL "")
+fOptEnum(CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES ${vProjConfDesc})
+mark_as_advanced(FORCE CMAKE_BUILD_TYPE)
 # make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## lib
 add_library(${vProjNameLib} INTERFACE)
 set(vMakeDirsLib
-$<BUILD_INTERFACE:${vFdirSrcRoot}>;
-$<INSTALL_INTERFACE:${vFdirDstHead}>;
+"$<BUILD_INTERFACE:${vFdirSrcRoot}>;"
+"$<INSTALL_INTERFACE:${vFdirDstHead}>;"
 ) # vMakeDirsLib
 set(vMakeDefsLib
-    $<$<CXX_COMPILER_ID:MSVC>:>
-    $<$<CXX_COMPILER_ID:GNU,Clang>:>
+    "$<$<CXX_COMPILER_ID:MSVC>:>"
+    "$<$<CXX_COMPILER_ID:GNU,Clang>:>"
     "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
     "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
     "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
-    "d${vProjName}ProjConf${oProjConf}" "dProjConf${oProjConf}"
+    "d${vProjName}ProjConf${oProjConfPick}" "dProjConf${oProjConfPick}"
     ) # vMakeDefsLib
 set(vMakeFeatLib
     cxx_std_23
@@ -87,7 +94,7 @@ fOptEnum(oLibsPickFormat vLibsListFormat  "library pick for formatting")
 if(oLibsPickFormat STREQUAL "")
     message(WARNING "library pick for format is not defined")
 elseif(oLibsPickFormat STREQUAL "Fmt")
-    find_package(fmt GLOBAL CONFIG REQUIRED)
+    fPackFind(fmt)
     target_link_libraries(${vProjNameLib} INTERFACE fmt::fmt)
     list(APPEND vLibsList "fmt;")
 elseif(oLibsPickFormat STREQUAL "Std")
@@ -226,6 +233,7 @@ if(oMakeExe)
             PASS_REGULAR_EXPRESSION ${vPassRegex}
             ) # set_tests_properties
         #
+        mark_as_advanced(FORCE BUILD_TESTING)
     endif(oTestExe)
     # libs
     target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
