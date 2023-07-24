@@ -20,11 +20,15 @@
 > and i recommend using the library as a subdirectory within cmake
 > > since this is gonna have some internal definitions
 > the build script is located at [env/CMakeLists.txt]
-- this is header-only library (TODO)
+- this is header-only library
 > no compillation needed for usage
 > pre-compiled-headers are highly recommended when including the project
 - nothing is needed to build, only add this as a cmake subdirectory
 > or include headers directly without any build system support
+- i prefer and recommend installing it as a cmake package
+> "cmake -S env -B gen --install"
+> > it probably needs "administrative privelege" to run
+> > then it can be used as simple as "find\_package(pLibAsist)"
 
 ## file structure
 
