@@ -27,7 +27,8 @@
 #define aUseReturned(...) [[nodiscard(__VA_ARGS__)]]
 #define aHasReturned(...) [[]]
 #define aNotReturned(...) [[noreturn]]
-#define aCanBeUnused(...) [[maybe_unused]]
+#define aMaybeUnused(...) [[maybe_unused]]
+#define aCanBeUnused(...) aMaybeUnused(...)
 #ifndef dToolMask
 #error("undefined code-processing tool")
 #elif defined(dToolMaskGnucc)
@@ -56,6 +57,7 @@ namespace nTool
 #ifndef dFuncDec
 #define dFuncDecIline inline   //declare function using inlining
 #define dFuncDecConst constexpr//declare function using compile-time
+#define dFuncDecInher virtual  //declare function using inheritance
 #define dFuncDecExter extern   //declare function used externally
 #define dFuncDecInter static   //declare function used internally
 #define dFuncDec
@@ -70,6 +72,7 @@ dFuncDecInter auto fFuncInter();
 #ifndef dFuncDef
 #define dFuncDefIline inline   //define function using inlining
 #define dFuncDefConst constexpr//define function using compile-time
+#define dFuncDefInher virtual  //define function using inheritance
 #define dFuncDefExter		   //define function used externally
 #define dFuncDefInter static   //define function used internally
 #define dFuncDef
@@ -134,9 +137,12 @@ dTypeDecInter struct tTypeInter;
 #if defined(dTypeDef)
 dTypeDefIline struct tTypeIline
 {
+	aNotReturned("virtual function declaration"
+	) dFuncDecInher void fFuncInher();
 };
 dTypeDefExter struct tTypeExter
 {
+	dFuncDefInher void fFuncInher() = 0;
 };
 dTypeDefInter struct tTypeInter
 {
