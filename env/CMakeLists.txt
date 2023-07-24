@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.3...3.8)
 include_guard(GLOBAL)
 # mods
 include(dCmake.dir/dHelp.dir/fRegex.cmake)
@@ -30,24 +30,27 @@ set(vFdirSrcBase "${vFdirSrcRoot}/${vProjNameDir}")
 set(vFdirGenRoot "${vFdirLocRoot}/gen")
 set(vFdirEnvRoot "${vFdirLocRoot}/env")
 set(vFdirDocRoot ${vFdirLocRoot}/doc)
-set(vFdirDstRoot "${CMAKE_INSTALL_PREFIX}")
+set(vFdirDstRoot "$ENV{HOME}$ENV{UserProfile}/.local")
 set(vFdirDstBins "${vFdirDstRoot}/bin")
 set(vFdirDstLibs "${vFdirDstRoot}/lib")
 set(vFdirDstHead "${vFdirDstRoot}/include")
-set(CMAKE_INSTALL_PREFIX "${vFdirDst}")
+set(CMAKE_INSTALL_PREFIX "${vFdirDstRoot}" CACHE PATH "install prefix" FORCE)
 # conf
 set(oProjConf "Work")
 set(vProjConfList "Work;Play;Dist;")
 fOptEnum(oProjConf vProjConfList "project configuration")
 if(oProjConf STREQUAL "")
     message("project configuration is not defined")
-elseif(oProjConf STREQUAL "Play")
-    set(CMAKE_BUILD_TYPE Release)
 elseif(oProjConf STREQUAL "Work")
-    set(CMAKE_BUILD_TYPE Debug)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "controlled by oProjConf" FORCE)
+elseif(oProjConf STREQUAL "Play")
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "controlled by oProjConf" FORCE)
+elseif(oProjConf STREQUAL "Dist")
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "controlled by oProjConf" FORCE)
 else()
     message("project configuration is not handled")
 endif(oProjConf STREQUAL "")
+fOptEnum(CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES "controlled by oProjConf")
 # make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## lib
@@ -88,20 +91,6 @@ elseif(oLibsPickFormat STREQUAL "Fmt")
     target_link_libraries(${vProjNameLib} INTERFACE fmt::fmt)
     list(APPEND vLibsList "fmt;")
 elseif(oLibsPickFormat STREQUAL "Std")
-    if(NOT oLibsPickFormatStdCompiles)
-        set(CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} "--std=c++20")
-        check_cxx_source_compiles(
-            "#include <format> int main() { return 0; }"
-            oLibsPickFormatStdCompiles
-            ) # check_cxx_source_compiles
-        if(${oLibsPickFormatStdCompiles})
-        else()
-            message(WARNING
-                "std::format does not compile"
-                " - choose another library for format"
-                ) # message
-        endif()
-    endif(NOT oLibsPickFormatStdCompiles)
 else()
     message(WARNING "library pick for format is not handled")
 endif(oLibsPickFormat STREQUAL "")
@@ -125,7 +114,7 @@ target_sources(${vProjNameLib}
     ) # target_sources
 target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
 ## exe
-option(oMakeExe "make project executable" 0)
+option(oMakeExe "make project executable" 1)
 if(oMakeExe)
     add_executable(${vProjNameExe} ${vFdirSrcBase}/fMain.cxx)
     set(vMakeDirsExe "")
@@ -133,7 +122,7 @@ if(oMakeExe)
     set(vMakeFeatExe "")
     set(vMakeOptsExe "")
     # test
-    option(oTestExe "test project executable" 0)
+    option(oTestExe "test project executable" 1)
     if(oTestExe)
         include(CTest)
         enable_testing()
@@ -254,19 +243,19 @@ set(CPACK_PACKAGE_VERSION_MAJOR "${vProjVnumMajor}")
 set(CPACK_PACKAGE_VERSION_MINOR "${vProjVnumMinor}")
 set(CPACK_PACKAGE_VERSION_PATCH "${vProjVnumMicro}")
 include(CPack)
-set(vProjFdirDst "${vFdirDstLibs}/cmake/${vProjNameDst}")
-string(APPEND vProjFdirDst "-${vProjVnumMajor}")
-string(APPEND vProjFdirDst "-${vProjVnumMinor}")
-string(APPEND vProjFdirDst "-${vProjVnumMicro}")
-string(APPEND vProjFdirDst ".dir")
+set(vFdirDstProj "${vFdirDstLibs}/cmake/${vProjNameDst}")
+string(APPEND vFdirDstProj "-${vProjVnumMajor}")
+string(APPEND vFdirDstProj "-${vProjVnumMinor}")
+string(APPEND vFdirDstProj "-${vProjVnumMicro}")
+string(APPEND vFdirDstProj ".dir")
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
     "${vFdirEnvRoot}/dCMake.dir/dPack.dir/fConfig.cmake.in"
-    "${vFdirGenRoot}/${vProjNameDst}Config.cmake"
-    INSTALL_DESTINATION "${vProjFdirDst}"
+    "${vFdirGenRoot}/${vProjNameDst}-Config.cmake"
+    INSTALL_DESTINATION "${vFdirDstProj}"
     ) # package Config
 write_basic_package_version_file(
-    "${vFdirGenRoot}/${vProjNameDst}ConfigVersion.cmake"
+    "${vFdirGenRoot}/${vProjNameDst}-ConfigVersion.cmake"
     VERSION ${vProjVnum}
     COMPATIBILITY SameMajorVersion
     ) # package ConfigVersion
@@ -276,13 +265,13 @@ install(
     ) # install target with header
 install(EXPORT "${vProjNameDst}"
     FILE "${vProjNameDst}.cmake"
-    DESTINATION "${vProjFdirDst}"
+    DESTINATION "${vFdirDstProj}"
     NAMESPACE "${vProjNameDst}::"
     ) # install Target
 install(FILES
-    "${vFdirGenRoot}/${vProjNameDst}Config.cmake"
-    "${vFdirGenRoot}/${vProjNameDst}ConfigVersion.cmake"
-    DESTINATION "${vProjFdirDst}"
+    "${vFdirGenRoot}/${vProjNameDst}-Config.cmake"
+    "${vFdirGenRoot}/${vProjNameDst}-ConfigVersion.cmake"
+    DESTINATION "${vFdirDstProj}"
     ) # install ConfigVersion
 export(EXPORT "${vProjNameDst}"
     FILE "${vFdirGenRoot}/${vProjNameDst}.cmake"
