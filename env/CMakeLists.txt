@@ -5,7 +5,7 @@ include(dCmake.dir/dHelp.dir/fRegex.cmake)
 include(dCmake.dir/dHelp.dir/fOpt.cmake)
 # proj
 project(LibAsist
-    VERSION 1.0.0
+    VERSION 1.0.1
     DESCRIPTION "core library assistant of nikozdev"
     ) # project
 enable_language(CXX)
