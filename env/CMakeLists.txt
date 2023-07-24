@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.3...3.8)
 include_guard(GLOBAL)
 # mods
 include(dCmake.dir/dHelp.dir/fRegex.cmake)
 include(dCmake.dir/dHelp.dir/fOpt.cmake)
+include(dCmake.dir/dHelp.dir/fPack.cmake)
 # proj
 project(LibAsist
     VERSION 1.0.1
@@ -23,6 +24,10 @@ set(vProjDesc ${PROJECT_DESCRIPTION})
 set(vLangVnum 23)
 set(CMAKE_CXX_STANDARD ${vLangVnum})
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+# osys
+mark_as_advanced(FORCE CMAKE_OSX_ARCHITECTURES)
+mark_as_advanced(FORCE CMAKE_OSX_DEPLOYMENT_TARGET)
+mark_as_advanced(FORCE CMAKE_OSX_SYSROOT)
 # file
 set(vFdirLocRoot "${PROJECT_SOURCE_DIR}/..")
 set(vFdirSrcRoot "${vFdirLocRoot}/src")
@@ -30,39 +35,46 @@ set(vFdirSrcBase "${vFdirSrcRoot}/${vProjNameDir}")
 set(vFdirGenRoot "${vFdirLocRoot}/gen")
 set(vFdirEnvRoot "${vFdirLocRoot}/env")
 set(vFdirDocRoot ${vFdirLocRoot}/doc)
-set(vFdirDstRoot "${CMAKE_INSTALL_PREFIX}")
+set(vFdirDstRoot "$ENV{HOME}$ENV{UserProfile}/.local")
 set(vFdirDstBins "${vFdirDstRoot}/bin")
 set(vFdirDstLibs "${vFdirDstRoot}/lib")
 set(vFdirDstHead "${vFdirDstRoot}/include")
-set(CMAKE_INSTALL_PREFIX "${vFdirDst}")
+set(CMAKE_PREFIX_PATH "${vFdirDstRoot}" CACHE PATH "destination prefix" FORCE)
+set(CMAKE_INSTALL_PREFIX "${vFdirDstRoot}" CACHE PATH "install prefix" FORCE)
 # conf
-set(oProjConf "Work")
+set(oProjConfPick "Work")
 set(vProjConfList "Work;Play;Dist;")
-fOptEnum(oProjConf vProjConfList "project configuration")
-if(oProjConf STREQUAL "")
+set(vProjConfDesc "controlled by oProjConfPick")
+fOptEnum(oProjConfPick vProjConfList "project configuration")
+if(oProjConfPick STREQUAL "")
     message("project configuration is not defined")
-elseif(oProjConf STREQUAL "Play")
-    set(CMAKE_BUILD_TYPE Release)
-elseif(oProjConf STREQUAL "Work")
-    set(CMAKE_BUILD_TYPE Debug)
+elseif(oProjConfPick STREQUAL "Work")
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "${vProjConfDesc}" FORCE)
+elseif(oProjConfPick STREQUAL "Play")
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "${vProjConfDesc}" FORCE)
+elseif(oProjConfPick STREQUAL "Dist")
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "${vProjConfDesc}" FORCE)
 else()
     message("project configuration is not handled")
-endif(oProjConf STREQUAL "")
+endif(oProjConfPick STREQUAL "")
+fOptEnum(CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES ${vProjConfDesc})
+mark_as_advanced(FORCE CMAKE_BUILD_TYPE)
 # make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+##tool
+set(vMakeToolGnucc "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
+set(vMakeToolMsvcc "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 ## lib
 add_library(${vProjNameLib} INTERFACE)
 set(vMakeDirsLib
-$<BUILD_INTERFACE:${vFdirSrcRoot}>;
-$<INSTALL_INTERFACE:${vFdirDstHead}>;
-) # vMakeDirsLib
+    "$<BUILD_INTERFACE:${vFdirSrcRoot}>;"
+    "$<INSTALL_INTERFACE:${vFdirDstHead}>;"
+    ) # vMakeDirsLib
 set(vMakeDefsLib
-    $<$<CXX_COMPILER_ID:MSVC>:>
-    $<$<CXX_COMPILER_ID:GNU,Clang>:>
     "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
     "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
     "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
-    "d${vProjName}ProjConf${oProjConf}" "dProjConf${oProjConf}"
+    "d${vProjName}ProjConf${oProjConfPick}" "dProjConf${oProjConfPick}"
     ) # vMakeDefsLib
 set(vMakeFeatLib
     cxx_std_23
@@ -70,10 +82,8 @@ set(vMakeFeatLib
     cxx_variadic_templates
     ) # vMakeFeatLib
 set(vMakeOptsLib
-    -fpermissive
-    -Wno-class-conversion
-    -Wno-narrowing
-    -Wno-macro-redefined
+    "$<${vMakeToolGnucc}:-fpermissive;-Wno-macro-redefined>"
+    "$<${vMakeToolMsvcc}:>"
     ) # vMakeOptsLib
 ### libs
 set(vLibsList "")
@@ -84,24 +94,10 @@ fOptEnum(oLibsPickFormat vLibsListFormat  "library pick for formatting")
 if(oLibsPickFormat STREQUAL "")
     message(WARNING "library pick for format is not defined")
 elseif(oLibsPickFormat STREQUAL "Fmt")
-    find_package(fmt GLOBAL CONFIG REQUIRED)
+    fPackFind("fmt" "")
     target_link_libraries(${vProjNameLib} INTERFACE fmt::fmt)
     list(APPEND vLibsList "fmt;")
 elseif(oLibsPickFormat STREQUAL "Std")
-    if(NOT oLibsPickFormatStdCompiles)
-        set(CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} "--std=c++20")
-        check_cxx_source_compiles(
-            "#include <format> int main() { return 0; }"
-            oLibsPickFormatStdCompiles
-            ) # check_cxx_source_compiles
-        if(${oLibsPickFormatStdCompiles})
-        else()
-            message(WARNING
-                "std::format does not compile"
-                " - choose another library for format"
-                ) # message
-        endif()
-    endif(NOT oLibsPickFormatStdCompiles)
 else()
     message(WARNING "library pick for format is not handled")
 endif(oLibsPickFormat STREQUAL "")
@@ -123,17 +119,13 @@ target_sources(${vProjNameLib}
     "${vFdirSrcBase}/fExec.hxx"
     "${vFdirSrcBase}/fHead.hxx"
     ) # target_sources
-target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
 ## exe
-option(oMakeExe "make project executable" 0)
+option(oMakeExe "make project executable" 1)
 if(oMakeExe)
     add_executable(${vProjNameExe} ${vFdirSrcBase}/fMain.cxx)
-    set(vMakeDirsExe "")
     set(vMakeDefsExe "d${vProjName}MakeExe")
-    set(vMakeFeatExe "")
-    set(vMakeOptsExe "")
     # test
-    option(oTestExe "test project executable" 0)
+    option(oTestExe "test project executable" 1)
     if(oTestExe)
         include(CTest)
         enable_testing()
@@ -237,15 +229,12 @@ if(oMakeExe)
             PASS_REGULAR_EXPRESSION ${vPassRegex}
             ) # set_tests_properties
         #
+        mark_as_advanced(FORCE BUILD_TESTING)
     endif(oTestExe)
     # libs
     target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
     # last
-    target_compile_options(${vProjNameExe} PRIVATE ${vMakeOptsExe})
-    target_compile_features(${vProjNameExe} PRIVATE ${vMakeFeatExe})
     target_compile_definitions(${vProjNameExe} PRIVATE ${vMakeDefsExe})
-    target_include_directories(${vProjNameExe} PRIVATE ${vMakeDirsExe})
-    target_precompile_headers(${vProjNameExe} PRIVATE ${vFdirSrcBase}/fHead.hxx)
 endif(oMakeExe)
 # pack
 include(InstallRequiredSystemLibraries)
@@ -254,19 +243,19 @@ set(CPACK_PACKAGE_VERSION_MAJOR "${vProjVnumMajor}")
 set(CPACK_PACKAGE_VERSION_MINOR "${vProjVnumMinor}")
 set(CPACK_PACKAGE_VERSION_PATCH "${vProjVnumMicro}")
 include(CPack)
-set(vProjFdirDst "${vFdirDstLibs}/cmake/${vProjNameDst}")
-string(APPEND vProjFdirDst "-${vProjVnumMajor}")
-string(APPEND vProjFdirDst "-${vProjVnumMinor}")
-string(APPEND vProjFdirDst "-${vProjVnumMicro}")
-string(APPEND vProjFdirDst ".dir")
+set(vFdirDstProj "${vFdirDstLibs}/cmake/${vProjNameDst}")
+string(APPEND vFdirDstProj "-${vProjVnumMajor}")
+string(APPEND vFdirDstProj "-${vProjVnumMinor}")
+string(APPEND vFdirDstProj "-${vProjVnumMicro}")
+string(APPEND vFdirDstProj ".dir")
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
     "${vFdirEnvRoot}/dCMake.dir/dPack.dir/fConfig.cmake.in"
-    "${vFdirGenRoot}/${vProjNameDst}Config.cmake"
-    INSTALL_DESTINATION "${vProjFdirDst}"
+    "${vFdirGenRoot}/${vProjNameDst}-Config.cmake"
+    INSTALL_DESTINATION "${vFdirDstProj}"
     ) # package Config
 write_basic_package_version_file(
-    "${vFdirGenRoot}/${vProjNameDst}ConfigVersion.cmake"
+    "${vFdirGenRoot}/${vProjNameDst}-ConfigVersion.cmake"
     VERSION ${vProjVnum}
     COMPATIBILITY SameMajorVersion
     ) # package ConfigVersion
@@ -276,13 +265,13 @@ install(
     ) # install target with header
 install(EXPORT "${vProjNameDst}"
     FILE "${vProjNameDst}.cmake"
-    DESTINATION "${vProjFdirDst}"
+    DESTINATION "${vFdirDstProj}"
     NAMESPACE "${vProjNameDst}::"
     ) # install Target
 install(FILES
-    "${vFdirGenRoot}/${vProjNameDst}Config.cmake"
-    "${vFdirGenRoot}/${vProjNameDst}ConfigVersion.cmake"
-    DESTINATION "${vProjFdirDst}"
+    "${vFdirGenRoot}/${vProjNameDst}-Config.cmake"
+    "${vFdirGenRoot}/${vProjNameDst}-ConfigVersion.cmake"
+    DESTINATION "${vFdirDstProj}"
     ) # install ConfigVersion
 export(EXPORT "${vProjNameDst}"
     FILE "${vFdirGenRoot}/${vProjNameDst}.cmake"
