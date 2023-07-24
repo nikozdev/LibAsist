@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.3)
 include_guard(GLOBAL)
 # mods
 include(dCmake.dir/dHelp.dir/fRegex.cmake)
@@ -35,24 +35,9 @@ set(vFdirDstBins "${vFdirDstRoot}/bin")
 set(vFdirDstLibs "${vFdirDstRoot}/lib")
 set(vFdirDstHead "${vFdirDstRoot}/include")
 set(CMAKE_INSTALL_PREFIX "${vFdirDst}")
-# make
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-##type
-set(oProjTypePick "Hol")
-set(vProjTypeList "Exe;Hol;Dll;Sll")
-fOptEnum(oProjTypePick vProjTypeList "project type")
-if(oProjTypePick STREQUAL "")
-    message("project type is not defined")
-elseif(oProjTypePick STREQUAL "Exe")
-elseif(oProjTypePick STREQUAL "Hol")
-elseif(oProjTypePick STREQUAL "Dll")
-elseif(oProjTypePick STREQUAL "Sll")
-else()
-    message("project type is not handled")
-endif(oProjTypePick STREQUAL "")
-##conf
+# conf
 set(oProjConf "Work")
-set(vProjConfList "Play;Work;")
+set(vProjConfList "Work;Play;Dist;")
 fOptEnum(oProjConf vProjConfList "project configuration")
 if(oProjConf STREQUAL "")
     message("project configuration is not defined")
@@ -63,11 +48,13 @@ elseif(oProjConf STREQUAL "Work")
 else()
     message("project configuration is not handled")
 endif(oProjConf STREQUAL "")
+# make
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## lib
 add_library(${vProjNameLib} INTERFACE)
 set(vMakeDirsLib
-$<BUILD_INTERFACE:${vFdirSrcRoot}>; # do not use " in generator expressions
-$<INSTALL_INTERFACE:${vFdirDstHead}>; # i don't know why this shit happens
+$<BUILD_INTERFACE:${vFdirSrcRoot}>;
+$<INSTALL_INTERFACE:${vFdirDstHead}>;
 ) # vMakeDirsLib
 set(vMakeDefsLib
     $<$<CXX_COMPILER_ID:MSVC>:>
@@ -76,7 +63,6 @@ set(vMakeDefsLib
     "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
     "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
     "d${vProjName}ProjConf${oProjConf}" "dProjConf${oProjConf}"
-    "d${vProjName}ProjType${oProjType}" "dProjType${oProjConf}"
     ) # vMakeDefsLib
 set(vMakeFeatLib
     cxx_std_23
@@ -86,7 +72,8 @@ set(vMakeFeatLib
 set(vMakeOptsLib
     -fpermissive
     -Wno-class-conversion
-    -Wno-error=narrowing -Wno-narrowing
+    -Wno-narrowing
+    -Wno-macro-redefined
     ) # vMakeOptsLib
 ### libs
 set(vLibsList "")
