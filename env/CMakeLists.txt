@@ -39,6 +39,7 @@ set(vFdirDstRoot "$ENV{HOME}$ENV{UserProfile}/.local")
 set(vFdirDstBins "${vFdirDstRoot}/bin")
 set(vFdirDstLibs "${vFdirDstRoot}/lib")
 set(vFdirDstHead "${vFdirDstRoot}/include")
+set(CMAKE_PREFIX_PATH "${vFdirDstRoot}" CACHE PATH "destination prefix" FORCE)
 set(CMAKE_INSTALL_PREFIX "${vFdirDstRoot}" CACHE PATH "install prefix" FORCE)
 # conf
 set(oProjConfPick "Work")
@@ -60,15 +61,16 @@ fOptEnum(CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES ${vProjConfDesc})
 mark_as_advanced(FORCE CMAKE_BUILD_TYPE)
 # make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+##tool
+set(vMakeToolGnucc "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
+set(vMakeToolMsvcc "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 ## lib
 add_library(${vProjNameLib} INTERFACE)
 set(vMakeDirsLib
-"$<BUILD_INTERFACE:${vFdirSrcRoot}>;"
-"$<INSTALL_INTERFACE:${vFdirDstHead}>;"
-) # vMakeDirsLib
+    "$<BUILD_INTERFACE:${vFdirSrcRoot}>;"
+    "$<INSTALL_INTERFACE:${vFdirDstHead}>;"
+    ) # vMakeDirsLib
 set(vMakeDefsLib
-    "$<$<CXX_COMPILER_ID:MSVC>:>"
-    "$<$<CXX_COMPILER_ID:GNU,Clang>:>"
     "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
     "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
     "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
@@ -80,10 +82,8 @@ set(vMakeFeatLib
     cxx_variadic_templates
     ) # vMakeFeatLib
 set(vMakeOptsLib
-    -fpermissive
-    -Wno-class-conversion
-    -Wno-narrowing
-    -Wno-macro-redefined
+    "$<${vMakeToolGnucc}:-fpermissive;-Wno-macro-redefined>"
+    "$<${vMakeToolMsvcc}:>"
     ) # vMakeOptsLib
 ### libs
 set(vLibsList "")
@@ -119,15 +119,11 @@ target_sources(${vProjNameLib}
     "${vFdirSrcBase}/fExec.hxx"
     "${vFdirSrcBase}/fHead.hxx"
     ) # target_sources
-target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
 ## exe
 option(oMakeExe "make project executable" 1)
 if(oMakeExe)
     add_executable(${vProjNameExe} ${vFdirSrcBase}/fMain.cxx)
-    set(vMakeDirsExe "")
     set(vMakeDefsExe "d${vProjName}MakeExe")
-    set(vMakeFeatExe "")
-    set(vMakeOptsExe "")
     # test
     option(oTestExe "test project executable" 1)
     if(oTestExe)
@@ -238,11 +234,7 @@ if(oMakeExe)
     # libs
     target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
     # last
-    target_compile_options(${vProjNameExe} PRIVATE ${vMakeOptsExe})
-    target_compile_features(${vProjNameExe} PRIVATE ${vMakeFeatExe})
     target_compile_definitions(${vProjNameExe} PRIVATE ${vMakeDefsExe})
-    target_include_directories(${vProjNameExe} PRIVATE ${vMakeDirsExe})
-    target_precompile_headers(${vProjNameExe} PRIVATE ${vFdirSrcBase}/fHead.hxx)
 endif(oMakeExe)
 # pack
 include(InstallRequiredSystemLibraries)
