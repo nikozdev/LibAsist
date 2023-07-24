@@ -10,19 +10,18 @@
 #include <cstring>
 #include <string_view>
 #include <sstream>
-#ifdef dLibAsistLibsFormatFmt
+#ifdef dLibAsistLibsPickFormatFmt
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 namespace nLibAsist
 {
 namespace nText
 {
-using namespace nBool;
 namespace nFormat = ::fmt;
 }//namespace nText
 }//namespace nLibAsist
-#endif//dLibAsistLibsFormatFmt
-#ifdef dLibAsistLibsFormatStd
+#endif//dLibAsistLibsPickFormatFmt
+#ifdef dLibAsistLibsPickFormatStd
 #include <format>
 namespace nLibAsist
 {
@@ -31,7 +30,7 @@ namespace nText
 namespace nFormat = ::std;
 }//namespace nText
 }//namespace nLibAsist
-#endif//dLibAsistLibsFormatStd
+#endif//dLibAsistLibsPickFormatStd
 //defines
 #ifndef fGetStrFromArg
 #define fGetStrFromArg(str) #str
@@ -41,6 +40,8 @@ namespace nLibAsist
 {
 namespace nText
 {
+//imports
+using namespace nBool;
 //aliases
 using tSize = nNums::tSize;
 //-//character

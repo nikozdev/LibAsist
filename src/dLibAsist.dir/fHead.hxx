@@ -222,7 +222,7 @@ aHasReturned("proxy main function can return an error code value"
 	fOput("{1})=[{0}]{1}", dProjName, cEndlChar);
 	return errno;
 }//fMain
-}//nMain
 #endif//dLibAsistMakeExe
+}//namespace nMain
 }//namespace nLibAsist
 #endif//dLibAsistHxx

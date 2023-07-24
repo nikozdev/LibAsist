@@ -1,6 +1,7 @@
 #ifndef dLibAsistBoolHxx
 #define dLibAsistBoolHxx
 //headers
+#include "fTool.hxx"
 //content
 namespace nBool
 {

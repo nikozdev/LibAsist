@@ -1,7 +1,7 @@
 #ifndef dLibAsistExecHxx
 #define dLibAsistExecHxx
 //headers
-#include <dLibAsist.dir/fMemo.hxx>
+#include "fMemo.hxx"
 #include <thread>
 #include <future>
 #include <atomic>
