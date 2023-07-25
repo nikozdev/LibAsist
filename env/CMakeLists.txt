@@ -82,7 +82,7 @@ set(vMakeFeatLib
     cxx_variadic_templates
     ) # vMakeFeatLib
 set(vMakeOptsLib
-    "$<${vMakeToolGnucc}:-fpermissive;-Wno-macro-redefined>"
+    "$<${vMakeToolGnucc}:-fpermissive;-Wno-macro-redefined;-Wno-class-conversion>"
     "$<${vMakeToolMsvcc}:>"
     ) # vMakeOptsLib
 ### libs
