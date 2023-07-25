@@ -3,24 +3,13 @@
 //headers
 #include "fOsys.hxx"
 #include "fTool.hxx"
+#include "fMeta.hxx"
 #include "fText.hxx"
 #include "fIpop.hxx"
 //-//standard
 #include <csignal>
 #include <cerrno>
 //defines
-#ifndef dFileName
-#define dFileName __FILE__
-#endif//dFileName
-#ifndef dFileLine
-#define dFileLine __LINE__
-#endif//dFileLine
-#ifndef dFuncName
-#define dFuncName __FUNCTION__
-#endif//dFuncName
-#ifndef dFuncSign
-#define dFuncSign __PRETTY_FUNCTION__
-#endif//dFuncSign
 #ifndef fError
 #define fError(vCode, vActn, vArgs...)   \
 	({                                   \

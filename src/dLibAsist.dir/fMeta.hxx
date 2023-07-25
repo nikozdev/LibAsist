@@ -12,6 +12,19 @@
 #include <initializer_list>
 //-//-//type
 #include <type_traits>
+//defines
+#ifndef dFileName
+#define dFileName __FILE__
+#endif//dFileName
+#ifndef dFileLine
+#define dFileLine __LINE__
+#endif//dFileLine
+#ifndef dFuncName
+#define dFuncName __FUNCTION__
+#endif//dFuncName
+#ifndef dFuncSign
+#define dFuncSign __PRETTY_FUNCTION__
+#endif//dFuncSign
 //content
 namespace nLibAsist
 {
