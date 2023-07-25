@@ -5,6 +5,7 @@
 #include "fTool.hxx"
 #include "fNums.hxx"
 #include "fMemo.hxx"
+#include "fMeta.hxx"
 #include "fText.hxx"
 //-//standard
 #include <cstdio>
