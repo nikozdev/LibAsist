@@ -6,7 +6,7 @@ include(dCmake.dir/dHelp.dir/fOpt.cmake)
 include(dCmake.dir/dHelp.dir/fPack.cmake)
 # proj
 project(LibAsist
-    VERSION 1.0.2
+    VERSION 1.0.3
     DESCRIPTION "core library assistant of nikozdev"
     ) # project
 enable_language(CXX)
